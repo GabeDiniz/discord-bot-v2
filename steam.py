@@ -27,13 +27,19 @@ def get_user_stats(message: str):
   
   if 'playerstats' in data and 'stats' in data['playerstats']:
     user_stats = data['playerstats']['stats']
+  # API Fetch Failure!!!
   else:
-    return None
+    embed = discord.Embed(
+      title=":bangbang: ERROR :bangbang: ",
+      description="Please make your game details public\nGo to Edit Profile > Privacy settings",
+      color=discord.Color.red()
+    )
+    return embed
   
   if user_stats:
     # print(user_stats)
     embed = discord.Embed(
-      title="CS2 STATS: " + user.capitalize(),
+      title=":military_helmet: CS2 STATS: " + user.capitalize(),
       color=discord.Color.red()
     )
     # Add fields to the embed (optional)
