@@ -8,6 +8,11 @@ from decouple import config
 STEAM_API_KEY = config('STEAM_API_KEY')
 
 
+def load_users(file: str) -> dict:
+  with open(file, "r") as f:
+    return json.load(f)
+
+
 def get_user_stats(steam_id, app_id):
     url = f'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={app_id}&key={STEAM_API_KEY}&steamid={steam_id}'
     response = requests.get(url)
@@ -19,9 +24,8 @@ def get_user_stats(steam_id, app_id):
         return None
 
 
-def load_knowledge(file: str) -> dict:
-  with open(file, "r") as f:
-    return json.load(f)
+def format_embed():
+    pass
 
 # STEAM ID - Obtained from: https://www.steamidfinder.com/
 steam_id = '76561198099677359' 

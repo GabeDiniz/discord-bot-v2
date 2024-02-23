@@ -54,6 +54,8 @@ def run_bot(BOT_KEY: str):
         
         # Send the embed message to the same channel where the command was issued
         await message.channel.send(embed=embed)
+      elif message.content == "!cs2stats":
+        pass
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)
       if response:
