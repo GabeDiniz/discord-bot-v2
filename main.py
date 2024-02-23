@@ -16,7 +16,8 @@ def run_bot(BOT_KEY: str):
   # Client makes the request
   client = Client(intents=intents)
 
-  knowledge: dict = responses.load_knowledge('knowledge.json')
+  knowledge: dict = responses.load_knowledge('knowledge2.json')
+  print(f"Knowledge: {knowledge}")
 
   @client.event
   # Perform the code as soon as the bot is started
