@@ -50,7 +50,7 @@ def run_bot(BOT_KEY: str):
             color=discord.Color.blue()
         )
         # Add fields to the embed (optional)
-        embed.add_field(name='Command 1', value='Description 1', inline=False)
+        embed.add_field(name='!cs2 <name>', value='Displays cs2 stats', inline=False)
         embed.add_field(name='Command 2', value='Description 2', inline=False)
         
         # Send the embed message to the same channel where the command was issued
