@@ -1,6 +1,7 @@
 from discord import Intents, Client
 import discord   # pip install discord
 import responses
+import steam
 
 # Fetch Credentials from local .env variables 
 from decouple import config
@@ -42,7 +43,7 @@ def run_bot(BOT_KEY: str):
       print(f'({message.channel}) {message.author}: "{message.content}"')
       
       # Handle !help command
-      if message.content == "!help":
+      if message.content.startswith("!help"):
         embed = discord.Embed(
             title='Help',
             description='This is a help message!',
@@ -54,8 +55,9 @@ def run_bot(BOT_KEY: str):
         
         # Send the embed message to the same channel where the command was issued
         await message.channel.send(embed=embed)
-      elif message.content == "!cs2stats":
-        pass
+      elif message.content.startswith("!cs2"):
+        embed = steam.get_user_stats(message.content)
+        await message.channel.send(embed=embed)
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)
       if response:
