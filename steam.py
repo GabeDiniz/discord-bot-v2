@@ -16,7 +16,8 @@ def load_users(file: str) -> dict:
 
 def get_user_stats(message: str):
   # Find user
-  users = load_users("steam-info.json")
+  file_path = "./knowledge/steam-info.json"
+  users = load_users(file_path)
   user = message.strip().split(" ")[-1].lower()
   steam_id = users[user]
 
