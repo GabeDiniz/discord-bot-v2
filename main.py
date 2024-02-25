@@ -1,11 +1,15 @@
 from discord import Intents, Client
 import discord   # pip install discord
+
+# ========================================
+# Response Features
+# ========================================
 import responses
 import steam
+import fortnite
 
 # Fetch Credentials from local .env variables 
 from decouple import config
-
 # Constants
 BOT_KEY = config('DISCORD_BOT_KEY')
 
@@ -38,7 +42,9 @@ def run_bot(BOT_KEY: str):
     # Check for specific user
     # if str(message.author) == "username here":
     #   response: str = "Oh hello there... I've been expecting you"
-    response = None
+    
+    response = None   # Default Bot Response -> None
+    # If Message is sent by a user
     if message.content:
       print(f'({message.channel}) {message.author}: "{message.content}"')
       
@@ -57,6 +63,9 @@ def run_bot(BOT_KEY: str):
         await message.channel.send(embed=embed)
       elif message.content.startswith("!cs2"):
         embed = steam.get_user_stats(message.content)
+        await message.channel.send(embed=embed)
+      elif message.content.startswith("!fn shop"):
+        embed = fortnite.get_shop_items()
         await message.channel.send(embed=embed)
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)
