@@ -51,12 +51,12 @@ def run_bot(BOT_KEY: str):
       # Handle !help command
       if message.content.startswith("!help"):
         embed = discord.Embed(
-            title='Help',
-            description='This is a help message!',
+            # title='Cpt. Bot Commands',
             color=discord.Color.blue()
         )
         # Add fields to the embed (optional)
-        embed.add_field(name='!cs2 <name>', value='Displays cs2 stats', inline=False)
+        embed.set_author(name="Cpt. Bot Commands", url="https://github.com/GabeDiniz", icon_url="https://pbs.twimg.com/profile_images/1327036716226646017/ZuaMDdtm_400x400.jpg")
+        embed.add_field(name='`!cs2 <name>`', inline=False)
         embed.add_field(name='Command 2', value='Description 2', inline=False)
         
         # Send the embed message to the same channel where the command was issued

@@ -10,8 +10,8 @@ def get_shop_items():
   data = response.json()
 
 
-  print("test")
-  print(data)
+  # print("test")
+  # print(data)
   # for d in data:
   #   print(d)
 
