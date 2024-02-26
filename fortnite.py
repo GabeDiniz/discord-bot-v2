@@ -1,18 +1,19 @@
 import requests
 import json
 import discord   # pip install discord
+from datetime import date
+
 
 def get_shop_items():
-  # Find user
+  # Format todays shop URL
+  today_date = str(date.today())
+  formatted_string = today_date.replace("-", "_") + "_en.png"
+  url = 'https://shop.easyfnstats.com/' + formatted_string
+  print(url)
 
-  url = 'https://fortnite-api.com/v2/shop/br'
-  response = requests.get(url)
-  data = response.json()
-
-
-  # print("test")
-  # print(data)
-  # for d in data:
-  #   print(d)
-
-get_shop_items()
+  embed = discord.Embed(
+    title=":shopping_cart: Todays Fortnite Shop ",
+    color=discord.Color.red()
+  )
+  embed.set_image(url=url)
+  return embed
