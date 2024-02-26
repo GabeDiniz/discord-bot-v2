@@ -57,8 +57,8 @@ def run_bot(BOT_KEY: str):
         # Add fields to the embed (optional)
         embed.set_author(name="Cpt. Bot Commands", url="https://github.com/GabeDiniz", icon_url="https://i.imgur.com/sRmJYmJ.jpeg")
         embed.set_thumbnail(url="https://i.imgur.com/sRmJYmJ.jpeg")
-        embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=False)
-        embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=False)
+        embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
+        embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
         
         # Send the embed message to the same channel where the command was issued
         await message.channel.send(embed=embed)
