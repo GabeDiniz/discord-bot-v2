@@ -73,7 +73,7 @@ def run_bot(BOT_KEY: str):
         embed = fortnite.get_shop_items()
         await message.channel.send(embed=embed)
       elif message.content.startswith("!play"):
-        embed = playmusic.play(message)
+        embed = playmusic.playmusic(message)
         await message.channel.send(embed=embed)
       # COMMAND: Basic text responses
       else:
