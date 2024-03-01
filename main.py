@@ -7,6 +7,7 @@ import discord   # pip install discord
 import responses
 import steam
 import fortnite
+import playmusic
 
 # Fetch Credentials from local .env variables 
 from decouple import config
@@ -70,6 +71,9 @@ def run_bot(BOT_KEY: str):
       # COMMAND: Fortnite Shop
       elif message.content.startswith("!fn shop"):
         embed = fortnite.get_shop_items()
+        await message.channel.send(embed=embed)
+      elif message.content.startswith("!play"):
+        embed = playmusic.play(message)
         await message.channel.send(embed=embed)
       # COMMAND: Basic text responses
       else:
