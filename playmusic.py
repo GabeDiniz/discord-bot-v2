@@ -5,16 +5,23 @@ from discord.ext import commands
 # pip install pynacl
 import youtube_dl  
 
+# Define youtube_dl options
+ydl_opts = {
+  'format': 'bestaudio/best',
+  'postprocessors': [{
+    'key': 'FFmpegExtractAudio',
+    'preferredcodec': 'mp3',
+    'preferredquality': '192',
+  }],
+}
+
 async def playmusic(message):
   print("in function")
   
 
   query = message.content.strip("!play ")
-  print(f"Message: {message}")
-  print(f"User: {message.author}")
-  print(f"VC?: {message.author.voice}")
+  print(f"Query: {query}")
   voice = message.author.voice
-  print("here")
 
   # [SUCCESS] In a voice channel -> Connect to VC
   if voice:
@@ -35,7 +42,11 @@ async def playmusic(message):
     return embed
 
   # Search for and play the requested video
-  with youtube_dl.YoutubeDL() as ydl:
-    info = ydl.extract_info(f"ytsearch:{query}", download=False)
-    url = info['entries'][0]['url'] if 'entries' in info else info['url']
-    vc.play(discord.FFmpegPCMAudio(url), after=lambda e: print(f"Finished playing: {e}"))
+  with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    try:
+      info = ydl.extract_info(f"ytsearch:{query}", download=False)
+      url = info['entries'][0]['url'] if 'entries' in info else info['url']
+      vc.play(discord.FFmpegPCMAudio(url), after=lambda e: print(f"Finished playing: {e}"))
+    except youtube_dl.utils.DownloadError as e:
+      print(f"Error: {e}")
+      return await message.channel.send("Error: Unable to find or play the requested video.")
