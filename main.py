@@ -74,7 +74,7 @@ def run_bot(BOT_KEY: str):
         await message.channel.send(embed=embed)
       elif message.content.startswith("!play"):
         print("Playing music")
-        embed = playmusic.playmusic(message)
+        embed = await playmusic.playmusic(message)
         await message.channel.send(embed=embed)
       # COMMAND: Basic text responses
       else:

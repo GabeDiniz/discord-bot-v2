@@ -1,23 +1,32 @@
 import discord
 from discord.ext import commands
-import youtube_dl
+# Requires:
+# pip install youtube_dl
+# pip install pynacl
+import youtube_dl  
 
-def playmusic(message):
+async def playmusic(message):
   print("in function")
   
+
   query = message.content.strip("!play ")
   print(f"Message: {message}")
   print(f"User: {message.author}")
   print(f"VC?: {message.author.voice}")
   voice = message.author.voice
   print("here")
+
+  # [SUCCESS] In a voice channel -> Connect to VC
   if voice:
-    print("in VCCCC")
-    vc = voice.channel.connect()
-    message.send(f'Connected to {voice.channel}')
+    vc = await voice.channel.connect()
+    embed = discord.Embed(
+    title=f"Connected to {voice.channel}",
+    description="Connected..",
+    color=discord.Color.fuchsia()
+    )
+
   # [ERROR] Not in voice channel -> Return Error
   else:
-    print("here2")
     embed = discord.Embed(
     title=":bangbang: ERROR :bangbang: ",
     description="You are not in a voice channel.",
