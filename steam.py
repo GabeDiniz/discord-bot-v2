@@ -41,7 +41,7 @@ def get_user_stats(message: str):
     # print(user_stats)
     embed = discord.Embed(
       title=":military_helmet: CS2 STATS: " + user.capitalize(),
-      color=discord.Color.red()
+      color=discord.Color.yellow()
     )
     # Add fields to the embed (optional)
     kills = user_stats[0]["value"]

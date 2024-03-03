@@ -21,7 +21,7 @@ def get_shop_items():
 
   embed = discord.Embed(
     title=":shopping_cart: Todays Fortnite Shop ",
-    color=discord.Color.red()
+    color=discord.Color.blurple()
   )
   embed.set_image(url=url)
   return embed

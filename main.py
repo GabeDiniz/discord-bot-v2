@@ -53,7 +53,7 @@ def run_bot(BOT_KEY: str):
       if message.content.startswith("!help"):
         embed = discord.Embed(
           # title='Cpt. Bot Commands',
-          color=discord.Color.blue()
+          color=discord.Color.red()
         )
         # Add fields to the embed (optional)
         embed.set_author(name="Cpt. Bot Commands", url="https://github.com/GabeDiniz", icon_url="https://i.imgur.com/sRmJYmJ.jpeg")

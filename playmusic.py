@@ -37,7 +37,7 @@ async def playmusic(message):
     embed = discord.Embed(
     title=":bangbang: ERROR :bangbang: ",
     description="You are not in a voice channel.",
-    color=discord.Color.fuchsia()
+    color=discord.Color.red()
     )
     return embed
 
