@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 # Requires:
-# pip install youtube_dl
+# pip install youtube_dl or pip install yt_dlp
 # pip install pynacl
-import youtube_dl  
+import yt_dlp as youtube_dl
 
 # Define youtube_dl options
 ydl_opts = {
@@ -13,12 +13,10 @@ ydl_opts = {
     'preferredcodec': 'mp3',
     'preferredquality': '192',
   }],
+  'verbose': True
 }
 
 async def playmusic(message):
-  print("in function")
-  
-
   query = message.content.strip("!play ")
   print(f"Query: {query}")
   voice = message.author.voice
@@ -46,7 +44,9 @@ async def playmusic(message):
     try:
       info = ydl.extract_info(f"ytsearch:{query}", download=False)
       url = info['entries'][0]['url'] if 'entries' in info else info['url']
+      # print(f"****YT Info: {info}")
+      # print(f"****YT URL: {url}")
       vc.play(discord.FFmpegPCMAudio(url), after=lambda e: print(f"Finished playing: {e}"))
     except youtube_dl.utils.DownloadError as e:
-      print(f"Error: {e}")
+      print(f"{'*' * 30}\n[ERROR]:\n{e}")
       return await message.channel.send("Error: Unable to find or play the requested video.")
