@@ -1,5 +1,7 @@
 .env
+
+# Testing Knowledge
 knowledge2.json
-testing.py
-cs2-sample.json
-fort-sample.json
+
+# Development Files
+development
