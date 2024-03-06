@@ -1,2 +1,2 @@
-# discord-bot-v2
-My multi-purpose Discord bot! Built using Python. 
+# 🤖 Discord-bot v2
+This is my multi-purpose Discord bot! This is the second Discord bot I created (new and improved). It utilizes several APIs to display 🎮 game statistics and information. It has basic response 🗣 commands, and it can join your voice channel to play 🎵 music!
