@@ -9,5 +9,8 @@ This is my multi-purpose Discord bot! This is the second Discord bot I created (
 py main.py
 
 # Ensure all necessary libraries are installed. See list below:
-TBD
+pip install discord
+pip install python-decouple
+pip install yt_dlp
+pip install pynacl
 ```
