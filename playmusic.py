@@ -56,11 +56,14 @@ async def playmusic(message):
       }
 
       vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options))
-      return discord.Embed(
-          title=f":musical_note: Now playing: {query}",
-          color=discord.Color.fuchsia()
+      embed = discord.Embed(
+        title=f":musical_note: Now playing:",
+        description=f"Title: {query}",
+        color=discord.Color.fuchsia()
       )
-      
+      # embed.set_image(url=url)
+      return embed
+    
     except youtube_dl.utils.DownloadError as e:
       print(f"{'*' * 30}\n[ERROR]:\n{e}")
       return await message.channel.send("Error: Unable to find or play the requested video.")
