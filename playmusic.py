@@ -47,7 +47,10 @@ async def playmusic(message):
       # Retrives the first video that shows up from info
       #   If multiple entries come back -> retrieve the first entry
       #   Otherwise, only 1 entry exists -> retrieve its url
-      url = info['entries'][0]['url'] if 'entries' in info else info['url']
+      video_info = info['entries'][0] if 'entries' in info else info
+      title = video_info['title']
+      url = video_info['url']
+      thumbnail = video_info['thumbnails'][-1]['url']
 
       # Additional FFmpeg options
       ffmpeg_options = {
@@ -58,10 +61,10 @@ async def playmusic(message):
       vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options))
       embed = discord.Embed(
         title=f":musical_note: Now playing:",
-        description=f"Title: {query}",
+        description=title,
         color=discord.Color.fuchsia()
       )
-      # embed.set_image(url=url)
+      embed.set_image(url=thumbnail)
       return embed
     
     except youtube_dl.utils.DownloadError as e:
