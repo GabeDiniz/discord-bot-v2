@@ -76,6 +76,9 @@ def run_bot(BOT_KEY: str):
         print("Playing music")
         embed = await playmusic.playmusic(message)
         await message.channel.send(embed=embed)
+      elif message.content.startswith("!leave"):
+        embed = await playmusic.stopmusic(message)
+        await message.channel.send(embed=embed)
       # COMMAND: Basic text responses
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)

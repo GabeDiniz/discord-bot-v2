@@ -72,3 +72,17 @@ async def playmusic(message):
     except youtube_dl.utils.DownloadError as e:
       print(f"{'*' * 30}\n[ERROR]:\n{e}")
       return await message.channel.send("Error: Unable to find or play the requested video.")
+    
+async def stopmusic(message):
+  # Check if the bot is connected to a voice channel in the guild
+  if message.guild.voice_client is not None:
+    # Disconnect the bot from the voice channel
+    await message.guild.voice_client.disconnect()
+
+    # Create and send an embed message to indicate successful disconnection
+    embed = discord.Embed(
+      title="Disconnected",
+      description="I've left the voice channel.",
+      color=discord.Color.fuchsia()
+    )
+    await message.channel.send(embed=embed)
