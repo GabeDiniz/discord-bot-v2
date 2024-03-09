@@ -19,25 +19,27 @@ ydl_opts = {
 async def playmusic(message):
   query = message.content.strip("!play ")
   print(f"Query: {query}")
-  voice = message.author.voice
+  voice_state  = message.author.voice
 
-  # [SUCCESS] In a voice channel -> Connect to VC
-  if voice:
-    vc = await voice.channel.connect()
-    embed = discord.Embed(
-    title=f"Connected to {voice.channel}",
-    description="Connected..",
-    color=discord.Color.fuchsia()
-    )
-
-  # [ERROR] Not in voice channel -> Return Error
-  else:
-    embed = discord.Embed(
-    title=":bangbang: ERROR :bangbang: ",
-    description="You are not in a voice channel.",
-    color=discord.Color.red()
-    )
-    return embed
+  # Check if the USER is in a voice channel
+  if voice_state:
+    # Check if the BOT is in a VC
+    if message.guild.voice_client:
+      # Check if the BOT is in a different voice channel
+      if message.guild.voice_client.channel != voice_state.channel:
+        embed = discord.Embed(
+          title=":bangbang: ERROR :bangbang: ",
+          description="You are not in a voice channel.",
+          color=discord.Color.red()
+        )
+        return embed
+      # Otherwise -> the BOT is in the same voice channel
+      else: 
+        # The BOT is in the same voice channel
+        vc = message.guild.voice_client
+    # Otherwise -> the BOT is NOT in a voice channel
+    else:
+      vc = await voice_state.channel.connect()
 
   # Search for and play the requested video
   with youtube_dl.YoutubeDL(ydl_opts) as ydl:
