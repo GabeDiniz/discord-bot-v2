@@ -30,7 +30,7 @@ queue = {}  # Example: {"server-id": [[song1 info], [song2 info], [song3 info]]}
 #   guild_id = message.guild.id
   
 
-def check_queue(message, guild_id):
+def check_queue(client, message, guild_id):
   if queue[guild_id]:
     # Get next song
     song_info = queue[guild_id].pop(0)
@@ -40,19 +40,26 @@ def check_queue(message, guild_id):
     thumbnail = song_info['thumbnails'][-1]['url']
 
     # Send embed once song starts playing
-    embed = discord.Embed(
-      title=f":musical_note: Now playing:",
-      description=title,
-      color=discord.Color.fuchsia()
+    async def send_now_playing():
+      embed = discord.Embed(
+        title=f":musical_note: Now playing:",
+        description=title,
+        color=discord.Color.fuchsia()
+      )
+      embed.set_image(url=thumbnail)
+      await message.channel.send(embed=embed)
+
+    # Schedule the send_now_playing coroutine
+    client.loop.create_task(send_now_playing())
+    
+    # Play the next song and set the callback to check_queue with updated parameters
+    message.guild.voice_client.play(
+      discord.FFmpegPCMAudio(url, **ffmpeg_options),
+      after=lambda e: check_queue(client, message, guild_id)
     )
-    embed.set_image(url=thumbnail)
-    message.channel.send(embed=embed)
-    print("AFTER EMBED SENT")
-    # Recursive call to play the next song, using guild's voice client
-    message.guild.voice_client.play(discord.FFmpegPCMAudio(url, **ffmpeg_options), after = lambda e: check_queue(message, guild_id))
 
 
-async def playmusic(message):
+async def playmusic(message, client):
   query = message.content.strip("!play ")
   print(f"Query: {query}")
   voice_state  = message.author.voice
@@ -105,7 +112,7 @@ async def playmusic(message):
         )
         return embed
       else:
-        vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options), after = lambda e: check_queue(message, message.guild.id))
+        vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options), after = lambda e: check_queue(client, message, message.guild.id))
 
         embed = discord.Embed(
           title=f":musical_note: Now playing:",

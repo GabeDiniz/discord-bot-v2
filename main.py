@@ -73,7 +73,7 @@ def run_bot(BOT_KEY: str):
         embed = fortnite.get_shop_items()
         await message.channel.send(embed=embed)
       elif message.content.startswith("!play"):
-        embed = await playmusic.playmusic(message)
+        embed = await playmusic.playmusic(message, client)
         await message.channel.send(embed=embed)
       elif message.content.startswith("!leave"):
         embed = await playmusic.stopmusic(message)
