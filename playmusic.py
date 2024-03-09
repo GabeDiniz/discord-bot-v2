@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands
 # Requires:
@@ -13,8 +14,43 @@ ydl_opts = {
     'preferredcodec': 'mp3',
     'preferredquality': '192',
   }],
-  'verbose': True
 }
+
+# Additional FFmpeg options
+ffmpeg_options = {
+  'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+  'options': '-vn'
+}
+
+# Global Dictionary -> Holds queue for each server
+queue = {}  # Example: {"server-id": [[song1 info], [song2 info], [song3 info]]}
+
+# Helper function to play the next song and send the embed
+# async def play_next_song(message, song_info):
+#   guild_id = message.guild.id
+  
+
+def check_queue(message, guild_id):
+  if queue[guild_id]:
+    # Get next song
+    song_info = queue[guild_id].pop(0)
+    title = song_info['title']
+    print(f"IN THE QUEUE: {title}")
+    url = song_info['url']
+    thumbnail = song_info['thumbnails'][-1]['url']
+
+    # Send embed once song starts playing
+    embed = discord.Embed(
+      title=f":musical_note: Now playing:",
+      description=title,
+      color=discord.Color.fuchsia()
+    )
+    embed.set_image(url=thumbnail)
+    message.channel.send(embed=embed)
+    print("AFTER EMBED SENT")
+    # Recursive call to play the next song, using guild's voice client
+    message.guild.voice_client.play(discord.FFmpegPCMAudio(url, **ffmpeg_options), after = lambda e: check_queue(message, guild_id))
+
 
 async def playmusic(message):
   query = message.content.strip("!play ")
@@ -54,20 +90,30 @@ async def playmusic(message):
       url = video_info['url']
       thumbnail = video_info['thumbnails'][-1]['url']
 
-      # Additional FFmpeg options
-      ffmpeg_options = {
-        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-        'options': '-vn'
-      }
+      # If BOT is already playing music
+      if vc.is_playing():
+        # If a queue already exists for that server
+        if message.guild.id in queue:
+          queue[message.guild.id].append(video_info)
+        # Otherwise -> create new queue
+        else:
+          queue[message.guild.id] = [video_info]
+        # Return QUEUE embed
+        embed = discord.Embed(
+          title=f":musical_note: Song added to queue...",
+          color=discord.Color.fuchsia()
+        )
+        return embed
+      else:
+        vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options), after = lambda e: check_queue(message, message.guild.id))
 
-      vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options))
-      embed = discord.Embed(
-        title=f":musical_note: Now playing:",
-        description=title,
-        color=discord.Color.fuchsia()
-      )
-      embed.set_image(url=thumbnail)
-      return embed
+        embed = discord.Embed(
+          title=f":musical_note: Now playing:",
+          description=title,
+          color=discord.Color.fuchsia()
+        )
+        embed.set_image(url=thumbnail)
+        return embed
     
     except youtube_dl.utils.DownloadError as e:
       print(f"{'*' * 30}\n[ERROR]:\n{e}")
@@ -85,4 +131,4 @@ async def stopmusic(message):
       description="I've left the voice channel.",
       color=discord.Color.fuchsia()
     )
-    await message.channel.send(embed=embed)
+    return embed
