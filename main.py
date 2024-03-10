@@ -56,8 +56,8 @@ def run_bot(BOT_KEY: str):
           color=discord.Color.red()
         )
         # Add fields to the embed (optional)
-        embed.set_author(name="Cpt. Bot Commands", url="https://github.com/GabeDiniz", icon_url="https://i.imgur.com/sRmJYmJ.jpeg")
-        embed.set_thumbnail(url="https://i.imgur.com/sRmJYmJ.jpeg")
+        embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://i.imgur.com/sRmJYmJ.jpeg")
+        embed.set_thumbnail(url="https://imgur.com/IvB8ln5.jpeg")
         embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
         embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
         
