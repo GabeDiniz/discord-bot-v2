@@ -56,11 +56,11 @@ def run_bot(BOT_KEY: str):
           color=discord.Color.red()
         )
         # Add fields to the embed (optional)
-        embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://i.imgur.com/sRmJYmJ.jpeg")
-        embed.set_thumbnail(url="https://imgur.com/IvB8ln5.jpeg")
+        embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
+        embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
+        embed.add_field(name='Play Music!', value='`!play <song query>`', inline=False)
         embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
         # embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
-        embed.add_field(name='Play Music!', value='`!play <song query>`', inline=False)
         
         # Send the embed message to the same channel where the command was issued
         await message.channel.send(embed=embed)

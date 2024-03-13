@@ -25,4 +25,6 @@ def get_shop_items():
     color=discord.Color.blurple()
   )
   embed.set_image(url=url)
+  embed.set_image(url="https://imgur.com/XpYfvqM.jpg")
+  
   return embed
