@@ -88,10 +88,8 @@ async def playmusic(message, client):
   with youtube_dl.YoutubeDL(ydl_opts) as ydl:
     try:
       # Search for the video using YT dlp
-      if query.startswith("https://"):
-        info = ydl.extract_info(query, download=False)
-      else:
-        info = ydl.extract_info(f"ytsearch:{query}", download=False)
+      info = ydl.extract_info(query if query.startswith("https://") else f"ytsearch:{query}", download=False)
+      
       # Retrives the first video that shows up from info
       #   If multiple entries come back -> retrieve the first entry
       #   Otherwise, only 1 entry exists -> retrieve its url
