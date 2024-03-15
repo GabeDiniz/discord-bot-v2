@@ -16,15 +16,14 @@ def get_shop_items():
     shop_date = str(date.today())
 
   formatted_string = str(shop_date).replace("-", "_") + "_en.png"
-  url = 'https://shop.easyfnstats.com/' + formatted_string
+  url = 'https://shop.easyfnstats.com/1092593399997136987/' + formatted_string
   print(url)
 
   embed = discord.Embed(
     title=":shopping_cart: Todays Fortnite Shop ",
-    description="This is temporarily disabled...",
     color=discord.Color.blurple()
   )
   embed.set_image(url=url)
-  embed.set_image(url="https://imgur.com/XpYfvqM.jpg")
+  # embed.set_image(url="https://imgur.com/XpYfvqM.jpg")
   
   return embed
