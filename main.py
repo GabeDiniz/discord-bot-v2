@@ -23,7 +23,6 @@ def run_bot(BOT_KEY: str):
   client = Client(intents=intents)
 
   knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
-  print(f"Knowledge: {knowledge}")
 
   @client.event
   # Perform the code as soon as the bot is started
@@ -84,7 +83,6 @@ def run_bot(BOT_KEY: str):
         response: str = responses.get_response(message.content, knowledge=knowledge)
       if response:
         # Sending message
-        print(response)
         await message.channel.send(response)
       
     # Potential error: i.e., missing permissions to access message.content

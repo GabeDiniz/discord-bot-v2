@@ -38,7 +38,6 @@ def get_user_stats(message: str):
     return embed
   
   if user_stats:
-    # print(user_stats)
     embed = discord.Embed(
       title=":military_helmet: CS2 STATS: " + user.capitalize(),
       color=discord.Color.yellow()
@@ -49,8 +48,6 @@ def get_user_stats(message: str):
     embed.add_field(name='Overall KD', value=f"Total Kills: {kills}\nTotal Deaths: {deaths}\nKD: {round(kills/deaths, 2)}", inline=False)
     embed.add_field(name='Total Wins', value=user_stats[6]["value"], inline=False)
     return embed
-    # for stat in user_stats:
-    #   print(f"{stat['name']}: {stat['value']}")
   else:
     print("User stats not found or API request failed.")
     return
