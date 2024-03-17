@@ -53,7 +53,7 @@ def check_queue(client, message, guild_id):
     )
 
 
-async def playmusic(message, client):
+async def play_music(message, client):
   query = message.content.strip("!play ")
   print(f"Query: {query}")
   voice_state  = message.author.voice
@@ -121,7 +121,7 @@ async def playmusic(message, client):
       print(f"{'*' * 30}\n[ERROR]:\n{e}")
       return await message.channel.send("Error: Unable to find or play the requested video.")
     
-async def stopmusic(message):
+async def leave_channel(message):
   # Check if the bot is connected to a voice channel in the guild
   if message.guild.voice_client is not None:
     # Disconnect the bot from the voice channel
@@ -135,7 +135,7 @@ async def stopmusic(message):
     )
     return embed
 
-async def skipsong(message, client):
+async def skip_song(message, client):
   guild_id = message.guild.id   # Retrieve guild.id
   
   # Check if the bot is playing music

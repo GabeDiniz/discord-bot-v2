@@ -73,13 +73,13 @@ def run_bot(BOT_KEY: str):
         embed = fortnite.get_shop_items()
         await message.channel.send(embed=embed)
       elif message.content.startswith("!play"):
-        embed = await playmusic.playmusic(message, client)
+        embed = await playmusic.play_music(message, client)
         await message.channel.send(embed=embed)
       elif message.content.startswith("!leave"):
-        embed = await playmusic.stopmusic(message)
+        embed = await playmusic.leave_channel(message)
         await message.channel.send(embed=embed)
       elif message.content.startswith("!skip"):
-        await playmusic.skipsong(message, client)
+        await playmusic.skip_song(message, client)
       # COMMAND: Basic text responses
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)
