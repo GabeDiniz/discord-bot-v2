@@ -59,13 +59,14 @@ async def play_music(message, client):
   voice_state  = message.author.voice
 
   # Check if the USER is in a voice channel
+  print(voice_state)
   if voice_state:
     # Check if the BOT is in a VC
     if message.guild.voice_client:
       # Check if the BOT is in a different voice channel
       if message.guild.voice_client.channel != voice_state.channel:
         embed = discord.Embed(
-          title=":bangbang: ERROR :bangbang: ",
+          title=":bangbang: E R R O R",
           description="You are not in a voice channel.",
           color=discord.Color.red()
         )
@@ -129,7 +130,7 @@ async def leave_channel(message):
 
     # Create and send an embed message to indicate successful disconnection
     embed = discord.Embed(
-      title="Disconnected",
+      title=":mute: Disconnected",
       description="I've left the voice channel.",
       color=discord.Color.fuchsia()
     )
@@ -163,7 +164,7 @@ async def skip_song(message, client):
   else:
     # Create and send an embed message to indicate the bot is not playing music
     embed = discord.Embed(
-      title=":bangbang: ERROR :bangbang: ",
+      title=":bangbang: E R R O R",
       description="I am not currently in a voice channel",
       color=discord.Color.red()
     )

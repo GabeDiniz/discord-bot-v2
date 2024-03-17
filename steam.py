@@ -29,7 +29,7 @@ def get_user_stats(message: str):
   # API Fetch Failure!!!
   else:
     embed = discord.Embed(
-      title=":bangbang: ERROR :bangbang: ",
+      title=":bangbang: E R R O R",
       description="Please make your game details public\nGo to Edit Profile > Privacy settings",
       color=discord.Color.red()
     )
