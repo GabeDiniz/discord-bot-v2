@@ -23,19 +23,13 @@ ffmpeg_options = {
 }
 
 # Global Dictionary -> Holds queue for each server
-queue = {}  # Example: {"server-id": [[song1 info], [song2 info], [song3 info]]}
-
-# Helper function to play the next song and send the embed
-# async def play_next_song(message, song_info):
-#   guild_id = message.guild.id
-  
+queue = {}  # Example: {"server-id": [[song1 info], [song2 info], [song3 info]]}  
 
 def check_queue(client, message, guild_id):
   if queue[guild_id]:
     # Get next song
     song_info = queue[guild_id].pop(0)
     title = song_info['title']
-    print(f"IN THE QUEUE: {title}")
     url = song_info['url']
     thumbnail = song_info['thumbnails'][-1]['url']
 

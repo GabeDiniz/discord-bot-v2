@@ -8,11 +8,9 @@ from decouple import config
 # Constants
 STEAM_API_KEY = config('STEAM_API_KEY')
 
-
 def load_users(file: str) -> dict:
   with open(file, "r") as f:
     return json.load(f)
-
 
 def get_user_stats(message: str):
   # Find user
@@ -52,18 +50,7 @@ def get_user_stats(message: str):
     print("User stats not found or API request failed.")
     return
 
-
+# For testing:
 # get_user_stats("!cs2 gabe")
 
-def format_embed():
-  pass
-
 # STEAM ID - Obtained from: https://www.steamidfinder.com/
-# steam_id = '76561198099677359' 
-# user_stats = get_user_stats(steam_id, app_id)
-
-# print(load_users("steam-info.json")["Gabe"])
-
-
-if __name__ == "__main__":
-  pass
