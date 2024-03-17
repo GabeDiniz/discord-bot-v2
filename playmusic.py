@@ -89,7 +89,7 @@ async def playmusic(message, client):
     try:
       # Search for the video using YT dlp
       info = ydl.extract_info(query if query.startswith("https://") else f"ytsearch:{query}", download=False)
-      
+
       # Retrives the first video that shows up from info
       #   If multiple entries come back -> retrieve the first entry
       #   Otherwise, only 1 entry exists -> retrieve its url
@@ -140,3 +140,37 @@ async def stopmusic(message):
       color=discord.Color.fuchsia()
     )
     return embed
+
+async def skipsong(message, client):
+  guild_id = message.guild.id   # Retrieve guild.id
+  
+  # Check if the bot is playing music
+  if message.guild.voice_client is not None and message.guild.voice_client.is_playing():
+    # Stop the current song
+    message.guild.voice_client.stop()
+    
+    # Check if there are songs in the queue and play the next one
+    if guild_id in queue and len(queue[guild_id]) > 0:
+      embed = discord.Embed(
+        title=":track_next: Skipping song",
+        color=discord.Color.fuchsia()
+      )
+      await message.channel.send(embed=embed)
+      # Check queue to play the next song
+      check_queue(client, message, guild_id)
+    else:
+      # Otherwise, the queue is empty
+      embed = discord.Embed(
+        title=":musical_note: Queue is empty",
+        description="Use `!play <query or url>` to play another song.",
+        color=discord.Color.fuchsia()
+      )
+      await message.channel.send(embed=embed)
+  else:
+    # Create and send an embed message to indicate the bot is not playing music
+    embed = discord.Embed(
+      title=":bangbang: ERROR :bangbang: ",
+      description="I am not currently in a voice channel",
+      color=discord.Color.red()
+    )
+    await message.channel.send(embed=embed)
