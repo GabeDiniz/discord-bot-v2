@@ -55,19 +55,18 @@ def check_queue(client, message, guild_id):
 
 async def play_music(message, client):
   query = message.content.strip("!play ")
-  print(f"Query: {query}")
+  # print(f"Query: {query}")
   voice_state  = message.author.voice
 
   # Check if the USER is in a voice channel
-  print(voice_state)
   if voice_state:
-    # Check if the BOT is in a VC
+    # Check if the BOT is in a voice channel
     if message.guild.voice_client:
       # Check if the BOT is in a different voice channel
       if message.guild.voice_client.channel != voice_state.channel:
         embed = discord.Embed(
           title=":bangbang: E R R O R",
-          description="You are not in a voice channel.",
+          description="You are not in the **correct** voice channel.",
           color=discord.Color.red()
         )
         return embed
@@ -78,6 +77,14 @@ async def play_music(message, client):
     # Otherwise -> the BOT is NOT in a voice channel
     else:
       vc = await voice_state.channel.connect()
+  # Otherwise, the user is not in a voice channel
+  else: 
+    embed = discord.Embed(
+      title=":bangbang: E R R O R",
+      description="You are not in a voice channel.",
+      color=discord.Color.red()
+    )
+    return embed
 
   # Search for and play the requested video
   with youtube_dl.YoutubeDL(ydl_opts) as ydl:
