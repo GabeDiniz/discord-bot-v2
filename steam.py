@@ -17,7 +17,15 @@ def get_user_stats(message: str):
   file_path = "./knowledge/steam-info.json"
   users = load_users(file_path)
   user = message.strip().split(" ")[-1].lower()
-  steam_id = users[user]
+  try:
+    steam_id = users[user]
+  except KeyError:
+    embed = discord.Embed(
+      title=":bangbang: E R R O R",
+      description="User not found. Please send your SteamID to Gabe",
+      color=discord.Color.red()
+    )
+    return embed
 
   app_id = 730 # Counter-Strike App ID
   url = f'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={app_id}&key={STEAM_API_KEY}&steamid={steam_id}'
