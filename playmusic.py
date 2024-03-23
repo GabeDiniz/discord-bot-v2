@@ -23,15 +23,16 @@ ffmpeg_options = {
 }
 
 # Global Dictionary -> Holds queue for each server
-queue = {}  # Example: {"server-id": [[song1 info], [song2 info], [song3 info]]}  
+queue = {}  # Example: {"server-id": [{song1 info}, {song2 info}, {song3 info}]}  
 
 def check_queue(client, message, guild_id):
   if queue[guild_id]:
     # Get next song
-    song_info = queue[guild_id].pop(0)
+    song_info = queue[guild_id].pop(0)  # Pop next song at position 0
     title = song_info['title']
     url = song_info['url']
-    thumbnail = song_info['thumbnails'][-1]['url']
+    thumbnail = song_info['thumbnail']
+    duration = song_info['duration']
 
     # Send embed once song starts playing
     async def send_now_playing():
@@ -40,6 +41,7 @@ def check_queue(client, message, guild_id):
         description=title,
         color=discord.Color.fuchsia()
       )
+      embed.add_field(name='', value=f'Duration: `{duration}`', inline=False)
       embed.set_image(url=thumbnail)
       await message.channel.send(embed=embed)
 
@@ -96,18 +98,29 @@ async def play_music(message, client):
       #   If multiple entries come back -> retrieve the first entry
       #   Otherwise, only 1 entry exists -> retrieve its url
       video_info = info['entries'][0] if 'entries' in info else info
+
       title = video_info['title']
       url = video_info['url']
       thumbnail = video_info['thumbnails'][-1]['url']
+      duration = video_info['duration']   # returns duration in seconds
+      minutes = duration // 60
+      seconds = duration % 60
+
+      song_info = {
+        "title": title,
+        "url": url,
+        "thumbnail": thumbnail,
+        "duration": f"{minutes}:{seconds}"
+      }
 
       # If BOT is already playing music
       if vc.is_playing():
         # If a queue already exists for that server
         if message.guild.id in queue:
-          queue[message.guild.id].append(video_info)
+          queue[message.guild.id].append(song_info)
         # Otherwise -> create new queue
         else:
-          queue[message.guild.id] = [video_info]
+          queue[message.guild.id] = [song_info]
         # Return QUEUE embed
         embed = discord.Embed(
           title=f":musical_note: Song added to queue...",
@@ -122,6 +135,7 @@ async def play_music(message, client):
           description=title,
           color=discord.Color.fuchsia()
         )
+        embed.add_field(name='', value=f'Duration: `{minutes}:{seconds}`', inline=False)
         embed.set_image(url=thumbnail)
         return embed
     
