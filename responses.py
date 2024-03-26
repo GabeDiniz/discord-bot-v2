@@ -16,11 +16,6 @@ def get_best_match(user_question: str, questions: dict) -> str | None:
 
 # Read user input (i.e., Discord msg)
 def get_response(message: str, knowledge: dict) -> str:
-  '''
-  WIP: Command prefix ****
-  if message[0] != "!":
-    return
-  '''
   best_match: str | None = get_best_match(message.lower(), knowledge)
 
   if answer := knowledge.get(best_match): 
