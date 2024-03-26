@@ -59,7 +59,7 @@ def run_bot(BOT_KEY: str):
         embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
         embed.add_field(name='Play Music!', value='`!play <song query>`', inline=False)
         embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
-        # embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
+        embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
         
         # Send the embed message to the same channel where the command was issued
         await message.channel.send(embed=embed)
