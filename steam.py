@@ -1,4 +1,4 @@
-import requests
+import requests  # pip install requests
 import json
 import discord   # pip install discord
 

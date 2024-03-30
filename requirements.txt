@@ -2,3 +2,4 @@ discord.py
 python-decouple
 yt_dlp
 pynacl
+requests
