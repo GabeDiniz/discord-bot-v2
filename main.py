@@ -12,7 +12,7 @@ import playmusic
 # Fetch Credentials from local .env variables 
 from decouple import config
 # Constants
-BOT_KEY = config('DISCORD_BOT_KEY')
+BOT_KEY = config('BOT_KEY')
 
 def run_bot(BOT_KEY: str):
   # Basic setup
