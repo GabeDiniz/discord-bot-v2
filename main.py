@@ -8,6 +8,7 @@ import responses
 import steam
 import fortnite
 import playmusic
+import polls
 
 # Fetch Credentials from local .env variables 
 from decouple import config
@@ -80,6 +81,8 @@ def run_bot(BOT_KEY: str):
         await message.channel.send(embed=embed)
       elif message.content.startswith("!skip"):
         await playmusic.skip_song(message, client)
+      elif message.content.startswith("!poll"):
+        await polls.create_poll(message, client)
       # COMMAND: Basic text responses
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)
