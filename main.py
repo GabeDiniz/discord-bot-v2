@@ -69,10 +69,13 @@ def run_bot(BOT_KEY: str):
       elif message.content.startswith("!cs2"):
         embed = steam.get_user_stats(message.content)
         await message.channel.send(embed=embed)
+
       # COMMAND: Fortnite Shop
       elif message.content.startswith("!fn shop"):
         embed = fortnite.get_shop_items()
         await message.channel.send(embed=embed)
+
+      # COMMAND BLOCK: Play Music
       elif message.content.startswith("!play"):
         embed = await playmusic.play_music(message, client)
         await message.channel.send(embed=embed)
@@ -81,8 +84,11 @@ def run_bot(BOT_KEY: str):
         await message.channel.send(embed=embed)
       elif message.content.startswith("!skip"):
         await playmusic.skip_song(message, client)
+      
+      # COMMAND: Create Poll
       elif message.content.startswith("!poll"):
         await polls.create_poll(message, client)
+        
       # COMMAND: Basic text responses
       else:
         response: str = responses.get_response(message.content, knowledge=knowledge)
