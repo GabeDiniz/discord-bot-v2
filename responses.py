@@ -1,8 +1,6 @@
 from difflib import get_close_matches
 import json
 
-
-
 # Returns the best matched question based on knowledge
 def get_best_match(user_question: str, questions: dict) -> str | None:
   questions: list[str] = [q for q in questions]

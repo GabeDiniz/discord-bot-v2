@@ -1,5 +1,4 @@
-import discord
-
+import discord   # pip install discord
 
 '''
 DISCORD EMOJIS

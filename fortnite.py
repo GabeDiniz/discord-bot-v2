@@ -1,4 +1,3 @@
-import requests
 import json
 import discord   # pip install discord
 from datetime import date, datetime, timedelta
@@ -9,7 +8,7 @@ def get_shop_items():
   current_time = datetime.now()
 
   # Check if its after 7pm EST
-  #   At 7pm the Shop updates to the next day (update day accordingly)
+  #   > At 7pm the Shop updates to the next day (update day accordingly)
   if int(str(current_time).split()[1][:2]) >= 19:
     shop_date = date.today() + timedelta(days=1)  
   else:

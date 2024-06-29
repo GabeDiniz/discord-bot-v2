@@ -1,4 +1,4 @@
-import discord
+import discord   # pip install discord
 from discord.ext import commands
 # Requires:
 # pip install yt_dlp
@@ -56,6 +56,7 @@ def check_queue(client, message, guild_id):
 
 async def play_music(message, client):
   query = message.content.strip("!play ")
+  # Debugging
   # print(f"Query: {query}")
   voice_state  = message.author.voice
 
