@@ -15,9 +15,10 @@ async def create_poll(message, client):
   embed = discord.Embed(
     title=f"Poll: {poll}",
     description="React to vote",
-    color=discord.Color.fuchsia()
+    color=discord.Color.green()
   )
-  print("hello")
+
+  print(f"[ LOG ] creating poll with message: {poll}\n")
   msg = await message.channel.send(embed=embed)
   for emoji in emojis:
     await msg.add_reaction(emoji)
