@@ -21,20 +21,21 @@ def run_bot(BOT_KEY: str):
   intents = Intents.default()
   intents.message_content = True
   # Client makes the request
-  client = Client(intents=intents)
+  bot = Client(intents=intents)
 
+  # Load message knowledge
   knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
 
-  @client.event
-  # Perform the code as soon as the bot is started
+  # Start bot
+  @bot.event
   async def on_ready():
-    print(f"{client.user} is now running!")
+    print(f"{bot.user} is now running!")
   
-  @client.event
   # Every time a new message appears -> handle msg
+  @bot.event
   async def on_message(message):
     # Make sure the message being read is not from the bot
-    if message.author == client.user:
+    if message.author == bot.user:
       return
     
     # ========================================
@@ -78,17 +79,17 @@ def run_bot(BOT_KEY: str):
 
       # COMMAND BLOCK: Play Music
       elif message.content.startswith("!play"):
-        embed = await playmusic.play_music(message, client)
+        embed = await playmusic.play_music(message, bot)
         await message.channel.send(embed=embed)
       elif message.content.startswith("!leave"):
         embed = await playmusic.leave_channel(message)
         await message.channel.send(embed=embed)
       elif message.content.startswith("!skip"):
-        await playmusic.skip_song(message, client)
+        await playmusic.skip_song(message, bot)
       
       # COMMAND: Create Poll
       elif message.content.startswith("!poll"):
-        await polls.create_poll(message, client)
+        await polls.create_poll(message, bot)
         
       # COMMAND: Basic text responses
       else:
@@ -101,7 +102,7 @@ def run_bot(BOT_KEY: str):
     else:
       print("[Error] Could not read the message. Make sure you have intents enabled!")
 
-  client.run(token=BOT_KEY)
+  bot.run(token=BOT_KEY)
 
 if __name__ == "__main__":
   run_bot(BOT_KEY=BOT_KEY)
