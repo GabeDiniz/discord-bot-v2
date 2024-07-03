@@ -13,7 +13,7 @@ async def create_poll(message, client):
   poll = message.content[6:]
 
   # CATCH EMPTY POLL
-  if poll == "" or poll == " ":
+  if poll.strip() == "":
     embed = discord.Embed(
       title=":bangbang: E R R O R",
       description="Your poll message is empty. Please add your poll question after !poll",
