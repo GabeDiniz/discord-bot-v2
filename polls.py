@@ -12,6 +12,16 @@ async def create_poll(message, client):
   # PARSE THROUGH MESSAGE
   poll = message.content[6:]
 
+  # CATCH EMPTY POLL
+  if poll == "" or poll == " ":
+    embed = discord.Embed(
+      title=":bangbang: E R R O R",
+      description="Your poll message is empty. Please add your poll question after !poll",
+      color=discord.Color.red()
+    )
+    await message.channel.send(embed=embed)
+    return
+
   embed = discord.Embed(
     title=f"Poll: {poll}",
     description="React to vote",
