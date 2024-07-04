@@ -40,7 +40,7 @@ async def help_command(ctx):
   embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
   embed.add_field(name='Play Music!', value='`!play <song-query>`', inline=False)
   embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
-  embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
+  embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
   embed.add_field(name='Create polls!', value='`!poll <poll-query>`', inline=False)
         
   # Send the embed message to the same channel where the command was issued
@@ -50,13 +50,17 @@ async def help_command(ctx):
 async def steam_command(ctx, *, message: str):
   embed = steam.get_user_stats(ctx, message)
   await ctx.channel.send(embed=embed)
+  
+@bot.command(name='fn-shop')
+async def play_command(ctx):
+  embed = fortnite.get_shop_items()
+  await ctx.channel.send(embed=embed)
 
 @bot.command(name='play')
 async def play_command(ctx, *, message: str):
   print(ctx)
   embed = await playmusic.play_music(ctx, message, bot)
   await ctx.channel.send(embed=embed)
-  
 # @bot.command(name='leave')
 # async def leave_command(ctx, *, message: str):
 #   embed = await playmusic.leave_channel(message)
@@ -99,19 +103,17 @@ def run_bot():
   
         
 
-      # COMMAND: Fortnite Shop
-      if message.content.startswith("!fn shop"):
-        embed = fortnite.get_shop_items()
-        await message.channel.send(embed=embed)
+
+        
 
       # COMMAND BLOCK: Play Music
-      elif message.content.startswith("!play"):
+      if message.content.startswith("!play"):
         embed = await playmusic.play_music(message, bot)
         await message.channel.send(embed=embed)
-      elif message.content.startswith("!leave"):
+      if message.content.startswith("!leave"):
         embed = await playmusic.leave_channel(message)
         await message.channel.send(embed=embed)
-      elif message.content.startswith("!skip"):
+      if message.content.startswith("!skip"):
         await playmusic.skip_song(message, bot)
       
       # COMMAND: Create Poll
