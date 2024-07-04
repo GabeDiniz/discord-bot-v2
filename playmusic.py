@@ -54,8 +54,8 @@ def check_queue(client, message, guild_id):
     )
 
 
-async def play_music(message, client):
-  query = message.content.strip("!play ")
+async def play_music(message, ctx, client):
+  query = ctx
   # Debugging
   # print(f"Query: {query}")
   voice_state  = message.author.voice

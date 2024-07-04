@@ -1,4 +1,5 @@
 from discord import Intents, Client
+from discord.ext import commands
 import discord   # pip install discord
 
 # ========================================
@@ -14,22 +15,59 @@ import polls
 from decouple import config
 # Constants
 BOT_KEY = config('BOT_KEY')
+intents = Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix="!", intents=intents)
 
-def run_bot(BOT_KEY: str):
-  # Basic setup
-  # Gets message content
-  intents = Intents.default()
-  intents.message_content = True
-  # Client makes the request
-  bot = Client(intents=intents)
+# Start bot
+@bot.event
+async def on_ready():
+  print(f"{bot.user} is now running!")
+
+# Simple example command
+@bot.command(name='hello')
+async def hello_command(ctx):
+  await ctx.send(f'Hello, {ctx.author.name}!')
+
+@bot.command(name='commands')
+async def help_command(ctx):
+  embed = discord.Embed(
+    # title='Cpt. Bot Commands',
+    color=discord.Color.red()
+  )
+  # Add fields to the embed (optional)
+  embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
+  embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
+  embed.add_field(name='Play Music!', value='`!play <song-query>`', inline=False)
+  embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
+  embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
+  embed.add_field(name='Create polls!', value='`!poll <poll-query>`', inline=False)
+        
+  # Send the embed message to the same channel where the command was issued
+  await ctx.channel.send(embed=embed)
+
+@bot.command(name='play')
+async def play_command(ctx, *, message: str):
+  print(ctx)
+  embed = await playmusic.play_music(ctx, message, bot)
+  await ctx.channel.send(embed=embed)
+  
+# @bot.command(name='leave')
+# async def leave_command(ctx, *, message: str):
+#   embed = await playmusic.leave_channel(message)
+#   await ctx.channel.send(embed=embed)
+
+# @bot.command(name='skip')
+# async def skip_command(ctx, *, message: str):
+#   await playmusic.skip_song(message, bot) 
+
+
+def run_bot():
+  # # Client makes the request
+  # bot = Client(intents=intents)
 
   # Load message knowledge
   knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
-
-  # Start bot
-  @bot.event
-  async def on_ready():
-    print(f"{bot.user} is now running!")
   
   # Every time a new message appears -> handle msg
   @bot.event
@@ -51,24 +89,11 @@ def run_bot(BOT_KEY: str):
       print(f'({message.channel}) {message.author}: "{message.content}"')
       
       # Handle !help command
-      if message.content.startswith("!help"):
-        embed = discord.Embed(
-          # title='Cpt. Bot Commands',
-          color=discord.Color.red()
-        )
-        # Add fields to the embed (optional)
-        embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
-        embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
-        embed.add_field(name='Play Music!', value='`!play <song-query>`', inline=False)
-        embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
-        embed.add_field(name='Today\'s Fortnite Shop', value='`!fn shop`', inline=True)
-        embed.add_field(name='Create polls!', value='`!poll <poll-query>`', inline=True)
-        
-        # Send the embed message to the same channel where the command was issued
-        await message.channel.send(embed=embed)
+      # if message.content.startswith("!help"):
+      #   pass
       
       # COMMAND: CS2 Statistics 
-      elif message.content.startswith("!cs2"):
+      if message.content.startswith("!cs2"):
         embed = steam.get_user_stats(message.content)
         await message.channel.send(embed=embed)
 
@@ -102,7 +127,8 @@ def run_bot(BOT_KEY: str):
     else:
       print("[Error] Could not read the message. Make sure you have intents enabled!")
 
-  bot.run(token=BOT_KEY)
+# Run the bot
+bot.run(token=BOT_KEY)
 
 if __name__ == "__main__":
-  run_bot(BOT_KEY=BOT_KEY)
+  run_bot()
