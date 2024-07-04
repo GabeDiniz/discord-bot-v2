@@ -12,7 +12,7 @@ def load_users(file: str) -> dict:
   with open(file, "r") as f:
     return json.load(f)
 
-def get_user_stats(message: str):
+def get_user_stats(ctx, message: str):
   # Find user
   file_path = "./knowledge/steam-info.json"
   users = load_users(file_path)

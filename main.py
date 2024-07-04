@@ -46,6 +46,11 @@ async def help_command(ctx):
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
 
+@bot.command(name='cs2')
+async def steam_command(ctx, *, message: str):
+  embed = steam.get_user_stats(ctx, message)
+  await ctx.channel.send(embed=embed)
+
 @bot.command(name='play')
 async def play_command(ctx, *, message: str):
   print(ctx)
@@ -91,14 +96,11 @@ def run_bot():
       # Handle !help command
       # if message.content.startswith("!help"):
       #   pass
-      
-      # COMMAND: CS2 Statistics 
-      if message.content.startswith("!cs2"):
-        embed = steam.get_user_stats(message.content)
-        await message.channel.send(embed=embed)
+  
+        
 
       # COMMAND: Fortnite Shop
-      elif message.content.startswith("!fn shop"):
+      if message.content.startswith("!fn shop"):
         embed = fortnite.get_shop_items()
         await message.channel.send(embed=embed)
 
