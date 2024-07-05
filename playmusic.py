@@ -143,11 +143,11 @@ async def play_music(message, ctx, client):
       print(f"{'*' * 30}\n[ERROR]:\n{e}")
       return await message.channel.send("Error: Unable to find or play the requested video.")
     
-async def leave_channel(message):
+async def leave_channel(ctx):
   # Check if the bot is connected to a voice channel in the guild
-  if message.guild.voice_client is not None:
+  if ctx.guild.voice_client is not None:
     # Disconnect the bot from the voice channel
-    await message.guild.voice_client.disconnect()
+    await ctx.guild.voice_client.disconnect()
 
     # Create and send an embed message to indicate successful disconnection
     embed = discord.Embed(

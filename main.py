@@ -56,15 +56,18 @@ async def play_command(ctx):
   embed = fortnite.get_shop_items()
   await ctx.channel.send(embed=embed)
 
+
+
 @bot.command(name='play')
 async def play_command(ctx, *, message: str):
   print(ctx)
   embed = await playmusic.play_music(ctx, message, bot)
   await ctx.channel.send(embed=embed)
-# @bot.command(name='leave')
-# async def leave_command(ctx, *, message: str):
-#   embed = await playmusic.leave_channel(message)
-#   await ctx.channel.send(embed=embed)
+
+@bot.command(name='leave')
+async def leave_command(ctx):
+  embed = await playmusic.leave_channel(ctx)
+  await ctx.channel.send(embed=embed)
 
 # @bot.command(name='skip')
 # async def skip_command(ctx, *, message: str):
@@ -96,23 +99,14 @@ def run_bot():
     # If Message is sent by a user
     if message.content:
       print(f'({message.channel}) {message.author}: "{message.content}"')
-      
-      # Handle !help command
-      # if message.content.startswith("!help"):
-      #   pass
-  
-        
 
-
-        
-
-      # COMMAND BLOCK: Play Music
-      if message.content.startswith("!play"):
-        embed = await playmusic.play_music(message, bot)
-        await message.channel.send(embed=embed)
-      if message.content.startswith("!leave"):
-        embed = await playmusic.leave_channel(message)
-        await message.channel.send(embed=embed)
+      # # COMMAND BLOCK: Play Music
+      # if message.content.startswith("!play"):
+      #   embed = await playmusic.play_music(message, bot)
+      #   await message.channel.send(embed=embed)
+      # if message.content.startswith("!leave"):
+      #   embed = await playmusic.leave_channel(message)
+      #   await message.channel.send(embed=embed)
       if message.content.startswith("!skip"):
         await playmusic.skip_song(message, bot)
       
