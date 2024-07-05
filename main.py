@@ -63,6 +63,10 @@ async def play_command(ctx):
   embed = fortnite.get_shop_items()
   await ctx.channel.send(embed=embed)
 
+@bot.command(name='poll')
+async def poll_command(ctx, *, message):
+  await polls.create_poll(ctx, message, bot)
+
 
 # ========================================
 # PLAY MUSIC
@@ -103,13 +107,9 @@ def run_bot():
     if message.content:
       print(f'({message.channel}) {message.author}: "{message.content}"')
 
-      # COMMAND: Create Poll
-      if message.content.startswith("!poll"):
-        await polls.create_poll(message, bot)
-        
       # COMMAND: Basic text responses
-      else:
-        response: str = responses.get_response(message.content, knowledge=knowledge)
+      
+      response: str = responses.get_response(message.content, knowledge=knowledge)
       if response:
         # Sending message
         await message.channel.send(response)
