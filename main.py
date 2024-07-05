@@ -1,6 +1,8 @@
 from discord import Intents, Client
 from discord.ext import commands
 import discord   # pip install discord
+# Used for retrieving BOT_KEY from .env
+from decouple import config   # pip install python-decouple
 
 # ========================================
 # Response Features
@@ -12,9 +14,11 @@ import playmusic
 import polls
 
 # Fetch Credentials from local .env variables 
-from decouple import config
 # Constants
 BOT_KEY = config('BOT_KEY')
+knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
+
+# Bot Constants
 intents = Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -80,12 +84,6 @@ async def skip_command(ctx):
 
 
 def run_bot():
-  # # Client makes the request
-  # bot = Client(intents=intents)
-
-  # Load message knowledge
-  knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
-  
   # Every time a new message appears -> handle msg
   @bot.event
   async def on_message(message):
