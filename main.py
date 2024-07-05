@@ -69,9 +69,9 @@ async def leave_command(ctx):
   embed = await playmusic.leave_channel(ctx)
   await ctx.channel.send(embed=embed)
 
-# @bot.command(name='skip')
-# async def skip_command(ctx, *, message: str):
-#   await playmusic.skip_song(message, bot) 
+@bot.command(name='skip')
+async def skip_command(ctx):
+  await playmusic.skip_song(ctx, bot) 
 
 
 def run_bot():
@@ -107,11 +107,11 @@ def run_bot():
       # if message.content.startswith("!leave"):
       #   embed = await playmusic.leave_channel(message)
       #   await message.channel.send(embed=embed)
-      if message.content.startswith("!skip"):
-        await playmusic.skip_song(message, bot)
+      # if message.content.startswith("!skip"):
+      #   await playmusic.skip_song(message, bot)
       
       # COMMAND: Create Poll
-      elif message.content.startswith("!poll"):
+      if message.content.startswith("!poll"):
         await polls.create_poll(message, bot)
         
       # COMMAND: Basic text responses

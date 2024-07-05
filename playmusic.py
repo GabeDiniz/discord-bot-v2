@@ -157,13 +157,13 @@ async def leave_channel(ctx):
     )
     return embed
 
-async def skip_song(message, client):
-  guild_id = message.guild.id   # Retrieve guild.id
+async def skip_song(ctx, client):
+  guild_id = ctx.guild.id   # Retrieve guild.id
   
   # Check if the bot is playing music
-  if message.guild.voice_client is not None and message.guild.voice_client.is_playing():
+  if ctx.guild.voice_client is not None and ctx.guild.voice_client.is_playing():
     # Stop the current song
-    message.guild.voice_client.stop()
+    ctx.guild.voice_client.stop()
     
     # Check if there are songs in the queue and play the next one
     if guild_id in queue and len(queue[guild_id]) > 0:
@@ -171,9 +171,9 @@ async def skip_song(message, client):
         title=":track_next: Skipping song",
         color=discord.Color.fuchsia()
       )
-      await message.channel.send(embed=embed)
+      await ctx.channel.send(embed=embed)
       # Check queue to play the next song
-      check_queue(client, message, guild_id)
+      check_queue(client, ctx, guild_id)
     else:
       # Otherwise, the queue is empty
       embed = discord.Embed(
@@ -181,7 +181,7 @@ async def skip_song(message, client):
         description="Use `!play <query or url>` to play another song.",
         color=discord.Color.fuchsia()
       )
-      await message.channel.send(embed=embed)
+      await ctx.channel.send(embed=embed)
   else:
     # Create and send an embed message to indicate the bot is not playing music
     embed = discord.Embed(
@@ -189,4 +189,4 @@ async def skip_song(message, client):
       description="I am not currently in a voice channel",
       color=discord.Color.red()
     )
-    await message.channel.send(embed=embed)
+    await ctx.channel.send(embed=embed)
