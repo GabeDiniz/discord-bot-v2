@@ -24,6 +24,9 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
   print(f"{bot.user} is now running!")
 
+# ========================================
+# COMMANDS
+# ========================================
 # Simple example command
 @bot.command(name='hello')
 async def hello_command(ctx):
@@ -57,7 +60,9 @@ async def play_command(ctx):
   await ctx.channel.send(embed=embed)
 
 
-
+# ========================================
+# PLAY MUSIC
+# ========================================
 @bot.command(name='play')
 async def play_command(ctx, *, message: str):
   print(ctx)
@@ -100,16 +105,6 @@ def run_bot():
     if message.content:
       print(f'({message.channel}) {message.author}: "{message.content}"')
 
-      # # COMMAND BLOCK: Play Music
-      # if message.content.startswith("!play"):
-      #   embed = await playmusic.play_music(message, bot)
-      #   await message.channel.send(embed=embed)
-      # if message.content.startswith("!leave"):
-      #   embed = await playmusic.leave_channel(message)
-      #   await message.channel.send(embed=embed)
-      # if message.content.startswith("!skip"):
-      #   await playmusic.skip_song(message, bot)
-      
       # COMMAND: Create Poll
       if message.content.startswith("!poll"):
         await polls.create_poll(message, bot)
