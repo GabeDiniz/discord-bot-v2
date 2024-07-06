@@ -64,7 +64,7 @@ async def play_command(ctx):
   await ctx.channel.send(embed=embed)
 
 @bot.command(name='poll')
-async def poll_command(ctx, *, message):
+async def poll_command(ctx, *, message: str = ""):
   await polls.create_poll(ctx, message, bot)
 
 

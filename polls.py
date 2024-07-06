@@ -9,15 +9,15 @@ DISCORD EMOJIS
 emojis = ["✅", "❌", "🤷‍♂️"]
 
 async def create_poll(ctx, message, client):
-   # CATCH EMPTY POLL
-  # if poll.strip() == "":
-  #   embed = discord.Embed(
-  #     title=":bangbang: E R R O R",
-  #     description="Your poll message is empty. Please add your poll question after !poll",
-  #     color=discord.Color.red()
-  #   )
-  #   await message.channel.send(embed=embed)
-  #   return
+  # CATCH EMPTY POLL
+  if message.strip() == "":
+    embed = discord.Embed(
+      title=":bangbang: E R R O R",
+      description="Your poll message is empty. Please add your poll question after !poll",
+      color=discord.Color.red()
+    )
+    await message.channel.send(embed=embed)
+    return
 
   embed = discord.Embed(
     title=f"Poll: {message}",
