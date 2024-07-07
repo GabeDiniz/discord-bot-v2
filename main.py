@@ -34,6 +34,10 @@ async def on_ready():
 # ========================================
 @bot.event
 async def on_message(ctx):
+  # Check for messages sent by a specific user
+  # if str(ctx.author) == "username here":
+  #   response: str = "Oh hello there... I've been expecting you"
+
   response = None   # Default Bot Response -> None
   # If Message is sent by a user
   if ctx.content and ctx.author != bot.user:
@@ -105,28 +109,9 @@ async def skip_command(ctx):
   await playmusic.skip_song(ctx, bot) 
 
 
-def run_bot():
-  # Every time a new message appears -> handle msg
-  @bot.event
-  async def on_message(message):
-    # Make sure the message being read is not from the bot
-    if message.author == bot.user:
-      return
-    
-    # ========================================
-    # Handle Responses
-    # ========================================
-    # Check for specific user
-    # if str(message.author) == "username here":
-    #   response: str = "Oh hello there... I've been expecting you"
-    
-    
-    # Potential error: i.e., missing permissions to access message.content
-    else:
-      print("[Error] Could not read the message. Make sure you have intents enabled!")
 
-# Run the bot
+
+# ========================================
+# RUN BOT
+# ========================================
 bot.run(token=BOT_KEY)
-
-if __name__ == "__main__":
-  run_bot()
