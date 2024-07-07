@@ -28,6 +28,24 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
   print(f"{bot.user} is now running!")
 
+
+# ========================================
+# CHAT RESPONSES
+# ========================================
+@bot.event
+async def on_message(ctx):
+  response = None   # Default Bot Response -> None
+  # If Message is sent by a user
+  if ctx.content and ctx.author != bot.user:
+    print(f'[ {ctx.channel} ] {ctx.author}: "{ctx.content}"')
+
+    # COMMAND: Basic text responses
+    response: str = responses.get_response(ctx.content, knowledge=knowledge)
+    if response:
+      # Sending message
+      await ctx.channel.send(response)
+
+
 # ========================================
 # COMMANDS
 # ========================================
@@ -102,18 +120,7 @@ def run_bot():
     # if str(message.author) == "username here":
     #   response: str = "Oh hello there... I've been expecting you"
     
-    response = None   # Default Bot Response -> None
-    # If Message is sent by a user
-    if message.content:
-      print(f'({message.channel}) {message.author}: "{message.content}"')
-
-      # COMMAND: Basic text responses
-      
-      response: str = responses.get_response(message.content, knowledge=knowledge)
-      if response:
-        # Sending message
-        await message.channel.send(response)
-      
+    
     # Potential error: i.e., missing permissions to access message.content
     else:
       print("[Error] Could not read the message. Make sure you have intents enabled!")
