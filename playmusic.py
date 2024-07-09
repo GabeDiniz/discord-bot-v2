@@ -24,7 +24,7 @@ ffmpeg_options = {
 # Global Dictionary -> Holds queue for each server
 queue = {}  # Example: {"server-id": [{song1 info}, {song2 info}, {song3 info}]}  
 
-def check_queue(client, message, guild_id):
+def check_queue(bot, ctx, guild_id):
   if queue[guild_id]:
     # Get next song
     song_info = queue[guild_id].pop(0)  # Pop next song at position 0
@@ -42,15 +42,15 @@ def check_queue(client, message, guild_id):
       )
       embed.add_field(name='', value=f'Duration: `{duration}`', inline=False)
       embed.set_image(url=thumbnail)
-      await message.channel.send(embed=embed)
+      await ctx.channel.send(embed=embed)
 
     # Schedule the send_now_playing coroutine
-    client.loop.create_task(send_now_playing())
+    bot.loop.create_task(send_now_playing())
     
     # Play the next song and set the callback to check_queue with updated parameters
-    message.guild.voice_client.play(
+    ctx.guild.voice_client.play(
       discord.FFmpegPCMAudio(url, **ffmpeg_options),
-      after=lambda e: check_queue(client, message, guild_id)
+      after=lambda e: check_queue(bot, ctx, guild_id)
     )
 
 
@@ -157,7 +157,7 @@ async def leave_channel(ctx):
     )
     return embed
 
-async def skip_song(ctx, client):
+async def skip_song(ctx, bot):
   guild_id = ctx.guild.id   # Retrieve guild.id
   
   # Check if the bot is playing music
@@ -173,7 +173,7 @@ async def skip_song(ctx, client):
       )
       await ctx.channel.send(embed=embed)
       # Check queue to play the next song
-      check_queue(client, ctx, guild_id)
+      check_queue(bot, ctx, guild_id)
     else:
       # Otherwise, the queue is empty
       embed = discord.Embed(
