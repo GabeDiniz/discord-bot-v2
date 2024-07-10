@@ -8,7 +8,7 @@ DISCORD EMOJIS
 '''
 emojis = ["✅", "❌", "🤷‍♂️"]
 
-async def create_poll(ctx, message, client):
+async def create_poll(ctx, message, bot = None):
   # CATCH EMPTY POLL
   if message.strip() == "":
     embed = discord.Embed(
@@ -24,6 +24,11 @@ async def create_poll(ctx, message, client):
     description="React to vote",
     color=discord.Color.green()
   )
+
+  # If ctx is an interaction, respond to it
+  # This sends the confirmation message to the user
+  if isinstance(ctx, discord.Interaction):
+    await ctx.response.send_message("Poll created!", ephemeral=True)
 
   print(f"[ LOG ] creating poll with message: {message}\n")
   msg = await ctx.channel.send(embed=embed)
