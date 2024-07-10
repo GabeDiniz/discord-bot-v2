@@ -1,4 +1,4 @@
-from discord import Intents, Client
+from discord import Intents, Client, app_commands
 from discord.ext import commands
 import discord   # pip install discord
 # Used for retrieving BOT_KEY from .env
@@ -26,6 +26,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # Start bot
 @bot.event
 async def on_ready():
+  await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
 
@@ -89,6 +90,9 @@ async def play_command(ctx):
 async def poll_command(ctx, *, message: str = ""):
   await polls.create_poll(ctx, message, bot)
 
+@bot.tree.command(name="poll", description="Create a poll", guild=None)
+async def poll_slash_command(interaction: discord.Interaction, question: str, duration: int = 60):
+  await polls.create_poll(interaction, question, duration)
 
 # ========================================
 # PLAY MUSIC
