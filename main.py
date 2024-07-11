@@ -71,7 +71,7 @@ async def help_command(ctx):
   embed.add_field(name='Play Music!', value='`!play <song-query>`', inline=False)
   embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
-  embed.add_field(name='Create polls!', value='`!poll <poll-query>`', inline=False)
+  embed.add_field(name='Create polls!', value='`/poll <poll-query>`', inline=False)
         
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
@@ -86,13 +86,9 @@ async def play_command(ctx):
   embed = fortnite.get_shop_items()
   await ctx.channel.send(embed=embed)
 
-@bot.command(name='poll')
-async def poll_command(ctx, *, message: str = ""):
-  await polls.create_poll(ctx, message, bot)
-
 @bot.tree.command(name="poll", description="Create a poll", guild=None)
-async def poll_slash_command(interaction: discord.Interaction, question: str, duration: int = 60):
-  await polls.create_poll(interaction, question, duration)
+async def poll_slash_command(interaction: discord.Interaction, question: str):
+  await polls.create_poll(interaction, question)
 
 # ========================================
 # PLAY MUSIC

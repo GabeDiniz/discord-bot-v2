@@ -8,7 +8,7 @@ DISCORD EMOJIS
 '''
 emojis = ["✅", "❌", "🤷‍♂️"]
 
-async def create_poll(ctx, message, bot = None):
+async def create_poll(ctx, message):
   # CATCH EMPTY POLL
   if message.strip() == "":
     embed = discord.Embed(
