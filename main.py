@@ -21,7 +21,7 @@ knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
 # Bot Constants
 intents = Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Initialize bot
 
 # Start bot
 @bot.event
@@ -38,7 +38,7 @@ async def on_ready():
 async def hello_command(ctx):
   await ctx.send(f'Hello, {ctx.author.name}!')
 
-@bot.command(name='commands')
+@bot.command(name='help')
 async def help_command(ctx):
   embed = discord.Embed(
     # title='Cpt. Bot Commands',
