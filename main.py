@@ -31,27 +31,6 @@ async def on_ready():
 
 
 # ========================================
-# CHAT RESPONSES
-# ========================================
-@bot.event
-async def on_message(ctx):
-  # Check for messages sent by a specific user
-  # if str(ctx.author) == "username here":
-  #   response: str = "Oh hello there... I've been expecting you"
-
-  response = None   # Default Bot Response -> None
-  # If Message is sent by a user
-  if ctx.content and ctx.author != bot.user:
-    print(f'[ {ctx.channel} ] {ctx.author}: "{ctx.content}"')
-
-    # COMMAND: Basic text responses
-    response: str = responses.get_response(ctx.content, knowledge=knowledge)
-    if response:
-      # Sending message
-      await ctx.channel.send(response)
-
-
-# ========================================
 # COMMANDS
 # ========================================
 # Simple example command
@@ -90,6 +69,7 @@ async def play_command(ctx):
 async def poll_slash_command(interaction: discord.Interaction, question: str):
   await polls.create_poll(interaction, question)
 
+
 # ========================================
 # PLAY MUSIC
 # ========================================
@@ -109,6 +89,23 @@ async def skip_command(ctx):
   await playmusic.skip_song(ctx, bot) 
 
 
+# ========================================
+# CHAT RESPONSES
+# ========================================
+@bot.event
+async def on_message(ctx):
+  # Check for messages sent by a specific user
+  # if str(ctx.author) == "username here":
+  #   response: str = "Oh hello there... I've been expecting you"
+
+  if ctx.content and ctx.author != bot.user:
+    print(f'[ {ctx.channel} ] {ctx.author}: "{ctx.content}"')
+    response = responses.get_response(ctx.content, knowledge=knowledge)
+    if response:
+      await ctx.channel.send(response)
+
+  # Process commands if they are present
+  await bot.process_commands(ctx)
 
 
 # ========================================
