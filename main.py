@@ -7,11 +7,11 @@ from decouple import config   # pip install python-decouple
 # ========================================
 # Response Features
 # ========================================
-import responses
-import steam
-import fortnite
-import playmusic
-import polls
+import functions.responses as responses
+import functions.steam as steam
+import functions.fortnite as fortnite
+import functions.playmusic as playmusic
+import functions.polls as polls
 
 # Fetch Credentials from local .env variables 
 # Constants
@@ -96,10 +96,10 @@ async def skip_command(ctx):
 async def on_message(ctx):
   print(f"USER: {ctx.author}")
   # [TESTING] Check for messages sent by a specific user
-  if str(ctx.author) == "emili03x":
-    response: str = "msg here"
-  elif str(ctx.author) == "<@206888163875094528>" or str(ctx.author) == "@206888163875094528" or str(ctx.author) == "rickeydickey":
-    response: str = "msg here"
+  # if str(ctx.author) == "emili03x":
+  #   response: str = "msg here"
+  # elif str(ctx.author) == "<@206888163875094528>" or str(ctx.author) == "@206888163875094528" or str(ctx.author) == "rickeydickey":
+  #   response: str = "msg here"
 
   if ctx.content and ctx.author != bot.user:
     print(f'[ {ctx.channel} ] {ctx.author}: "{ctx.content}"')
