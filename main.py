@@ -94,9 +94,12 @@ async def skip_command(ctx):
 # ========================================
 @bot.event
 async def on_message(ctx):
-  # Check for messages sent by a specific user
-  # if str(ctx.author) == "username here":
-  #   response: str = "Oh hello there... I've been expecting you"
+  print(f"USER: {ctx.author}")
+  # [TESTING] Check for messages sent by a specific user
+  if str(ctx.author) == "emili03x":
+    response: str = "msg here"
+  elif str(ctx.author) == "<@206888163875094528>" or str(ctx.author) == "@206888163875094528" or str(ctx.author) == "rickeydickey":
+    response: str = "msg here"
 
   if ctx.content and ctx.author != bot.user:
     print(f'[ {ctx.channel} ] {ctx.author}: "{ctx.content}"')
