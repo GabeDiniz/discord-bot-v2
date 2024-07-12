@@ -1,13 +1,5 @@
 import discord   # pip install discord
 
-'''
-DISCORD EMOJIS
-✅ :white_check_mark:
-❌ :x:
-🤷‍♂️ :person_shrugging: 
-'''
-emojis = ["✅", "❌", "🤷‍♂️"]
-
 async def create_poll(ctx, message):
   # CATCH EMPTY POLL
   if message.strip() == "":
@@ -31,8 +23,8 @@ async def create_poll(ctx, message):
     await ctx.response.send_message("Poll created!", ephemeral=True)
 
   print(f"[ LOG ] creating poll with message: {message}\n")
-  msg = await ctx.channel.send(embed=embed)
-  for emoji in emojis:
-    await msg.add_reaction(emoji)
+  await ctx.channel.send(embed=embed)
+  # for emoji in emojis:
+  #   await msg.add_reaction(emoji)
   
   
