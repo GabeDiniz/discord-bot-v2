@@ -12,6 +12,7 @@ import functions.steam as steam
 import functions.fortnite as fortnite
 import functions.playmusic as playmusic
 import functions.polls as polls
+import functions.qr_generator as qr
 
 # Fetch Credentials from local .env variables 
 # Constants
@@ -64,6 +65,18 @@ async def steam_command(ctx, *, message: str):
 async def play_command(ctx):
   embed = fortnite.get_shop_items()
   await ctx.channel.send(embed=embed)
+
+@bot.command(name='qr')
+async def play_command(ctx, *, message: str):
+  qr_code_file = qr.generate(message)
+  if qr_code_file:
+    with open(qr_code_file, 'rb') as f:
+      image = discord.File(f)
+      embed = discord.Embed()
+      embed.set_image(url=f"attachment://{qr_code_file}")
+      await ctx.channel.send(file=image, embed=embed)
+  else:
+    await ctx.channel.send("Failed to generate QR code.")
 
 @bot.tree.command(name="poll", description="Create a poll", guild=None)
 async def poll_slash_command(interaction: discord.Interaction, question: str):
