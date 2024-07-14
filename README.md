@@ -46,4 +46,5 @@ pip install requests
 pip install python-decouple
 pip install yt_dlp
 pip install pynacl
+pip install qrcode
 ```
