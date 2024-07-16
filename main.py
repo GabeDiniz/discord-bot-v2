@@ -73,7 +73,10 @@ async def play_command(ctx, *, message: str):
   if qr_code_file:
     with open(qr_code_file, 'rb') as f:
       image = discord.File(f)
-      embed = discord.Embed()
+      embed = discord.Embed(
+        title='Created New QR',
+        color=discord.Color.red()
+      )
       embed.set_image(url=f"attachment://{qr_code_file}")
       await ctx.channel.send(file=image, embed=embed)
   else:
