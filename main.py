@@ -13,6 +13,7 @@ import functions.fortnite as fortnite
 import functions.playmusic as playmusic
 import functions.polls as polls
 import functions.qr_generator as qr
+import functions.get_gif as gifs
 
 # Fetch Credentials from local .env variables 
 # Constants
@@ -81,6 +82,11 @@ async def play_command(ctx, *, message: str):
       await ctx.channel.send(file=image, embed=embed)
   else:
     await ctx.channel.send("Failed to generate QR code.")
+
+@bot.command(name='gif')
+async def play_command(ctx):
+  msg = gifs.random_gif(ctx)
+  await ctx.channel.send(msg)
 
 @bot.tree.command(name="poll", description="Create a poll", guild=None)
 async def poll_slash_command(interaction: discord.Interaction, question: str):
