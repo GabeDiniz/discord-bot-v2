@@ -85,8 +85,8 @@ async def play_command(ctx, *, message: str):
 
 @bot.command(name='gif')
 async def play_command(ctx):
-  msg = gifs.random_gif(ctx)
-  await ctx.channel.send(msg)
+  gif = gifs.random_gif()
+  await ctx.channel.send(gif)
 
 @bot.tree.command(name="poll", description="Create a poll", guild=None)
 async def poll_slash_command(interaction: discord.Interaction, question: str):
