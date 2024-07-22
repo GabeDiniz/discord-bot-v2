@@ -13,6 +13,7 @@ git clone <https-or-ssh>
 # Create env file and add the following keys:
 BOT_KEY="bot-application-key"
 STEAM_API_KEY="steam-api-key"   # for Steam feature
+GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 
 # Follow the "For Dev section below"
 ```
