@@ -12,6 +12,7 @@ import functions.steam as steam
 import functions.fortnite as fortnite
 import functions.playmusic as playmusic
 import functions.polls as polls
+import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
 
@@ -93,6 +94,10 @@ async def play_command(ctx):
 async def poll_slash_command(interaction: discord.Interaction, question: str):
   await polls.create_poll(interaction, question)
 
+@bot.tree.command(name="event", description="Create an event", guild=None)
+@app_commands.describe(date="Date of the event (YYYY-MM-DD)", time="Event time (HH:MM, 24-hour format)", description="Description of event")
+async def create_event(interaction: discord.Interaction, date: str, time: str, description: str):
+  await events.create_event(interaction, date, time, description)
 
 # ========================================
 # PLAY MUSIC
