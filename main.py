@@ -24,6 +24,7 @@ knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
 # Bot Constants
 intents = Intents.default()
 intents.message_content = True
+intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Initialize bot
 
 # Start bot
@@ -98,6 +99,10 @@ async def poll_slash_command(interaction: discord.Interaction, question: str):
 @app_commands.describe(date="Date of the event (YYYY-MM-DD)", time="Event time (HH:MM, 24-hour format)", description="Description of event")
 async def create_event(interaction: discord.Interaction, date: str, time: str, description: str):
   await events.create_event(interaction, date, time, description)
+@bot.event
+async def on_reaction_add(reaction, user):
+  await events.on_reaction_add(reaction, user)
+
 
 # ========================================
 # PLAY MUSIC
