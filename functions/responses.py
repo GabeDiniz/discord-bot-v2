@@ -1,6 +1,7 @@
 from difflib import get_close_matches
 import json
 
+
 # Returns the best matched question based on knowledge
 def get_best_match(user_question: str, questions: dict) -> str | None:
   questions: list[str] = [q for q in questions]
@@ -10,7 +11,6 @@ def get_best_match(user_question: str, questions: dict) -> str | None:
   if matches:
     return matches[0]
   
-
 
 # Read user input (i.e., Discord msg)
 def get_response(message: str, knowledge: dict) -> str:
@@ -22,11 +22,11 @@ def get_response(message: str, knowledge: dict) -> str:
   else:
     return
   
+
 def load_knowledge(file: str) -> dict:
   with open(file, "r") as f:
     return json.load(f)
   
-
 
 if __name__ == "__main__":
   test_knowledge: dict = load_knowledge("knowledge.json")

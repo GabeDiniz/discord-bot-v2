@@ -4,6 +4,7 @@ import requests
 from decouple import config
 GIPHY_API_KEY = config('GIPHY_API_KEY')
 
+
 def random_gif():
   url = f"https://api.giphy.com/v1/gifs/random?api_key={GIPHY_API_KEY}&tag=&rating=g"
   response = requests.get(url)

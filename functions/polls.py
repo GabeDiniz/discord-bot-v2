@@ -1,5 +1,6 @@
 import discord   # pip install discord
 
+
 async def create_poll(ctx, message):
   # CATCH EMPTY POLL
   if message.strip() == "":
