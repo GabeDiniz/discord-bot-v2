@@ -56,8 +56,8 @@ async def help_command(ctx):
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
   embed.add_field(name='Create a QR', value='`!qr <link>`', inline=True)
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
-  embed.add_field(name='Create polls!', value='`/poll`', inline=False)
-  embed.add_field(name='Create events!', value='`/event`', inline=False)
+  embed.add_field(name='Create polls!', value='`/poll`', inline=True)
+  embed.add_field(name='Create events!', value='`/event`', inline=True)
         
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
