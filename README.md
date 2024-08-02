@@ -30,9 +30,11 @@ GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 - !cs2 <name> - displays cs2 game statistics for users
 - !fn-shop - sends the current items in the Fortnite shop
 - !play <song> | !skip - for playing/queuing and skipping music
+- !gif - send a random gif
 
 # Slash Commands:
 - /poll <query> - to create polls that users can react to
+- /event <date> <time> <description> - to create Server Events
 ```
 
 # 👨‍💻 For Dev:
