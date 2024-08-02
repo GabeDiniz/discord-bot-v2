@@ -23,7 +23,7 @@ async def create_poll(ctx, message):
   if isinstance(ctx, discord.Interaction):
     await ctx.response.send_message("Poll created!", ephemeral=True)
 
-  print(f"[ LOG ] creating poll with message: {message}\n")
+  # print(f"[ LOG ] creating poll with message: {message}\n")
   await ctx.channel.send(embed=embed)
   # for emoji in emojis:
   #   await msg.add_reaction(emoji)
