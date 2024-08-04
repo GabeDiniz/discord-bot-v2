@@ -51,7 +51,7 @@ async def help_command(ctx):
   # Add fields to the embed (optional)
   embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
   embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
-  embed.add_field(name='Play Music!', value='`!play <song-query>`', inline=False)
+  embed.add_field(name='See Music Commands', value='`!help-music`', inline=False)
   embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
   embed.add_field(name='Create a QR', value='`!qr <link>`', inline=True)
@@ -61,6 +61,21 @@ async def help_command(ctx):
         
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
+
+@bot.command(name='help-music')
+async def help_command(ctx):
+  embed = discord.Embed(
+    color=discord.Color.red()
+  )
+  embed.set_author(name="Music Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
+  embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
+  embed.add_field(name='Play or queue a song', value='`!play <song-query>`', inline=False)
+  embed.add_field(name='Skip current song', value='`!skip`', inline=False)
+  embed.add_field(name='Kick bot from VC', value='`!leave`', inline=False)
+
+  # Send the embed message to the same channel where the command was issued
+  await ctx.channel.send(embed=embed)
+
 
 @bot.command(name='cs2')
 async def steam_command(ctx, *, message: str):
