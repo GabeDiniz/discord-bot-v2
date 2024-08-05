@@ -20,17 +20,17 @@ class MyQR:
 
 
 def generate(message):
-  # Initialize QR Class
-  myqr = MyQR(size=40, padding=1)
-  # Create QR
-  name = "qr.png"
+  try:
+    data = message.split()  # Grab parameters
+    
+    link = data[0]
+    # Check for color values
+    fg = data[1] if len(data) > 1 else "#BD8334"
+    bg = data[2] if len(data) > 2 else "#FAF3EF"
 
-  data = message.split()
-  print(data)
-  if len(data) == 3:
-    fg, bg = data[1], data[2]
-  else:
-    fg, bg = "#BD8334", "#FAF3EF"
-  
-  file_name = myqr.create_qr(name, data[0], fg, bg)
-  return file_name
+    myqr = MyQR(size=10, padding=4)
+    file_name = myqr.create_qr("qr.png", link, fg, bg)
+    return file_name
+  except Exception as e:
+    print(f"Error in generate function: {e}")
+    return None

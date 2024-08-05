@@ -89,9 +89,9 @@ async def play_command(ctx):
 
 @bot.command(name='qr')
 async def play_command(ctx, *, message: str):
-  qr_code_file = qr.generate(message)
+  qr_code_file = qr.generate(message)   # Returns QR file
   if qr_code_file:
-    with open(qr_code_file, 'rb') as f:
+    with open(qr_code_file, 'rb') as f:   # Open in Binary format
       image = discord.File(f)
       embed = discord.Embed(
         title='Created New QR',
