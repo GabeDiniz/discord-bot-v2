@@ -54,7 +54,7 @@ async def help_command(ctx):
   embed.add_field(name='See Music Commands', value='`!help-music`', inline=False)
   embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
-  embed.add_field(name='Create a QR', value='`!qr <link>`', inline=True)
+  embed.add_field(name='Create a QR', value='Color-code should be in Hex format (#FFFFFF)\n`!qr <link> <optional: fg-color> <optional: bg-color>`', inline=False)
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
   embed.add_field(name='Create polls!', value='`/poll`', inline=True)
   embed.add_field(name='Create events!', value='`/event`', inline=True)
