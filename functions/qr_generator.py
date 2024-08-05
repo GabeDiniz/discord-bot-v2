@@ -24,5 +24,13 @@ def generate(message):
   myqr = MyQR(size=40, padding=1)
   # Create QR
   name = "qr.png"
-  file_name = myqr.create_qr(name, message, fg="#BD8334", bg="#FAF3EF")
+
+  data = message.split()
+  print(data)
+  if len(data) == 3:
+    fg, bg = data[1], data[2]
+  else:
+    fg, bg = "#BD8334", "#FAF3EF"
+  
+  file_name = myqr.create_qr(name, data[0], fg, bg)
   return file_name
