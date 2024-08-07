@@ -1,6 +1,8 @@
 from discord import Intents, Client, app_commands
 from discord.ext import commands
 import discord   # pip install discord
+import os
+
 # Used for retrieving BOT_KEY from .env
 from decouple import config   # pip install python-decouple
 
@@ -101,6 +103,7 @@ async def play_command(ctx, *, message: str):
       await ctx.channel.send(file=image, embed=embed)
   else:
     await ctx.channel.send("Failed to generate QR code.")
+  os.remove("qr.png")
 
 @bot.command(name='gif')
 async def play_command(ctx):
