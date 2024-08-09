@@ -1,6 +1,7 @@
 from discord import Intents, Client, app_commands
 from discord.ext import commands
 import discord   # pip install discord
+import openai  # pip install openai
 import os
 
 # Used for retrieving BOT_KEY from .env
@@ -21,6 +22,7 @@ import functions.get_gif as gifs
 # Fetch Credentials from local .env variables 
 # Constants
 BOT_KEY = config('BOT_KEY')
+OPENAI_API_KEY = config('OPENAI_API_KEY')
 knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
 
 # Bot Constants
@@ -28,6 +30,7 @@ intents = Intents.default()
 intents.message_content = True
 intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Initialize bot
+gptClient = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 # Start bot
 @bot.event
@@ -109,6 +112,25 @@ async def play_command(ctx, *, message: str):
 async def play_command(ctx):
   gif = gifs.random_gif()
   await ctx.channel.send(gif)
+
+# WIP: NO FUNCTIONING AS IT COSTS MONEY
+@bot.command(name='gpt')
+async def chatgpt(ctx, *, query: str):
+  await ctx.typing()  # Show typing indicator while processing
+
+  try:
+    response = gptClient.chat.completions.create(
+      model="gpt-3.5-turbo",
+      messages=[
+        {"role": "user", "content": query}
+      ]
+    )
+    print(response)
+    answer = response.choices[0].message
+    await ctx.send(answer)
+  except Exception as e:
+    await ctx.send(f"An error occurred: {e}")
+
 
 @bot.tree.command(name="poll", description="Create a poll", guild=None)
 async def poll_slash_command(interaction: discord.Interaction, question: str):
