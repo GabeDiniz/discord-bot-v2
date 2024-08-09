@@ -1,5 +1,5 @@
 from discord import Intents, Client, app_commands
-from discord.ext import commands
+from discord.ext import commands    # pip install discord-ext-bot
 import discord   # pip install discord
 import openai  # pip install openai
 import os

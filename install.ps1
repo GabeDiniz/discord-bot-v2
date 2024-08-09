@@ -8,10 +8,12 @@ if (-not (Get-Command pip -ErrorAction SilentlyContinue)) {
 
 # Define the required packages - NEEDS TO BE UPDATED
 $packages = @(
-  "discord",
-  "discord-py-interactions",
+  "discord.py",
+  "discord-ext-bot",
   "python-decouple",
-  "requests"
+  "yt_dlp",
+  "pynacl",
+  "qrcode",
 )
 
 # Install each package

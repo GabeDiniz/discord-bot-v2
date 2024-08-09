@@ -46,6 +46,7 @@ py main.py
 
 # Ensure all necessary libraries are installed. See list below:
 pip install discord.py
+pip install discord-ext-bot
 pip install requests
 pip install python-decouple
 pip install yt_dlp
