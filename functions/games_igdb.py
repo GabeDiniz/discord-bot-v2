@@ -2,6 +2,11 @@ from decouple import config   # pip install python-decouple
 import requests
 import json
 
+'''
+DOCUMENTATION:
+https://api-docs.igdb.com/#getting-started
+'''
+
 def query_igdb():
   # IGDB API credentials
   clientID = config('IGDB_CLIENTID')
@@ -18,7 +23,7 @@ def query_igdb():
   }
 
   # Query
-  body = 'fields name; limit 10;'
+  body = 'fields name, multiplayer_modes, rating, summary, url; search "fortnite";'
 
   response = requests.post(url, headers=headers, data=body)
 
