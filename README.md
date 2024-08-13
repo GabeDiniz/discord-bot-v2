@@ -15,7 +15,9 @@ BOT_KEY="bot-application-key"
 STEAM_API_KEY="steam-api-key"   # for Steam feature
 GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 
-# Follow the "For Dev section below"
+# Download the required libraries
+# > In the root directory of the project, run the install.ps1 file
+.\install.ps1
 ```
 
 # 💻 Tech Stack used for this Project:
