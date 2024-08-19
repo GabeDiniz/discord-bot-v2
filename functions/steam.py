@@ -16,7 +16,7 @@ def search_steam_game(game_name):
   if response.status_code == 200:
     apps = response.json()['applist']['apps']
     # Find the game by name
-    game = next((app for app in apps if game_name.lower() in app['name'].lower()), None)
+    game = next((app for app in apps if game_name.lower() == app['name'].lower()), None)
     print(game)
     if game:
       # Fetch details for the found game
@@ -83,5 +83,5 @@ def get_user_stats(ctx, message: str):
     print("User stats not found or API request failed.")
     return
 
-search_steam_game("cs2")
+# search_steam_game("counter-strike 2")
 # STEAM ID - Obtained from: https://www.steamidfinder.com/
