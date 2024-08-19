@@ -113,6 +113,19 @@ async def play_command(ctx):
   gif = gifs.random_gif()
   await ctx.channel.send(gif)
 
+@bot.command(name="steamgame")
+async def steamgame(ctx, *, game_name: str):
+  await ctx.send("Searching for game on Steam...")
+  game_details = steam.search_steam_game(game_name)
+  if isinstance(game_details, str):
+    await ctx.send(game_details)
+  else:
+    embed = discord.Embed(title=game_details['name'], description=game_details.get('short_description', 'No description available.'))
+    embed.add_field(name="Price", value=f"${game_details['price_overview']['final_formatted']}" if 'price_overview' in game_details else "Free or Price Not Available")
+    embed.add_field(name="Genres", value=', '.join([genre['description'] for genre in game_details['genres']]))
+    embed.set_thumbnail(url=game_details['header_image'])
+    await ctx.send(embed=embed)
+
 # WIP: NO FUNCTIONING AS IT COSTS MONEY
 @bot.command(name='gpt')
 async def chatgpt(ctx, *, query: str):

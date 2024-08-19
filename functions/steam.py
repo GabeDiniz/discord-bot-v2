@@ -73,7 +73,7 @@ def get_user_stats(ctx, message: str):
       title=":military_helmet: CS2 STATS: " + user.capitalize(),
       color=discord.Color.yellow()
     )
-    # Add fields to the embed (optional)
+    # Add fields to the embed
     kills = user_stats[0]["value"]
     deaths = user_stats[1]["value"]
     embed.add_field(name='Overall KD', value=f"Total Kills: {kills}\nTotal Deaths: {deaths}\nKD: {round(kills/deaths, 2)}", inline=False)
