@@ -8,6 +8,31 @@ from decouple import config
 # Constants
 STEAM_API_KEY = config('STEAM_API_KEY')
 
+def search_steam_game(game_name):
+  """Search for a game on Steam by name and return its details."""
+  # Replace 'YOUR_STEAM_API_KEY' with your actual Steam Web API key
+  url = f"https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+  response = requests.get(url)
+  if response.status_code == 200:
+    apps = response.json()['applist']['apps']
+    # Find the game by name
+    game = next((app for app in apps if game_name.lower() in app['name'].lower()), None)
+    print(game)
+    if game:
+      # Fetch details for the found game
+      details_url = f"http://store.steampowered.com/api/appdetails?appids={game['appid']}"
+      details_response = requests.get(details_url)
+      if details_response.status_code == 200:
+        game_details = details_response.json()[str(game['appid'])]['data']
+        print(game_details)
+        return game_details
+      else:
+        return "Failed to fetch game details."
+    else:
+      return "Game not found."
+  else:
+    return "Failed to fetch game list."
+
 def load_users(file: str) -> dict:
   with open(file, "r") as f:
     return json.load(f)
@@ -58,7 +83,5 @@ def get_user_stats(ctx, message: str):
     print("User stats not found or API request failed.")
     return
 
-# For testing:
-# get_user_stats("!cs2 gabe")
-
+search_steam_game("cs2")
 # STEAM ID - Obtained from: https://www.steamidfinder.com/
