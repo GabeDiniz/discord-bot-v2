@@ -29,6 +29,7 @@ GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 ```
 # Text Commands:
 - !help - displays list of commands
+- !steamgame <name> - displays details of the Steam game
 - !cs2 <name> - displays cs2 game statistics for users
 - !fn-shop - sends the current items in the Fortnite shop
 - !play <song> | !skip - for playing/queuing and skipping music
