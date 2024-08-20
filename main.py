@@ -123,6 +123,7 @@ async def steamgame(ctx, *, game_name: str):
     embed = discord.Embed(title=game_details['name'], description=game_details.get('short_description', 'No description available.'))
     embed.add_field(name="Price", value=f"${game_details['price_overview']['final_formatted']}" if 'price_overview' in game_details else "Free or Price Not Available")
     embed.add_field(name="Genres", value=', '.join([genre['description'] for genre in game_details['genres']]))
+    embed.add_field(name="App ID", value=f"{game_details['steam_appid']}")
     embed.set_thumbnail(url=game_details['header_image'])
     await ctx.send(embed=embed)
 

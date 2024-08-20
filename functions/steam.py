@@ -24,7 +24,7 @@ def search_steam_game(game_name):
       details_response = requests.get(details_url)
       if details_response.status_code == 200:
         game_details = details_response.json()[str(game['appid'])]['data']
-        print(game_details)
+        print(f"Retrieved game from {details_url}")
         return game_details
       else:
         return "Failed to fetch game details."
