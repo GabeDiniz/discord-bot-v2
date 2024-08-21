@@ -8,6 +8,9 @@ from decouple import config
 # Constants
 STEAM_API_KEY = config('STEAM_API_KEY')
 
+# ========================================
+# COMMAND: !steamgame
+# ========================================
 def search_steam_game(game_name):
   """Search for a game on Steam by name and return its details."""
   # Replace 'YOUR_STEAM_API_KEY' with your actual Steam Web API key
@@ -33,9 +36,14 @@ def search_steam_game(game_name):
   else:
     return "Failed to fetch game list."
 
+
+# ========================================
+# COMMAND: !cs2
+# ========================================
 def load_users(file: str) -> dict:
   with open(file, "r") as f:
     return json.load(f)
+
 
 def get_user_stats(ctx, message: str):
   # Find user
