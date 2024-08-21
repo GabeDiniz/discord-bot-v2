@@ -124,7 +124,7 @@ async def steamgame(ctx, *, game_name: str):
     formatted_game_id = steam.reformat_game_id(game_details['name'])
     game_url = f"https://store.steampowered.com/app/{game_details['steam_appid']}/{formatted_game_id}/"
     embed = discord.Embed(title=game_details['name'], description=game_details.get('short_description', 'No description available.'))
-    embed.add_field(name="Price", value=f"${game_details['price_overview']['final_formatted']}" if 'price_overview' in game_details else "Free or Price Not Available")
+    embed.add_field(name="Price", value=f"{game_details['price_overview']['final_formatted']}" if 'price_overview' in game_details else "Free or Price Not Available")
     embed.add_field(name="Genres", value=', '.join([genre['description'] for genre in game_details['genres']]))
     embed.add_field(name="App ID", value=f"{game_details['steam_appid']}")
     embed.add_field(name="Steam Store", value=f"{game_url}", inline=False)
