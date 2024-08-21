@@ -1,6 +1,7 @@
 import requests  # pip install requests
 import json
 import discord   # pip install discord
+import re
 
 # Fetch Credentials from local .env variables 
 from decouple import config
@@ -35,6 +36,16 @@ def search_steam_game(game_name):
       return "Game not found."
   else:
     return "Failed to fetch game list."
+  
+
+def reformat_game_id(input_string: str):
+  # Remove symbols
+  cleaned_string = re.sub(r'[-$#&]', '', input_string)
+
+  # Replace spaces with underscores
+  result_string = re.sub(r'\s+', '_', cleaned_string)
+  
+  return result_string.lower()
 
 
 # ========================================
