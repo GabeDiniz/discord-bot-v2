@@ -1,5 +1,5 @@
 discord.py==1.7.3
-discord-ext-commands==0.0.1
+py-cord==2.6.0
 requests==2.26.0
 python-decouple==3.5
 yt-dlp==2021.12.1
