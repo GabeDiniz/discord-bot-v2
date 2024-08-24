@@ -1,7 +1,10 @@
-discord.py==1.7.3
-py-cord==2.6.0
-requests==2.26.0
-python-decouple==3.5
-yt-dlp==2021.12.1
-PyNaCl==1.4.0
-qrcode==7.3
+discord.py==1.7.3 # 2.4.0
+discord-ext-bot==1.0.1
+py-cord==2.6.0 # Not required?
+requests==2.26.0 # 2.32.3
+python-decouple==3.5 # 3.8
+yt-dlp==2021.12.1 # 2024.8.6
+# PyNaCl==1.4.0 # Not required? - 1.5.0
+qrcode==7.3 # 7.4.2
+openai==1.42.0 # Check version
+pillow==10.4.0 # Check version
