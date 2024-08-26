@@ -137,9 +137,9 @@ async def steamgame(ctx, *, game_name: str):
     embed.set_thumbnail(url=game_details['header_image'])
     await ctx.send(embed=embed)
 
-@bot.command(name="nfl", description="Displays information about an NFL league from Sleeper.")
+@bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
- embed = nfl_sleeper.fetch_league_info()
+ embed = nfl_sleeper.fetch_matchup()
  await ctx.channel.send(embed=embed)
 
 # WIP: NO FUNCTIONING AS IT COSTS MONEY
