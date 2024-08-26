@@ -5,7 +5,8 @@ import openai  # pip install openai
 import os
 
 # Used for retrieving BOT_KEY from .env
-from decouple import config   # pip install python-decouple
+from decouple import config
+import requests   # pip install python-decouple
 
 # ========================================
 # Response Features
@@ -135,6 +136,24 @@ async def steamgame(ctx, *, game_name: str):
     embed.set_thumbnail(url=game_details['header_image'])
     await ctx.send(embed=embed)
 
+@bot.command(name="nfl", description="Displays information about an NFL league from Sleeper.")
+async def nfl_league_info(ctx):
+  # Sleeper API League details
+  league_id = 1125842110265032704
+  api_url = f"https://api.sleeper.app/v1/league/{league_id}"
+  
+  response = requests.get(api_url)
+  if response.status_code == 200:
+    league_data = response.json()
+    embed = discord.Embed(title=f"{league_data['name']} - League Information", color=discord.Color.blue())
+    embed.add_field(name="League ID", value=league_id, inline=True)
+    embed.add_field(name="Total Rosters", value=league_data['total_rosters'], inline=True)
+    embed.add_field(name="Season", value=league_data['season'], inline=True)
+    
+    await ctx.channel.send(embed=embed)
+  else:
+    await ctx.channel.send("Failed to retrieve league information. Please check the league ID and try again.")
+
 # WIP: NO FUNCTIONING AS IT COSTS MONEY
 @bot.command(name='gpt')
 async def chatgpt(ctx, *, query: str):
@@ -165,6 +184,7 @@ async def create_event(interaction: discord.Interaction, date: str, time: str, d
 # @bot.event
 # async def on_reaction_add(reaction, user):
 #   await events.on_reaction_add(reaction, user)
+
 
 
 # ========================================
