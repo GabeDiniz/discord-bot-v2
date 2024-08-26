@@ -19,6 +19,7 @@ import functions.polls as polls
 import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
+import functions.nfl_sleeper as nfl_sleeper 
 
 # Fetch Credentials from local .env variables 
 # Constants
@@ -138,21 +139,8 @@ async def steamgame(ctx, *, game_name: str):
 
 @bot.command(name="nfl", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
-  # Sleeper API League details
-  league_id = 1125842110265032704
-  api_url = f"https://api.sleeper.app/v1/league/{league_id}"
-  
-  response = requests.get(api_url)
-  if response.status_code == 200:
-    league_data = response.json()
-    embed = discord.Embed(title=f"{league_data['name']} - League Information", color=discord.Color.blue())
-    embed.add_field(name="League ID", value=league_id, inline=True)
-    embed.add_field(name="Total Rosters", value=league_data['total_rosters'], inline=True)
-    embed.add_field(name="Season", value=league_data['season'], inline=True)
-    
-    await ctx.channel.send(embed=embed)
-  else:
-    await ctx.channel.send("Failed to retrieve league information. Please check the league ID and try again.")
+ embed = nfl_sleeper.fetch_league_info()
+ await ctx.channel.send(embed=embed)
 
 # WIP: NO FUNCTIONING AS IT COSTS MONEY
 @bot.command(name='gpt')
