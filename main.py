@@ -15,11 +15,12 @@ import functions.responses as responses
 import functions.steam as steam
 import functions.fortnite as fortnite
 import functions.playmusic as playmusic
-import functions.polls as polls
 import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
 import functions.nfl_sleeper as nfl_sleeper 
+# [DEPRECATED]
+# import functions.polls as polls
 
 # Fetch Credentials from local .env variables 
 # Constants
@@ -64,7 +65,6 @@ async def help_command(ctx):
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
   embed.add_field(name='Create a QR', value='Color-code should be in Hex format (#FFFFFF)\n`!qr <link> <optional: fg-color> <optional: bg-color>`', inline=False)
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
-  embed.add_field(name='Create polls!', value='`/poll`', inline=True)
   embed.add_field(name='Create events!', value='`/event`', inline=True)
         
   # Send the embed message to the same channel where the command was issued
@@ -142,7 +142,7 @@ async def nfl_league_info(ctx):
  embed = nfl_sleeper.fetch_matchup()
  await ctx.channel.send(embed=embed)
 
-# WIP: NO FUNCTIONING AS IT COSTS MONEY
+# WIP: NOT FUNCTIONING AS IT COSTS MONEY
 # @bot.command(name='gpt')
 # async def chatgpt(ctx, *, query: str):
 #   await ctx.typing()  # Show typing indicator while processing
@@ -161,9 +161,6 @@ async def nfl_league_info(ctx):
 #     await ctx.send(f"An error occurred: {e}")
 
 
-@bot.tree.command(name="poll", description="Create a poll", guild=None)
-async def poll_slash_command(interaction: discord.Interaction, question: str):
-  await polls.create_poll(interaction, question)
 
 @bot.tree.command(name="event", description="Create an event", guild=None)
 @app_commands.describe(date="Date of the event (YYYY-MM-DD)", time="Event time (HH:MM, 24-hour format)", description="Description of event")
@@ -173,6 +170,10 @@ async def create_event(interaction: discord.Interaction, date: str, time: str, d
 # async def on_reaction_add(reaction, user):
 #   await events.on_reaction_add(reaction, user)
 
+# [DEPRECATED]
+# @bot.tree.command(name="poll", description="Create a poll", guild=None)
+# async def poll_slash_command(interaction: discord.Interaction, question: str):
+#   await polls.create_poll(interaction, question)
 
 
 # ========================================
