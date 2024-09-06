@@ -42,14 +42,16 @@ async def on_ready():
   print(f"{bot.user} is now running!")
 
 
+
 # ========================================
-# COMMANDS
+# ! COMMANDS
 # ========================================
 # Simple example command
 @bot.command(name='hello')
 async def hello_command(ctx):
   await ctx.send(f'Hello, {ctx.author.name}!')
 
+# #####################
 @bot.command(name='help')
 async def help_command(ctx):
   embed = discord.Embed(
@@ -70,6 +72,7 @@ async def help_command(ctx):
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
 
+# #####################
 @bot.command(name='help-music')
 async def help_command(ctx):
   embed = discord.Embed(
@@ -84,17 +87,19 @@ async def help_command(ctx):
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
 
-
+# #####################
 @bot.command(name='cs2')
 async def steam_command(ctx, *, message: str):
   embed = steam.get_user_stats(ctx, message)
   await ctx.channel.send(embed=embed)
   
+# #####################
 @bot.command(name='fn-shop')
 async def play_command(ctx):
   embed = fortnite.get_shop_items()
   await ctx.channel.send(embed=embed)
 
+# #####################
 @bot.command(name='qr')
 async def play_command(ctx, *, message: str):
   qr_code_file = qr.generate(message)   # Returns QR file
@@ -111,11 +116,13 @@ async def play_command(ctx, *, message: str):
     await ctx.channel.send("Failed to generate QR code.")
   os.remove("qr.png")
 
+# #####################
 @bot.command(name='gif')
 async def play_command(ctx):
   gif = gifs.random_gif()
   await ctx.channel.send(gif)
 
+# #####################
 @bot.command(name="steamgame")
 async def steamgame(ctx, *, game_name: str):
   await ctx.send("Searching for game on Steam...")
@@ -137,11 +144,13 @@ async def steamgame(ctx, *, game_name: str):
     embed.set_thumbnail(url=game_details['header_image'])
     await ctx.send(embed=embed)
 
+# #####################
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
  embed = nfl_sleeper.fetch_matchup()
  await ctx.channel.send(embed=embed)
 
+# #####################
 # WIP: NOT FUNCTIONING AS IT COSTS MONEY
 # @bot.command(name='gpt')
 # async def chatgpt(ctx, *, query: str):
@@ -161,15 +170,16 @@ async def nfl_league_info(ctx):
 #     await ctx.send(f"An error occurred: {e}")
 
 
-
+# ========================================
+# SLASH COMMANDS
+# ========================================
+# #####################
 @bot.tree.command(name="event", description="Create an event", guild=None)
 @app_commands.describe(date="Date of the event (YYYY-MM-DD)", time="Event time (HH:MM, 24-hour format)", description="Description of event")
 async def create_event(interaction: discord.Interaction, date: str, time: str, description: str):
   await events.create_event(interaction, date, time, description)
-# @bot.event
-# async def on_reaction_add(reaction, user):
-#   await events.on_reaction_add(reaction, user)
 
+# #####################
 # [DEPRECATED]
 # @bot.tree.command(name="poll", description="Create a poll", guild=None)
 # async def poll_slash_command(interaction: discord.Interaction, question: str):
