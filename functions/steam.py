@@ -14,7 +14,6 @@ STEAM_API_KEY = config('STEAM_API_KEY')
 # ========================================
 def search_steam_game(game_name):
   """Search for a game on Steam by name and return its details."""
-  # Replace 'YOUR_STEAM_API_KEY' with your actual Steam Web API key
   url = f"https://api.steampowered.com/ISteamApps/GetAppList/v2/"
   response = requests.get(url)
   if response.status_code == 200:
@@ -101,6 +100,3 @@ def get_user_stats(ctx, message: str):
   else:
     print("User stats not found or API request failed.")
     return
-
-# search_steam_game("counter-strike 2")
-# STEAM ID - Obtained from: https://www.steamidfinder.com/

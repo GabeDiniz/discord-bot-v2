@@ -1,6 +1,8 @@
 import discord   # pip install discord
 
-
+# ========================================
+# DEPRECATED
+# ========================================
 async def create_poll(ctx, message):
   # CATCH EMPTY POLL
   if message.strip() == "":
