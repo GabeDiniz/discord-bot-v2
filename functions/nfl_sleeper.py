@@ -20,7 +20,7 @@ def fetch_league_info():
     return discord.Embed(title="Failed to retrieve league information. Please check the league ID and try again.", color=discord.Color.red())
 
 def fetch_matchup():
-  week = 2
+  week = 3
 
   # Setup embed
   embed = discord.Embed(title=f"PSFF (2024)", description=f'Matchups for week {week}', color=discord.Color.red())
