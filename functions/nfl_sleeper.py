@@ -20,7 +20,9 @@ def fetch_league_info():
     return discord.Embed(title="Failed to retrieve league information. Please check the league ID and try again.", color=discord.Color.red())
 
 def fetch_matchup():
-  week = 3
+  # Retrieve current NFL week
+  api_url = 'https://api.sleeper.app/v1/state/nfl'
+  week = requests.get(api_url).json()["week"]
 
   # Setup embed
   embed = discord.Embed(title=f"PSFF (2024)", description=f'Matchups for week {week}', color=discord.Color.red())
