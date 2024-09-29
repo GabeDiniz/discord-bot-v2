@@ -14,7 +14,7 @@ $packages = @(
   "yt_dlp",
   "pynacl",
   "qrcode",
-  "pillow",
+  "pillow"
 )
 
 # Install each package
