@@ -179,12 +179,6 @@ async def nfl_league_info(ctx):
 async def create_event(interaction: discord.Interaction, date: str, time: str, description: str):
   await events.create_event(interaction, date, time, description)
 
-# #####################
-# [DEPRECATED]
-# @bot.tree.command(name="poll", description="Create a poll", guild=None)
-# async def poll_slash_command(interaction: discord.Interaction, question: str):
-#   await polls.create_poll(interaction, question)
-
 
 # ========================================
 # PLAY MUSIC
