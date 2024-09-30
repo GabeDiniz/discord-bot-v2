@@ -8,6 +8,7 @@ from decouple import config
 
 # Constants
 STEAM_API_KEY = config('STEAM_API_KEY')
+
 # ========================================
 # COMMAND: !addwishlist
 # ========================================
@@ -33,6 +34,36 @@ async def add_to_wishlist(ctx, game_name, server_wishlists):
   # Add the game to the server's wishlist
   server_wishlists[guild_id].append(game_details)
   await ctx.send(f"{game_details['name']} has been added to the wishlist!")
+
+# ========================================
+# COMMAND: !removewishlist
+# ========================================
+async def remove_from_wishlist(ctx, game_name, server_wishlists):
+  """Removes a game from the server's wishlist."""
+  # Get the server (guild) ID
+  guild_id = ctx.guild.id
+
+  # Check if the server has a wishlist
+  if guild_id not in server_wishlists or not server_wishlists[guild_id]:
+    await ctx.send("The wishlist is currently empty.")
+    return
+
+  # Search for the game in the wishlist
+  game_details = search_steam_game(game_name)
+  # Check if returned is str -> Unable to find game
+  if isinstance(game_details, str):
+    await ctx.send(game_details)
+    return
+
+  # Try to remove the game from the wishlist
+  wishlist = server_wishlists[guild_id]
+  for game in wishlist:
+    if game['steam_appid'] == game_details['steam_appid']:
+      wishlist.remove(game)
+      await ctx.send(f"{game['name']} has been removed from the wishlist!")
+      return
+
+  await ctx.send(f"{game_name} is not in the wishlist.")
 
 # ========================================
 # COMMAND: !steamgame
