@@ -145,6 +145,12 @@ async def steamgame(ctx, *, game_name: str):
     await ctx.send(embed=embed)
 
 # #####################
+server_wishlists = {}
+@bot.command(name="addwishlist")
+async def add_wishlist(ctx, *, game_name: str):
+  await steam.add_to_wishlist(ctx, game_name, server_wishlists)  
+  
+# #####################
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
  embed = nfl_sleeper.fetch_matchup()

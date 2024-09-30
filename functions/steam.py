@@ -8,6 +8,31 @@ from decouple import config
 
 # Constants
 STEAM_API_KEY = config('STEAM_API_KEY')
+# ========================================
+# COMMAND: !addwishlist
+# ========================================
+async def add_to_wishlist(ctx, game_name, server_wishlists):
+  game_details = search_steam_game(game_name)
+  # Check if returned is str -> Unable to find game
+  if isinstance(game_details, str):
+    await ctx.send(game_details)
+    return
+
+  # Get the server (guild) ID
+  guild_id = ctx.guild.id
+
+  # If the server doesn't have a wishlist yet, create one
+  if guild_id not in server_wishlists:
+    server_wishlists[guild_id] = []
+
+  # Check if the game is already in the wishlist
+  if any(game['steam_appid'] == game_details['steam_appid'] for game in server_wishlists[guild_id]):
+    await ctx.send(f"{game_details['name']} is already in the wishlist!")
+    return
+
+  # Add the game to the server's wishlist
+  server_wishlists[guild_id].append(game_details)
+  await ctx.send(f"{game_details['name']} has been added to the wishlist!")
 
 # ========================================
 # COMMAND: !steamgame
