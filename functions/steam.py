@@ -66,6 +66,32 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
   await ctx.send(f"{game_name} is not in the wishlist.")
 
 # ========================================
+# COMMAND: !wishlist
+# ========================================
+async def show_wishlist(ctx, server_wishlists):
+  """Displays the server's wishlist."""
+  guild_id = ctx.guild.id
+
+  # Check if the server has a wishlist
+  if guild_id not in server_wishlists or not server_wishlists[guild_id]:
+    await ctx.send("The wishlist is currently empty.")
+    return
+
+  wishlist = server_wishlists[guild_id]
+  embed = discord.Embed(
+    title="Server Wishlist", 
+    description=f"Games on {ctx.guild.name}'s wishlist:", 
+    color=discord.Color.blue()
+  )
+
+  # Add each game in the wishlist to the embed
+  for game in wishlist:
+    embed.add_field(name=game['name'], value=f"Price: {game['price_overview']['final_formatted']}" if 'price_overview' in game else "Price: Free or Not Available", inline=False)
+
+  await ctx.send(embed=embed)
+
+
+# ========================================
 # COMMAND: !steamgame
 # ========================================
 def search_steam_game(game_name):

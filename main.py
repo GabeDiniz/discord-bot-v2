@@ -153,6 +153,10 @@ async def add_wishlist(ctx, *, game_name: str):
 @bot.command(name="removewishlist")
 async def add_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
+
+@bot.command(name="wishlist")
+async def add_wishlist(ctx):
+  await steam.show_wishlist(ctx, server_wishlists)
   
 # #####################
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
