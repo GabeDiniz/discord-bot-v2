@@ -1,3 +1,4 @@
+import json
 from discord import Intents, Client, app_commands
 from discord.ext import commands    # pip install discord-ext-bot
 import discord   # pip install discord
@@ -40,7 +41,20 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Ini
 async def on_ready():
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
+  load_wishlist()
 
+def save_wishlist():
+  with open('wishlist.json', 'w') as f:
+    json.dump(server_wishlists, f)
+
+def load_wishlist():
+  '''Load wishlist if existing, create a new one if none available'''
+  global server_wishlists
+  try:
+    with open('wishlist.json', 'r') as f:
+      server_wishlists = json.load(f)
+  except FileNotFoundError:
+    server_wishlists = {}
 
 
 # ========================================
@@ -145,14 +159,15 @@ async def steamgame(ctx, *, game_name: str):
     await ctx.send(embed=embed)
 
 # #####################
-server_wishlists = {}
 @bot.command(name="addwishlist")
 async def add_wishlist(ctx, *, game_name: str):
   await steam.add_to_wishlist(ctx, game_name, server_wishlists)
+  save_wishlist()
   
 @bot.command(name="removewishlist")
 async def add_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
+  save_wishlist()
 
 @bot.command(name="wishlist")
 async def add_wishlist(ctx):
