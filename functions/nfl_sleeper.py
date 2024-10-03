@@ -3,6 +3,14 @@ import discord   # pip install discord
 
 
 def fetch_league_info():
+  """
+  Retrieve NFL Sleeper League information based on League ID via Sleeper API.
+
+  Returns
+  -------
+  discord.Embed: with League information (League ID, Name, Roster size)
+  discord.Embed Error: if error occurs
+  """
    # Sleeper API League details
   league_id = '1125842110265032704'
   api_url = f'https://api.sleeper.app/v1/league/{league_id}'
@@ -20,6 +28,13 @@ def fetch_league_info():
     return discord.Embed(title="Failed to retrieve league information. Please check the league ID and try again.", color=discord.Color.red())
 
 def fetch_matchup():
+  """
+  Retrive NFL league matchup for the current week.
+
+  Returns
+  -------
+  discord.Embed: with matchup information
+  """
   # Retrieve current NFL week
   api_url = 'https://api.sleeper.app/v1/state/nfl'
   week = requests.get(api_url).json()["week"]

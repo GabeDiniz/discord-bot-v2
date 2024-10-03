@@ -6,6 +6,14 @@ GIPHY_API_KEY = config('GIPHY_API_KEY')
 
 
 def random_gif():
+  """
+  Search for a random gif using giphy API.
+
+  Returns
+  -------
+  data (str): Gif embed URL
+  None: if an error occurs
+  """
   url = f"https://api.giphy.com/v1/gifs/random?api_key={GIPHY_API_KEY}&tag=&rating=g"
   response = requests.get(url)
   if response.status_code == 200:

@@ -7,6 +7,14 @@ class MyQR:
     self.qr = qrcode.QRCode(box_size=size, border=padding)
 
   def create_qr(self, file_name: str, link: str, fg: str, bg: str):
+    """
+    This method generates a QR code from a link, sets its foreground and background colors, and saves it to a file.
+
+    Returns
+    -------
+    file_name (str): Returns the file name if the QR code generation and saving are successful.
+    None: If an error occurs
+    """
     try:
       self.qr.add_data(link)  # Add data to QR code
       self.qr.make(fit=True)  # Generate the QR code
@@ -20,6 +28,15 @@ class MyQR:
 
 
 def generate(message):
+  """
+  This function splits a message into parts, extracts the link, and optional color values (foreground and background), 
+  then generates a QR code using the MyQR class.
+
+  Returns
+  -------
+  file_name (str): The name of the generated QR code file (qr.png by default).
+  None: If an error occurs
+  """
   try:
     data = message.split()  # Grab parameters
     

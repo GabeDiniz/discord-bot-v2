@@ -4,6 +4,13 @@ from datetime import date, datetime, timedelta
 
 
 def get_shop_items():
+  """
+  Search for the current Fortnite shop based on the date.
+
+  Returns
+  -------
+  discord.Embed: with the image of the shop
+  """
   # Format todays shop URL
   current_time = datetime.now()
 
