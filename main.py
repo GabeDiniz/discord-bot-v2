@@ -39,21 +39,26 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Ini
 # Start bot
 @bot.event
 async def on_ready():
+  load_wishlist()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
-  load_wishlist()
 
 def save_wishlist():
+  global server_wishlists
   with open('wishlist.json', 'w') as f:
     json.dump(server_wishlists, f)
+  print("[ SAVED ] Wishlist saved successfully")
 
 def load_wishlist():
   '''Load wishlist if existing, create a new one if none available'''
   global server_wishlists
   try:
+    print("[ LOG ] Loading Server Wishlist...")
     with open('wishlist.json', 'r') as f:
       server_wishlists = json.load(f)
+    print("[ LOG ] LOADED existing Wishlist")
   except FileNotFoundError:
+    print("[ LOG ] wishlist.json not found, starting with an empty wishlist.")
     server_wishlists = {}
 
 

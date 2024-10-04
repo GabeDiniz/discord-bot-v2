@@ -20,7 +20,7 @@ async def add_to_wishlist(ctx, game_name, server_wishlists):
     return
 
   # Get the server (guild) ID
-  guild_id = ctx.guild.id
+  guild_id = str(ctx.guild.id)
 
   # If the server doesn't have a wishlist yet, create one
   if guild_id not in server_wishlists:
@@ -41,7 +41,7 @@ async def add_to_wishlist(ctx, game_name, server_wishlists):
 async def remove_from_wishlist(ctx, game_name, server_wishlists):
   """Removes a game from the server's wishlist."""
   # Get the server (guild) ID
-  guild_id = ctx.guild.id
+  guild_id = str(ctx.guild.id)
 
   # Check if the server has a wishlist
   if guild_id not in server_wishlists or not server_wishlists[guild_id]:
@@ -70,7 +70,7 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
 # ========================================
 async def show_wishlist(ctx, server_wishlists):
   """Displays the server's wishlist."""
-  guild_id = ctx.guild.id
+  guild_id = str(ctx.guild.id)
 
   # Check if the server has a wishlist
   if guild_id not in server_wishlists or not server_wishlists[guild_id]:
