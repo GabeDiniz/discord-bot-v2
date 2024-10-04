@@ -13,6 +13,25 @@ STEAM_API_KEY = config('STEAM_API_KEY')
 # COMMAND: !addwishlist
 # ========================================
 async def add_to_wishlist(ctx, game_name, server_wishlists):
+  """
+  Search for a game on Steam, checks if it's already in the server's wishlist, 
+  and adds it if not present.
+
+  Parameters
+  ----------
+  ctx: discord context
+    The context of the command invocation, which includes details such as the server (guild) and channel information.
+  game_name: str
+    The name of the game to be searched and added to the wishlist.
+  server_wishlists: dict
+    A dictionary storing wishlists for multiple servers, with each server (guild) ID as the primary key.
+
+  Returns
+  -------
+  None
+    Sends a message to the context based on the outcome: whether the game is added, already exists, 
+    or cannot be found on Steam.
+  """
   game_details = search_steam_game(game_name)
   # Check if returned is str -> Unable to find game
   if isinstance(game_details, str):
@@ -39,7 +58,24 @@ async def add_to_wishlist(ctx, game_name, server_wishlists):
 # COMMAND: !removewishlist
 # ========================================
 async def remove_from_wishlist(ctx, game_name, server_wishlists):
-  """Removes a game from the server's wishlist."""
+  """
+  Removes a specified game from the server's wishlist if it exists.
+
+  Parameters
+  ----------
+  ctx: discord context
+    The context of the command invocation, which includes details such as the server (guild) and channel information.
+  game_name: str
+    The name of the game to be removed from the wishlist.
+  server_wishlists: dict
+    A dictionary storing wishlists for multiple servers, with each server (guild) ID as the primary key.
+
+  Returns
+  -------
+  None
+    Sends a message to the context based on the outcome:whether the game is removed, doesn't exist in the wishlist,
+    or if the wishlist is empty.
+  """
   # Get the server (guild) ID
   guild_id = str(ctx.guild.id)
 
@@ -69,7 +105,22 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
 # COMMAND: !wishlist
 # ========================================
 async def show_wishlist(ctx, server_wishlists):
-  """Displays the server's wishlist."""
+  """
+  Displays the server's wishlist by sending a formatted embeded message to the server.
+  
+  Parameters
+  ----------
+  ctx: context
+    The context of the command invocation, which includes details such as the server (guild) and channel information.
+  server_wishlists: dict
+    A dictionary storing wishlists for multiple servers, with each server (guild) ID as the primary key.
+
+  Returns
+  -------
+  None
+    Sends a Discord embed message containing the wishlist, or a message stating that the wishlist is empty 
+    if no games are found.
+  """
   guild_id = str(ctx.guild.id)
 
   # Check if the server has a wishlist
@@ -95,7 +146,21 @@ async def show_wishlist(ctx, server_wishlists):
 # COMMAND: !steamgame
 # ========================================
 def search_steam_game(game_name):
-  """Search for a game on Steam by name and return its details."""
+  """
+  Search for a game on Steam by name and retrieves its details if found.
+
+  Parameters
+  ----------
+  game_name: str
+    The name of the game to be searched for on Steam.
+
+  Returns
+  -------
+  dict:
+    A dictionary containing the game's details if the game is found and the details are successfully retrieved.
+  str:
+    A message indicating the error if the game is not found, or if there is a failure in fetching the game list or details.
+  """
   url = f"https://api.steampowered.com/ISteamApps/GetAppList/v2/"
   response = requests.get(url)
   if response.status_code == 200:
@@ -120,6 +185,19 @@ def search_steam_game(game_name):
   
 
 def reformat_game_id(input_string: str):
+  """
+  Reformat a game ID string by removing specific symbols and replacing spaces with underscores.
+
+  Parameters
+  ----------
+  input_string: str
+    The string to be reformatted, which may contain symbols and spaces.
+
+  Returns
+  -------
+  str:
+    The reformatted string with symbols removed, spaces replaced by underscores, and all characters converted to lowercase.
+  """
   # Remove symbols
   cleaned_string = re.sub(r'[-$#&]', '', input_string)
 
@@ -133,11 +211,43 @@ def reformat_game_id(input_string: str):
 # COMMAND: !cs2
 # ========================================
 def load_users(file: str) -> dict:
+  """
+  Loads a JSON file and returns its contents as a dictionary.
+
+  Parameters
+  ----------
+  file: str
+    The file path of the JSON file to be loaded.
+
+  Returns
+  -------
+  dict:
+    A dictionary representing the contents of the loaded JSON file.
+  """
   with open(file, "r") as f:
     return json.load(f)
 
 
 def get_user_stats(ctx, message: str):
+  """
+  Retrieves and displays a user's Counter-Strike 2 statistics from Steam.
+
+  Parameters
+  ----------
+  ctx: context
+    The context of the command invocation, which includes details such as the server (guild) and channel information.
+  message: str
+    The message string containing the user's identifier (e.g., their name) to look up.
+
+  Returns
+  -------
+  discord.Embed:
+    An embedded message containing the user's Counter-Strike 2 stats if the user is found and the API request is successful.
+  discord.Embed:
+    An error message if the user is not found in the stored user list or if their game details are not public.
+  None:
+    If the user's stats are not found or the API request fails.
+  """
   # Find user
   file_path = "./knowledge/steam-info.json"
   users = load_users(file_path)
