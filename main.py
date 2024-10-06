@@ -1,6 +1,6 @@
 import json
 from discord import Intents, Client, app_commands
-from discord.ext import commands    # pip install discord-ext-bot
+from discord.ext import commands, tasks    # pip install discord-ext-bot
 import discord   # pip install discord
 import openai  # pip install openai
 import os
@@ -43,6 +43,9 @@ async def on_ready():
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
+# ========================================
+# FUNCTIONS
+# ========================================
 def save_wishlist():
   global server_wishlists
   with open('wishlist.json', 'w') as f:
@@ -61,6 +64,9 @@ def load_wishlist():
     print("[ LOG ] wishlist.json not found, starting with an empty wishlist.")
     server_wishlists = {}
 
+@tasks.loop()
+async def steam_sale():
+  pass
 
 # ========================================
 # ! COMMANDS
