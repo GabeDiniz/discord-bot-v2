@@ -52,21 +52,41 @@ def save_wishlist():
     json.dump(server_wishlists, f)
   print("[ SAVED ] Wishlist saved successfully")
 
+def save_default_channel():
+  global default_wishlist_channel
+  with open('default_channel.json', 'w') as f:
+    json.dump(default_wishlist_channel, f)
+    print("[ SAVED ] Default wishlist channel saved successfully")
+
 def load_wishlist():
   '''Load wishlist if existing, create a new one if none available'''
   global server_wishlists
+  global default_wishlist_channel
   try:
     print("[ LOG ] Loading Server Wishlist...")
     with open('wishlist.json', 'r') as f:
       server_wishlists = json.load(f)
     print("[ LOG ] LOADED existing Wishlist")
-  except FileNotFoundError:
-    print("[ LOG ] wishlist.json not found, starting with an empty wishlist.")
-    server_wishlists = {}
 
-@tasks.loop()
-async def steam_sale():
-  pass
+    print("[ LOG ] Loading Default Wishlist channel data...")
+    with open('default_channel.json', 'r') as f:
+      default_wishlist_channel = json.load(f)
+    print("[ LOG ] LOADED Default Wishlist channel")
+  except FileNotFoundError:
+    print("[ LOG ] wishlist.json or default_channel.json not found, starting with an empty wishlist.")
+    server_wishlists = {}
+    default_wishlist_channel = {}
+
+
+@tasks.loop(hours=24)
+async def steam_sale(ctx):
+  print("[ LOG ] Loop-task: checking for server steam wishlist sale")
+  steam.check_sale(ctx, server_wishlists)
+
+@steam_sale.before_loop
+async def before_check_sales():
+  '''Ensure the bot is ready before starting the steam_sale loop'''
+  await bot.wait_until_ready()
 
 # ========================================
 # ! COMMANDS
@@ -173,8 +193,10 @@ async def steamgame(ctx, *, game_name: str):
 # #####################
 @bot.command(name="addwishlist")
 async def add_wishlist(ctx, *, game_name: str):
-  await steam.add_to_wishlist(ctx, game_name, server_wishlists)
+  await steam.add_to_wishlist(ctx, game_name, server_wishlists, default_wishlist_channel)
   save_wishlist()
+  print(default_wishlist_channel)
+  save_default_channel()
   
 @bot.command(name="removewishlist")
 async def add_wishlist(ctx, *, game_name: str):

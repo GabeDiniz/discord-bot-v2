@@ -10,9 +10,38 @@ from decouple import config
 STEAM_API_KEY = config('STEAM_API_KEY')
 
 # ========================================
+# LOOP (24h): Steam Sale
+# ========================================
+async def check_sale(ctx, server_wishlists):
+  for guild_id, wishlist in server_wishlists.items():
+    channel = ctx.get_channel(announcement_channel_id)  # Get the channel where to post the announcement
+    if not channel:
+      print(f"Channel with ID {announcement_channel_id} not found.")
+      continue
+
+    for game in wishlist:
+      # Check if the game has a discount
+      discount = game.get('price_overview', {}).get('discount_percent', 0)
+      if discount > 0:
+        embed = discord.Embed(
+          title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
+          description=game.get('short_description', 'No description available.'),
+          color=discord.Color.red()
+        )
+        embed.add_field(
+          name="Discounted Price", 
+          value=f"{game['price_overview']['final_formatted']}" if 'price_overview' in game else "Free or Price Not Available"
+        )
+        embed.add_field(name="Steam Store", value=f"https://store.steampowered.com/app/{game['steam_appid']}/", inline=False)
+        embed.set_thumbnail(url=game['header_image'])
+
+        # Send the announcement to the channel
+        await channel.send(embed=embed)
+
+# ========================================
 # COMMAND: !addwishlist
 # ========================================
-async def add_to_wishlist(ctx, game_name, server_wishlists):
+async def add_to_wishlist(ctx, game_name, server_wishlists, default_channel_data):
   """
   Search for a game on Steam, checks if it's already in the server's wishlist, 
   and adds it if not present.
@@ -42,8 +71,12 @@ async def add_to_wishlist(ctx, game_name, server_wishlists):
   guild_id = str(ctx.guild.id)
 
   # If the server doesn't have a wishlist yet, create one
+  #   and add default text channel
   if guild_id not in server_wishlists:
     server_wishlists[guild_id] = []
+    channel_id = str(ctx.channel.id)
+    print(channel_id)
+    default_channel_data[guild_id] = channel_id
 
   # Check if the game is already in the wishlist
   if any(game['steam_appid'] == game_details['steam_appid'] for game in server_wishlists[guild_id]):
