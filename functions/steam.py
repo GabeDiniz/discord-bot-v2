@@ -80,12 +80,12 @@ async def add_to_wishlist(ctx, game_name, server_wishlists, default_channel_data
 
   # Check if the game is already in the wishlist
   if any(game['steam_appid'] == game_details['steam_appid'] for game in server_wishlists[guild_id]):
-    await ctx.send(f"{game_details['name']} is already in the wishlist!")
+    await ctx.send(f"❌ Whoops! {game_details['name']} is already in the wishlist!")
     return
 
   # Add the game to the server's wishlist
   server_wishlists[guild_id].append(game_details)
-  await ctx.send(f"{game_details['name']} has been added to the wishlist!")
+  await ctx.send(f"✔ {game_details['name']} has been added to the wishlist!")
 
 # ========================================
 # COMMAND: !removewishlist
