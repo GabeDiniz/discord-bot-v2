@@ -12,11 +12,12 @@ STEAM_API_KEY = config('STEAM_API_KEY')
 # ========================================
 # LOOP (24h): Steam Sale
 # ========================================
-async def check_sale(ctx, server_wishlists):
+async def check_sale(ctx, server_wishlists, default_channel_id):
   for guild_id, wishlist in server_wishlists.items():
-    channel = ctx.get_channel(announcement_channel_id)  # Get the channel where to post the announcement
+    guild_id = str(ctx.guild.id)
+    channel = default_channel_id[guild_id]  # Get the channel where to post the announcement
     if not channel:
-      print(f"Channel with ID {announcement_channel_id} not found.")
+      print(f"Channel with ID {guild_id} not found.")
       continue
 
     for game in wishlist:
@@ -85,7 +86,7 @@ async def add_to_wishlist(ctx, game_name, server_wishlists, default_channel_data
 
   # Add the game to the server's wishlist
   server_wishlists[guild_id].append(game_details)
-  await ctx.send(f"✔ {game_details['name']} has been added to the wishlist!")
+  await ctx.send(f"✅ {game_details['name']} has been added to the wishlist!")
 
 # ========================================
 # COMMAND: !removewishlist

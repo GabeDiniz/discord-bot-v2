@@ -81,7 +81,7 @@ def load_wishlist():
 @tasks.loop(hours=24)
 async def steam_sale(ctx):
   print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-  steam.check_sale(ctx, server_wishlists)
+  steam.check_sale(ctx, server_wishlists, default_wishlist_channel)
 
 @steam_sale.before_loop
 async def before_check_sales():
