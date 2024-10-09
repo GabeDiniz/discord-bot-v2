@@ -12,11 +12,13 @@ STEAM_API_KEY = config('STEAM_API_KEY')
 # ========================================
 # LOOP (24h): Steam Sale
 # ========================================
-async def check_sale(ctx, server_wishlists, default_channel_id):
+async def check_sale(bot, server_wishlists, default_channel_id):
   for guild_id, wishlist in server_wishlists.items():
-    guild_id = str(ctx.guild.id)
-    channel = default_channel_id[guild_id]  # Get the channel where to post the announcement
-    if not channel:
+    channel_id = default_channel_id[guild_id]  # Get the channel where to post the announcement
+    # print(f"[ LOG ] Channel ID: {channel_id}") # Debug
+    channel = bot.get_channel(int(channel_id))
+    print(f"[ LOG ] Found channel: {channel}")
+    if not channel_id:
       print(f"Channel with ID {guild_id} not found.")
       continue
 

@@ -40,6 +40,7 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Ini
 @bot.event
 async def on_ready():
   load_wishlist()
+  await steam_sale.start()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
@@ -78,10 +79,10 @@ def load_wishlist():
     default_wishlist_channel = {}
 
 
-@tasks.loop(hours=24)
-async def steam_sale(ctx):
+@tasks.loop(hours=12)
+async def steam_sale():
   print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-  steam.check_sale(ctx, server_wishlists, default_wishlist_channel)
+  await steam.check_sale(bot, server_wishlists, default_wishlist_channel)
 
 @steam_sale.before_loop
 async def before_check_sales():
