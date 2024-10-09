@@ -13,6 +13,25 @@ STEAM_API_KEY = config('STEAM_API_KEY')
 # LOOP (24h): Steam Sale
 # ========================================
 async def check_sale(bot, server_wishlists, default_channel_id):
+  """
+  This asynchronous function continuously checks if any games in the server wishlists are on sale and announces the sale 
+  in the respective server's default channel.
+
+  Parameters
+  ----------
+  bot: discord.Bot
+    The Discord bot instance used to interact with channels and send messages.
+  server_wishlists: dict
+    A dictionary where each server (guild) ID maps to its respective wishlist of games.
+  default_channel_id: dict
+    A dictionary where each server (guild) ID maps to the channel ID where sale announcements should be posted.
+
+  Returns
+  -------
+  None
+    Sends an embedded message to the default channel of each server announcing any discounts found on the wishlist games.
+    Logs if a channel is not found or if no discounts are available.
+  """
   for guild_id, wishlist in server_wishlists.items():
     channel_id = default_channel_id[guild_id]  # Get the channel where to post the announcement
     # print(f"[ LOG ] Channel ID: {channel_id}") # Debug
