@@ -178,6 +178,7 @@ async def steamgame(ctx, *, game_name: str):
     await ctx.send(game_details)
   else:
     formatted_game_id = steam.reformat_game_id(game_details['name'])
+    print(f"[ LOG ] Formatted SteamGame ID: {formatted_game_id}")
     game_url = f"https://store.steampowered.com/app/{game_details['steam_appid']}/{formatted_game_id}/"
     discount = game_details.get('price_overview', {}).get('discount_percent', 0)
     embed = discord.Embed(
