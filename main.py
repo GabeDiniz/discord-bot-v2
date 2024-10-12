@@ -39,6 +39,7 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Ini
 # Start bot
 @bot.event
 async def on_ready():
+  '''Runs when the discord bot has connected'''
   load_wishlist()
   await steam_sale.start()
   await bot.tree.sync()
@@ -48,12 +49,14 @@ async def on_ready():
 # FUNCTIONS
 # ========================================
 def save_wishlist():
+  '''Saves the server wishlist when !addwishlist or !removewishlist is called'''
   global server_wishlists
   with open('wishlist.json', 'w') as f:
     json.dump(server_wishlists, f)
   print("[ SAVED ] Wishlist saved successfully")
 
 def save_default_channel():
+  '''Saves the default channel'''
   global default_wishlist_channel
   with open('default_channel.json', 'w') as f:
     json.dump(default_wishlist_channel, f)
@@ -81,6 +84,7 @@ def load_wishlist():
 
 @tasks.loop(hours=12)
 async def steam_sale():
+  '''Check each server wishlist for a sale and notify server'''
   print("[ LOG ] Loop-task: checking for server steam wishlist sale")
   await steam.check_sale(bot, server_wishlists, default_wishlist_channel)
 
