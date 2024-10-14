@@ -45,6 +45,7 @@ async def check_sale(bot, server_wishlists, default_channel_id):
       # Check if the game has a discount
       discount = game.get('price_overview', {}).get('discount_percent', 0)
       if discount > 0:
+        print(f"[ LOG ] Discounted game found! Game: {game['name']}")
         embed = discord.Embed(
           title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
           description=game.get('short_description', 'No description available.'),
