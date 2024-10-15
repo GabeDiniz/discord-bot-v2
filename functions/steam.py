@@ -195,7 +195,7 @@ async def show_wishlist(ctx, server_wishlists):
   for game in wishlist:
     embed.add_field(name=game['name'], value=f"Price: {game['price_overview']['final_formatted']}" if 'price_overview' in game else "Price: Free or Not Available", inline=False)
     formatted_game_id = reformat_game_id(game['name'])
-    game_url = f"https://store.steampowered.com/app/{game['steam_appid']}/{formatted_game_id}/"
+    game_url = f"[STEAM STORE](https://store.steampowered.com/app/{game['steam_appid']}/{formatted_game_id}/)"
     embed.add_field(name="", value=game_url, inline=False)
 
   await ctx.send(embed=embed)
