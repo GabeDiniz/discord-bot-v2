@@ -32,6 +32,8 @@ async def check_sale(bot, server_wishlists, default_channel_id):
     Sends an embedded message to the default channel of each server announcing any discounts found on the wishlist games.
     Logs if a channel is not found or if no discounts are available.
   """
+  url = f"http://store.steampowered.com/api/appdetails?appids="
+
   for guild_id, wishlist in server_wishlists.items():
     channel_id = default_channel_id[guild_id]  # Get the channel where to post the announcement
     # print(f"[ LOG ] Channel ID: {channel_id}") # Debug
@@ -43,8 +45,18 @@ async def check_sale(bot, server_wishlists, default_channel_id):
 
     for game in wishlist:
       # Check if the game has a discount
-      discount = game.get('price_overview', {}).get('discount_percent', 0)
-      if discount > 0:
+      game_id = str(game['steam_appid'])
+      response = requests.get(url + game_id).json()[game_id]['data']
+      
+      if 'price_overview' in response:
+        current_price = f"{response['price_overview']['final_formatted']}" 
+        discount = response['price_overview']['discount_percent']
+      else:
+        current_price = "Free or Unavailable"
+        discount = 0
+      
+      print(f"[ LOG ] Game: {game} Current: {current_price} Discount: {discount}")
+      if int(discount) > 0:
         print(f"[ LOG ] Discounted game found! Game: {game['name']}")
         embed = discord.Embed(
           title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
@@ -53,7 +65,7 @@ async def check_sale(bot, server_wishlists, default_channel_id):
         )
         embed.add_field(
           name="Discounted Price", 
-          value=f"{game['price_overview']['final_formatted']}" if 'price_overview' in game else "Free or Price Not Available"
+          value=current_price
         )
         embed.add_field(name="Steam Store", value=f"https://store.steampowered.com/app/{game['steam_appid']}/", inline=False)
         embed.set_thumbnail(url=game['header_image'])
