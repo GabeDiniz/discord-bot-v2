@@ -232,9 +232,19 @@ def search_steam_game(game_name):
       details_url = f"http://store.steampowered.com/api/appdetails?appids={game['appid']}"
       details_response = requests.get(details_url)
       if details_response.status_code == 200:
+        # Retrieve only the data we need
         game_details = details_response.json()[str(game['appid'])]['data']
+        useful_info = {
+          'name': game_details.get('name'),
+          'steam_appid': game_details.get('steam_appid'),
+          'price_overview': game_details.get('price_overview', {}),
+          'description': game_details.get('short_description', 'No description available'),
+          'genres':game_details.get('genres', []),
+          'header_image': game_details.get('header_image'),
+        }
         print(f"Retrieved game from {details_url}")
-        return game_details
+        print(f"INFO {useful_info}")
+        return useful_info
       else:
         return "Failed to fetch game details."
     else:

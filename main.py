@@ -183,7 +183,7 @@ async def steamgame(ctx, *, game_name: str):
     discount = game_details.get('price_overview', {}).get('discount_percent', 0)
     embed = discord.Embed(
       title=game_details['name'] + f' (ON SALE - {discount}% OFF)' if discount != 0 else game_details['name'], 
-      description=game_details.get('short_description', 'No description available.'), 
+      description=game_details.get('description', 'No description available.'), 
       color=discord.Color.red() if discount != 0 else discord.Color.purple())
     embed.add_field(name="Price", value=f"{game_details['price_overview']['final_formatted']}" if 'price_overview' in game_details else "Free or Price Not Available")
     embed.add_field(name="Genres", value=', '.join([genre['description'] for genre in game_details['genres']]))

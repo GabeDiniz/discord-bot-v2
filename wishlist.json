@@ -807,6 +807,24 @@
           "required_age": "12"
         }
       }
+    },
+    {
+      "name": "Firewatch",
+      "steam_appid": 383870,
+      "price_overview": {
+        "currency": "CAD",
+        "initial": 2599,
+        "final": 2599,
+        "discount_percent": 0,
+        "initial_formatted": "",
+        "final_formatted": "CDN$ 25.99"
+      },
+      "description": "Firewatch is a single-player first-person mystery set in the Wyoming wilderness, where your only emotional lifeline is the person on the other end of a handheld radio.",
+      "genres": [
+        { "id": "25", "description": "Adventure" },
+        { "id": "23", "description": "Indie" }
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/383870/header.jpg?t=1688484486"
     }
   ],
   "800478233148784682": [
