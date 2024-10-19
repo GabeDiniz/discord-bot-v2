@@ -48,15 +48,16 @@ async def check_sale(bot, server_wishlists, default_channel_id):
       game_id = str(game['steam_appid'])
       response = requests.get(url + game_id).json()[game_id]['data']
       
+      # Retrieve current discount and price
       if 'price_overview' in response:
         current_price = f"{response['price_overview']['final_formatted']}" 
-        discount = response['price_overview']['discount_percent']
+        discount = int(response['price_overview']['discount_percent'])
       else:
         current_price = "Free or Unavailable"
         discount = 0
-      
       print(f"[ LOG ] Game: {game} Current: {current_price} Discount: {discount}")
-      if int(discount) > 0:
+      
+      if discount > 0:
         print(f"[ LOG ] Discounted game found! Game: {game['name']}")
         embed = discord.Embed(
           title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
@@ -254,8 +255,6 @@ def search_steam_game(game_name):
           'genres':game_details.get('genres', []),
           'header_image': game_details.get('header_image'),
         }
-        print(f"Retrieved game from {details_url}")
-        print(f"INFO {useful_info}")
         return useful_info
       else:
         return "Failed to fetch game details."
