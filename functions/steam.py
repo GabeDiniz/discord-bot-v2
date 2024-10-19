@@ -55,7 +55,7 @@ async def check_sale(bot, server_wishlists, default_channel_id):
       else:
         current_price = "Free or Unavailable"
         discount = 0
-      print(f"[ LOG ] Game: {game} Current: {current_price} Discount: {discount}")
+      print(f"[ LOG ] Game: {game['name']} Current: {current_price} Discount: {discount}")
       
       if discount > 0:
         print(f"[ LOG ] Discounted game found! Game: {game['name']}")
