@@ -203,10 +203,22 @@ async def show_wishlist(ctx, server_wishlists):
     description=f"Games on {ctx.guild.name}'s wishlist:", 
     color=discord.Color.blue()
   )
-
+  
+  url = f"http://store.steampowered.com/api/appdetails?appids="
   # Add each game in the wishlist to the embed
   for game in wishlist:
-    embed.add_field(name=game['name'], value=f"Price: {game['price_overview']['final_formatted']}" if 'price_overview' in game else "Price: Free or Not Available", inline=False)
+    # Check if the game has a discount
+    game_id = str(game['steam_appid'])
+    response = requests.get(url + game_id).json()[game_id]['data']
+
+    # Retrieve current discount and price
+    if 'price_overview' in response:
+      current_price = f"{response['price_overview']['final_formatted']}" 
+      discount = int(response['price_overview']['discount_percent'])
+    else:
+      current_price = "Free or Unavailable"
+      discount = 0
+    embed.add_field(name=game['name'], value=f"Price: {current_price}", inline=False)
     formatted_game_id = reformat_game_id(game['name'])
     game_url = f"[STEAM STORE](https://store.steampowered.com/app/{game['steam_appid']}/{formatted_game_id}/)"
     embed.add_field(name="", value=game_url, inline=False)
