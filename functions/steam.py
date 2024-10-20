@@ -163,7 +163,7 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
   # Try to remove the game from the wishlist
   wishlist = server_wishlists[guild_id]
   for game in wishlist:
-    if game['steam_appid'] == game_details['steam_appid']:
+    if int(game['steam_appid']) == int(game_details['steam_appid']):
       wishlist.remove(game)
       await ctx.send(f"{game['name']} has been removed from the wishlist!")
       return
@@ -251,7 +251,7 @@ def search_steam_game(game_name):
     apps = response.json()['applist']['apps']
     # Find the game by name
     game = next((app for app in apps if game_name.lower() == app['name'].lower()), None)
-    print(game)
+    print(f"[ LOG ] Search steam game: {game}")
     if game:
       # Fetch details for the found game
       details_url = f"http://store.steampowered.com/api/appdetails?appids={game['appid']}"
