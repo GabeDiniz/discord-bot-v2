@@ -55,10 +55,10 @@ async def check_sale(bot, server_wishlists, default_channel_id):
       else:
         current_price = "Free or Unavailable"
         discount = 0
-      print(f"[ LOG ] Game: {game['name']} Current: {current_price} Discount: {discount}")
+      print(f"[ LOG ] Game: {game['name']} | Price: {current_price} | Discount: {discount}")
       
       if discount > 0:
-        print(f"[ LOG ] Discounted game found! Game: {game['name']}")
+        print(f"[ SUCCESS ] Discounted game found! GAME: {game['name']}")
         embed = discord.Embed(
           title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
           description=game.get('short_description', 'No description available.'),
@@ -150,7 +150,7 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
 
   # Check if the server has a wishlist
   if guild_id not in server_wishlists or not server_wishlists[guild_id]:
-    await ctx.send("The wishlist is currently empty.")
+    await ctx.send("The wishlist is currently empty. 😢 Use !addwishlist <game-name> to add games to your Server's wishlist")
     return
 
   # Search for the game in the wishlist
@@ -194,7 +194,7 @@ async def show_wishlist(ctx, server_wishlists):
 
   # Check if the server has a wishlist
   if guild_id not in server_wishlists or not server_wishlists[guild_id]:
-    await ctx.send("The wishlist is currently empty.")
+    await ctx.send("The wishlist is currently empty. 😢 Use !addwishlist <game-name> to add games to your Server's wishlist")
     return
 
   wishlist = server_wishlists[guild_id]
