@@ -61,7 +61,7 @@ async def check_sale(bot, server_wishlists, default_channel_id):
         print(f"[ SUCCESS ] Discounted game found! GAME: {game['name']}")
         embed = discord.Embed(
           title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
-          description=game.get('short_description', 'No description available.'),
+          description=game.get('description', 'No description available.'),
           color=discord.Color.red()
         )
         embed.add_field(
