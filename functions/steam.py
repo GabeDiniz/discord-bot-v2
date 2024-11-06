@@ -61,7 +61,7 @@ async def check_sale(bot, server_wishlists, default_channel_id):
         print(f"[ SUCCESS ] Discounted game found! GAME: {game['name']}")
         embed = discord.Embed(
           title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
-          description=game.get('short_description', 'No description available.'),
+          description=game.get('description', 'No description available.'),
           color=discord.Color.red()
         )
         embed.add_field(
@@ -199,7 +199,7 @@ async def show_wishlist(ctx, server_wishlists):
 
   wishlist = server_wishlists[guild_id]
   embed = discord.Embed(
-    title=f"{ctx.guild.name}'s Wishlist", 
+    title=f"🎁 {ctx.guild.name}'s Wishlist", 
     color=discord.Color.blue()
   )
   
@@ -220,7 +220,7 @@ async def show_wishlist(ctx, server_wishlists):
     title = game['name'] + f' (ON SALE - {discount}% OFF) 🔥' if discount != 0 else game['name']
     formatted_game_id = reformat_game_id(game['name'])
     game_url = f"https://store.steampowered.com/app/{game['steam_appid']}/{formatted_game_id}/"
-    embed.add_field(name="", value=f"**[{title}]({game_url})**", inline=False)
+    embed.add_field(name="", value=f"🎮 **[{title}]({game_url})**", inline=False)
     embed.add_field(name="", value=f"Price: {current_price}", inline=False)
 
   await ctx.send(embed=embed)
