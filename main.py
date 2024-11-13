@@ -7,7 +7,6 @@ import os
 
 # Used for retrieving BOT_KEY from .env
 from decouple import config
-import requests   # pip install python-decouple
 
 # ========================================
 # Response Features
@@ -20,8 +19,6 @@ import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
 import functions.nfl_sleeper as nfl_sleeper 
-# [DEPRECATED]
-# import functions.polls as polls
 
 # Fetch Credentials from local .env variables 
 # Constants
