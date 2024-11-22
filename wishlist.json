@@ -183,26 +183,5 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1412850/header.jpg?t=1726515401"
     }
   ],
-  "841766737061740574": [
-    {
-      "name": "Furnish Master",
-      "steam_appid": 2004080,
-      "price_overview": {
-        "currency": "CAD",
-        "initial": 1949,
-        "final": 1949,
-        "discount_percent": 0,
-        "initial_formatted": "",
-        "final_formatted": "CDN$ 19.49"
-      },
-      "description": "Furnish Master is a relaxing game about furnishing apartments, houses, commercial estate and even outdoor territory! Realize your design dreams!",
-      "genres": [
-        { "id": "4", "description": "Casual" },
-        { "id": "23", "description": "Indie" },
-        { "id": "28", "description": "Simulation" },
-        { "id": "70", "description": "Early Access" }
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2004080/header.jpg?t=1729286761"
-    }
-  ]
+  "841766737061740574": []
 }
