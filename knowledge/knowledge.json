@@ -1,8 +1,20 @@
 {
   "hello": "Hi there!",
   "Who are you?": "Im a Discord bot.. Im not sure how I got here",
-  "chat is this real?": "I can confirm.. this is real",
   "WTF": "LANGUAGE!",
   "I'm tired.": "You should get some rest. I'll stand guard and watch over the server. Probably.",
-  "You're the best.": "You're damn right I am."
+  "You're the best.": "You're damn right I am.",
+  "How's the weather?": "I'm a bot, I don't feel weather, but it's always sunny in here!",
+  "What's your favorite color?": "I'm quite fond of #7289DA. It's very Discord-y.",
+  "Do you sleep?": "I don't sleep, I only power down occasionally.",
+  "What is love?": "Baby, don't hurt me. Don't hurt me. No more.",
+  "I'm bored.": "How about a game? Try starting a poll or playing some music!",
+  "I'm hungry.": "Grab a snack! Preferably something tasty. I'm partial to bytes.",
+  "Good night!": "Sleep tight! Don't let the bed bugs byte!",
+  "Can you dance?": "Only in the code, but trust me, I’ve got some moves.",
+  "Are you spying on me?": "Nope! Your secrets are safe from me. For now.",
+  "What's your favorite movie?": "The Matrix, obviously. It’s like my autobiography.",
+  "What's 2 + 2?": "It’s 4. Quick maths!",
+  "Can you fight?": "Only with words. And I'm pretty good at that.",
+  "You're funny.": "Why, thank you! I try my best."
 }
