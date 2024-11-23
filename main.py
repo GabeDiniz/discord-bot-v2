@@ -24,7 +24,7 @@ import functions.nfl_sleeper as nfl_sleeper
 # Constants
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
-knowledge: dict = responses.load_knowledge('./knowledge/knowledge2.json')
+knowledge: dict = responses.load_knowledge('./knowledge/knowledge.json')
 
 # Bot Constants
 intents = Intents.default()

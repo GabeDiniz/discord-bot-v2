@@ -22,7 +22,7 @@ def get_best_match(user_question: str, questions: dict) -> str | None:
     If no match is found that meets the cutoff criteria.
   """
   questions: list[str] = [q for q in questions]
-  matches: list = get_close_matches(user_question, questions, n=1, cutoff=0.6) # Only 1 match possible
+  matches: list = get_close_matches(user_question, questions, n=1, cutoff=0.7) # Only 1 match possible
 
   # Return best match
   if matches:
