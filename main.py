@@ -266,7 +266,6 @@ async def skip_command(ctx):
 # ========================================
 @bot.event
 async def on_message(ctx):
-  print(f"USER: {ctx.author}")
   # [TESTING] Check for messages sent by a specific user
   # if str(ctx.author) == "emili03x":
   #   response: str = "msg here"
