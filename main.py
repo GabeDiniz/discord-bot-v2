@@ -19,6 +19,7 @@ import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
 import functions.nfl_sleeper as nfl_sleeper 
+import functions.currency_conversion as currency 
 
 # Fetch Credentials from local .env variables 
 # Constants
@@ -198,12 +199,12 @@ async def add_wishlist(ctx, *, game_name: str):
   save_default_channel()
   
 @bot.command(name="removewishlist")
-async def add_wishlist(ctx, *, game_name: str):
+async def remove_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
   save_wishlist()
 
 @bot.command(name="wishlist")
-async def add_wishlist(ctx):
+async def show_wishlist(ctx):
   await steam.show_wishlist(ctx, server_wishlists)
   
 # #####################
@@ -211,6 +212,12 @@ async def add_wishlist(ctx):
 async def nfl_league_info(ctx):
  embed = nfl_sleeper.fetch_matchup()
  await ctx.channel.send(embed=embed)
+
+# #####################
+@bot.command(name="convert")
+async def current_converter(ctx, *, amount: float, from_currency: str, to_currency: str):
+  print(f"[TESTING]: {amount} {from_currency} {to_currency}")
+  await currency.convert_currency(ctx, amount, from_currency, to_currency)
 
 # #####################
 # WIP: NOT FUNCTIONING AS IT COSTS MONEY
