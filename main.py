@@ -215,9 +215,31 @@ async def nfl_league_info(ctx):
 
 # #####################
 @bot.command(name="convert")
-async def current_converter(ctx, *, amount: float, from_currency: str, to_currency: str):
-  print(f"[TESTING]: {amount} {from_currency} {to_currency}")
-  await currency.convert_currency(ctx, amount, from_currency, to_currency)
+async def current_converter(ctx, *, args: str):
+  try:
+    # Split the input into components
+    components = args.split()
+    if len(components) != 3:
+      await ctx.send("Error: Please provide the correct format: `!convert <amount> <from_currency> <to_currency>`")
+      return
+
+    amount, from_currency, to_currency = components
+
+    # Validate and convert the amount
+    try:
+      amount = float(amount)
+    except ValueError:
+      await ctx.send("Error: Amount must be a valid number.")
+      return
+
+    # Call the currency conversion function
+    result = currency.convert_currency(ctx, amount, from_currency, to_currency)
+
+    # Send the result back to the channel
+    await ctx.send(result)
+
+  except Exception as e:
+    await ctx.send(f"An unexpected error occurred: {e}")
 
 # #####################
 # WIP: NOT FUNCTIONING AS IT COSTS MONEY

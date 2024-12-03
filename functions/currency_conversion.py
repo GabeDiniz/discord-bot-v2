@@ -16,7 +16,8 @@ def get_rates(base_currency):
     return f"Error: Unable to fetch rates (status code: {response.status_code})"
 
 def convert_currency(bot, amount, from_currency, to_currency):
-  rates = get_rates(from_currency.upper())
+  from_currency, to_currency = from_currency.upper(), to_currency.upper()
+  rates = get_rates(from_currency)
   if isinstance(rates, dict):
     if to_currency in rates:
       rate = rates[to_currency]
