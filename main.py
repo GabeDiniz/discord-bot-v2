@@ -112,6 +112,7 @@ async def help_command(ctx):
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
   embed.add_field(name='Create a QR', value='Color-code should be in Hex format (#FFFFFF)\n`!qr <link> <optional: fg-color> <optional: bg-color>`', inline=False)
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
+  embed.add_field(name='Currency Converter', value='`!convert <amount> <from-currency> <to-currency>`', inline=False)
   embed.add_field(name='Create events!', value='`/event`', inline=True)
         
   # Send the embed message to the same channel where the command was issued
