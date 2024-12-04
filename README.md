@@ -36,10 +36,11 @@ GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 - !play <song> | !skip - for playing/queuing and skipping music
 - !leave - make the bot leave the voice-channel
 - !gif - send a random gif
+- !currency <amount> <from-currency> <to-currency>
 
 # Slash Commands:
 - /poll <query> - to create polls that users can react to
-- /event <date> <time> <description> - to create Server Events
+- [DEPRECATED] /event <date> <time> <description> - to create Server Events
 ```
 
 # 👨‍💻 For Dev:
