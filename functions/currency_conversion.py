@@ -9,16 +9,18 @@ EXCHANGE_RATE_API_KEY = config('EXCHANGE_RATE_API_KEY')
 def get_rates(base_currency):
   api_url = f"https://v6.exchangerate-api.com/v6/{EXCHANGE_RATE_API_KEY}/latest/{base_currency}"
   response = requests.get(api_url)
-  
+
   if response.status_code == 200:
     rates = response.json()
     return rates['conversion_rates']
   else:
-    return f"Error: Unable to fetch rates (status code: {response.status_code})"
+    print("[ API ERROR ] Response was not 200...")
+    return f"{base_currency} not found (status code: {response.status_code})"
 
 async def convert_currency(ctx, amount, from_currency, to_currency):
   from_currency, to_currency = from_currency.upper(), to_currency.upper()
   rates = get_rates(from_currency)
+
   if isinstance(rates, dict):
     if to_currency in rates:
       rate = rates[to_currency]
