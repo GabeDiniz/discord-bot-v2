@@ -25,17 +25,13 @@ async def convert_currency(ctx, amount, from_currency, to_currency):
       converted_amount = amount * rate
 
       # Send Discord Embed
-      print(f"TEstign: {rate}")
       embed = discord.Embed(
         title=f"{amount} {from_currency} is approximately {converted_amount:.2f} {to_currency}.",
-        description='No description available.',
         color=discord.Color.blurple()
       )
 
       # Send the announcement to the channel
       await ctx.send(embed=embed)
-
-      return f"{amount} {from_currency} is approximately {converted_amount:.2f} {to_currency}."
     else:
       return f"Error: {to_currency} not found in exchange rates."
   else:

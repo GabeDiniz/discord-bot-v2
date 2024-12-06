@@ -38,7 +38,7 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Ini
 @bot.event
 async def on_ready():
   load_wishlist()
-  await steam_sale.start()
+  # await steam_sale.start()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
@@ -234,10 +234,7 @@ async def current_converter(ctx, *, args: str):
       return
 
     # Call the currency conversion function
-    result = currency.convert_currency(ctx, amount, from_currency, to_currency)
-
-    # Send the result back to the channel
-    await ctx.send(result)
+    await currency.convert_currency(ctx, amount, from_currency, to_currency)
 
   except Exception as e:
     await ctx.send(f"An unexpected error occurred: {e}")
