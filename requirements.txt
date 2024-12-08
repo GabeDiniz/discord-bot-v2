@@ -6,4 +6,3 @@ yt-dlp==2023.12.30
 qrcode==7.4.2
 openai==1.40.2
 Pillow==9.4.0
-forex-python==1.8
