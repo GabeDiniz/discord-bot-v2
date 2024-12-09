@@ -44,7 +44,3 @@ async def convert_currency(ctx, amount, from_currency, to_currency):
   
   # Send the message to the channel
   await ctx.send(embed=embed)
-
-
-# Example usage:
-print(convert_currency('none', 10, "cad", "USD"))
