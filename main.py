@@ -38,7 +38,7 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Ini
 @bot.event
 async def on_ready():
   load_wishlist()
-  # await steam_sale.start()
+  await steam_sale.start()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
