@@ -16,8 +16,8 @@ STEAM_API_KEY="steam-api-key"   # for Steam feature
 GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 
 # Download the required libraries
-# > In the root directory of the project, run the install.ps1 file
-.\install.ps1
+# > In the bin directory of the project, run the import.bat file
+./import.bat
 ```
 
 # 💻 Tech Stack used for this Project:
@@ -49,7 +49,14 @@ GIPHY_API_KEY="giphy-api-key"   # for random gif feature (from api.giphy.com)
 # To run locally:
 py main.py
 
-# Ensure all necessary libraries are installed. See list below:
+# Ensure all necessary libraries are installed.
+# To install all from requirements.txt run the batch file found inside of bin/
+./import.bat
+```
+
+### See list below:
+
+```
 pip install discord.py
 pip install discord-ext-bot
 pip install requests
