@@ -65,5 +65,4 @@ pip install yt_dlp
 pip install pynacl
 pip install qrcode
 pip install pillow
-pip install forex-python
 ```
