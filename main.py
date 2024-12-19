@@ -19,6 +19,7 @@ import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
 import functions.nfl_sleeper as nfl_sleeper 
+import functions.sport_details as sport_details
 import functions.currency_conversion as currency 
 
 # Fetch Credentials from local .env variables 
@@ -212,6 +213,12 @@ async def show_wishlist(ctx):
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
  embed = nfl_sleeper.fetch_matchup()
+ await ctx.channel.send(embed=embed)
+
+# #####################
+@bot.command(name="nfl_week", description="Displays information about the current weeks NFL matchups from ESPN.")
+async def nfl_weekly_matchup(ctx):
+ embed = sport_details.get_weekly_games()
  await ctx.channel.send(embed=embed)
 
 # #####################
