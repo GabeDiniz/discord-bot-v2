@@ -215,7 +215,7 @@ async def nfl_league_info(ctx):
  await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name="convert")
+@bot.command(name="convert", description="Converts the amount entered from currency A to currency B.")
 async def current_converter(ctx, *, args: str):
   try:
     # Split the input into components

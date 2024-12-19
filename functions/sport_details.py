@@ -4,7 +4,6 @@ API_KEY = "3"  # Free public API key
 LEAGUE_NAME = "NFL"
 
 SPORTSDB = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
-ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
 
 def get_live_scores_sportsdb():
     url = SPORTSDB
@@ -20,8 +19,9 @@ def get_live_scores_sportsdb():
     else:
         print("Error fetching live scores.")
 
+ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
 
-def get_live_scores_espn():
+def get_weekly_games():
     url = ESPN
     response = requests.get(url)
     if response.status_code == 200:
@@ -38,5 +38,3 @@ def get_live_scores_espn():
     else:
         print("Error fetching live scores.")
 
-
-get_live_scores_espn()
