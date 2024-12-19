@@ -3,8 +3,11 @@ import requests
 API_KEY = "3"  # Free public API key
 LEAGUE_NAME = "NFL"
 
-def get_live_scores():
-    url = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
+SPORTSDB = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
+ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
+
+def get_live_scores_sportsdb():
+    url = SPORTSDB
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
@@ -17,4 +20,23 @@ def get_live_scores():
     else:
         print("Error fetching live scores.")
 
-get_live_scores()
+
+def get_live_scores_espn():
+    url = ESPN
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        if data.get("events"):
+            for event in data["events"]:
+                time = event["status"]["type"]["detail"]
+                matchName = event["name"]
+                weather = event["weather"]["displayValue"]
+                print(f"Match: {matchName} ({time})")
+                print(f"Weather: {weather}")
+        else:
+            print("No live games currently.")
+    else:
+        print("Error fetching live scores.")
+
+
+get_live_scores_espn()
