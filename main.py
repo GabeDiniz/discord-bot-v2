@@ -200,7 +200,7 @@ async def add_wishlist(ctx, *, game_name: str):
   print(default_wishlist_channel)
   save_default_channel()
   
-@bot.command(name="removewishlist")
+@bot.command(name="removewishlist", description="Remove a Steam game from the servers wishlist.")
 async def remove_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
   save_wishlist()
