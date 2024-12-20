@@ -205,7 +205,7 @@ async def remove_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
   save_wishlist()
 
-@bot.command(name="wishlist")
+@bot.command(name="wishlist", description="Display the servers communal wishlist, if it exists.")
 async def show_wishlist(ctx):
   await steam.show_wishlist(ctx, server_wishlists)
   
