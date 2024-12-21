@@ -170,7 +170,7 @@ async def play_command(ctx):
   await ctx.channel.send(gif)
 
 # #####################
-@bot.command(name="steamgame")
+@bot.command(name="steamgame", description="Search for a Steam game and return game details")
 async def steamgame(ctx, *, game_name: str):
   await ctx.send("Searching for game on Steam...")
   game_details = steam.search_steam_game(game_name)
