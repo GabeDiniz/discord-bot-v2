@@ -6,10 +6,12 @@ LEAGUE_NAME = "NFL"
 # Text to Discord Emoji Dictionary
 weather_dictionary = {
     "Cloudy": ":cloud:",
-    "Rain": ":cloud_rain:",
     "Mostly cloudy": ":white_sun_cloud:",
+    "Intermittent clouds": ":partly_sunny:",
+    "Rain": ":cloud_rain:",
     "Sunny": ":sun:",
     "Mostly sunny": ":white_sun_small_cloud:",
+    "Partly sunny": ":white_sun_small_cloud:",
     "Clear": ":sun:",
     "Done": ":white_check_mark:"
 }
