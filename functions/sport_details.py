@@ -3,6 +3,17 @@ import requests
 API_KEY = "3"  # Free public API key
 LEAGUE_NAME = "NFL"
 
+# Text to Discord Emoji Dictionary
+weather_dictionary = {
+    "Cloudy": ":cloud:",
+    "Rain": ":cloud_rain:",
+    "Mostly cloudy": ":white_sun_cloud:",
+    "Sunny": ":sun:",
+    "Mostly sunny": ":white_sun_small_cloud:",
+    "Clear": ":sun:",
+    "Done": ":white_check_mark:"
+}
+
 SPORTSDB = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
 
 def get_live_scores_sportsdb():
@@ -30,11 +41,13 @@ def get_weekly_games():
             for event in data["events"]:
                 time = event["status"]["type"]["detail"]
                 matchName = event["name"]
-                weather = event["weather"]["displayValue"]
+                try:
+                  weather = event["weather"]["displayValue"]
+                except KeyError:
+                  weather = "Done"
                 print(f"Match: {matchName} ({time})")
                 print(f"Weather: {weather}")
         else:
             print("No live games currently.")
     else:
         print("Error fetching live scores.")
-
