@@ -193,7 +193,7 @@ async def steamgame(ctx, *, game_name: str):
     await ctx.send(embed=embed)
 
 # #####################
-@bot.command(name="addwishlist")
+@bot.command(name="addwishlist", description="Add a Steam game to the server wishlist and set default wishlist channel")
 async def add_wishlist(ctx, *, game_name: str):
   await steam.add_to_wishlist(ctx, game_name, server_wishlists, default_wishlist_channel)
   save_wishlist()
