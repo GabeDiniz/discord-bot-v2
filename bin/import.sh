@@ -3,6 +3,9 @@
 # Path to requirements file
 REQUIREMENTS_FILE="$(dirname "$0")/../requirements.txt"
 
+# Ensure pip3 is aliased to pip
+alias pip=pip3
+
 # Check for requirements file
 if [ ! -f "$REQUIREMENTS_FILE" ]; then
   echo "Requirements file not found at $REQUIREMENTS_FILE"
