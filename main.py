@@ -147,7 +147,7 @@ async def play_command(ctx):
   await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name='qr')
+@bot.command(name='qr', description="Generate QR image based on given prompt")
 async def play_command(ctx, *, message: str):
   qr_code_file = qr.generate(message)   # Returns QR file
   if qr_code_file:
@@ -164,7 +164,7 @@ async def play_command(ctx, *, message: str):
   os.remove("qr.png")
 
 # #####################
-@bot.command(name='gif', description="Generate QR image based on given prompt")
+@bot.command(name='gif', description="Send a random GIF in the chat")
 async def play_command(ctx):
   gif = gifs.random_gif()
   await ctx.channel.send(gif)
