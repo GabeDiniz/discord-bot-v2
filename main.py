@@ -164,7 +164,7 @@ async def play_command(ctx, *, message: str):
   os.remove("qr.png")
 
 # #####################
-@bot.command(name='gif')
+@bot.command(name='gif', description="Generate QR image based on given prompt")
 async def play_command(ctx):
   gif = gifs.random_gif()
   await ctx.channel.send(gif)
