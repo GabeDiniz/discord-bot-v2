@@ -35,6 +35,19 @@ def get_live_scores_sportsdb():
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
 
 def get_weekly_games():
+    """
+    Search for the details of the current week's NFL games.
+
+    Parameters
+    ----------
+    ctx: discord.Bot
+      The Discord bot instance used to interact with channels and send messages.
+
+    Returns
+    -------
+    None
+      Sends a Discord embed message of the current week's game details.
+    """
     url = ESPN
     response = requests.get(url)
     if response.status_code == 200:
