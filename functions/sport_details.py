@@ -35,34 +35,34 @@ def get_live_scores_sportsdb():
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
 
 def get_weekly_games():
-    """
-    Search for the details of the current week's NFL games.
+  """
+  Search for the details of the current week's NFL games.
 
-    Parameters
-    ----------
-    ctx: discord.Bot
-      The Discord bot instance used to interact with channels and send messages.
+  Parameters
+  ----------
+  ctx: discord.Bot
+    The Discord bot instance used to interact with channels and send messages.
 
-    Returns
-    -------
-    None
-      Sends a Discord embed message of the current week's game details.
-    """
-    url = ESPN
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        if data.get("events"):
-            for event in data["events"]:
-                time = event["status"]["type"]["detail"]
-                matchName = event["name"]
-                try:
-                  weather = event["weather"]["displayValue"]
-                except KeyError:
-                  weather = "Done"
-                print(f"Match: {matchName} ({time})")
-                print(f"Weather: {weather}")
-        else:
-            print("No live games currently.")
+  Returns
+  -------
+  None
+    Sends a Discord embed message of the current week's game details.
+  """
+  url = ESPN
+  response = requests.get(url)
+  if response.status_code == 200:
+    data = response.json()
+    if data.get("events"):
+      for event in data["events"]:
+        time = event["status"]["type"]["detail"]
+        matchName = event["name"]
+        try:
+          weather = event["weather"]["displayValue"]
+        except KeyError:
+          weather = "Done"
+        print(f"Match: {matchName} ({time})")
+        print(f"Weather: {weather}")
     else:
-        print("Error fetching live scores.")
+      print("No live games currently.")
+  else:
+    print("Error fetching live scores.")
