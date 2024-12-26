@@ -18,7 +18,6 @@ import functions.playmusic as playmusic
 import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
-import functions.nfl_sleeper as nfl_sleeper 
 import functions.sport_details as sport_details
 import functions.currency_conversion as currency 
 
@@ -212,7 +211,7 @@ async def show_wishlist(ctx):
 # #####################
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
- embed = nfl_sleeper.fetch_matchup()
+ embed = sport_details.fetch_matchup()
  await ctx.channel.send(embed=embed)
 
 # #####################
