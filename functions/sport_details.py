@@ -33,9 +33,10 @@ def get_live_scores_sportsdb():
     else:
         print("Error fetching live scores.")
 
-# #####################################################################################
-# NFL Weekly Games
-# #####################################################################################
+# ========================================
+# NFL Weekly Match Info
+# COMMAND: !nfl_weekly
+# ========================================
 
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
 
@@ -72,9 +73,10 @@ def get_weekly_games():
   else:
     print("Error fetching live scores.")
 
-# #####################################################################################
-# NFL Sleeper League Info
-# #####################################################################################
+# ========================================
+# NFL Sleeper Info
+# COMMAND: !nfl_matchups
+# ========================================
 
 def fetch_league_info():
   """
