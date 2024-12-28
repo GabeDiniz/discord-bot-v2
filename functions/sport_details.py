@@ -59,6 +59,10 @@ def get_weekly_games():
   if response.status_code == 200:
     data = response.json()
     if data.get("events"):
+      embed = discord.Embed(
+        title=f":football: Week X Matchups",
+        color=discord.Color.blurple()
+      )
       for event in data["events"]:
         time = event["status"]["type"]["detail"]
         matchName = event["name"]
@@ -66,8 +70,11 @@ def get_weekly_games():
           weather = event["weather"]["displayValue"]
         except KeyError:
           weather = "Done"
+        
+        embed.add_field(name=f"{matchName} ({time})", value=f"Weather: {weather}", inline=False)
         print(f"Match: {matchName} ({time})")
         print(f"Weather: {weather}")
+      return embed
     else:
       print("No live games currently.")
   else:
