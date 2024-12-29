@@ -7,14 +7,16 @@ LEAGUE_NAME = "NFL"
 # Text to Discord Emoji Dictionary
 weather_dictionary = {
     "Cloudy": ":cloud:",
+    "Partly cloudy": ":partly_sunny:",
     "Mostly cloudy": ":white_sun_cloud:",
     "Intermittent clouds": ":partly_sunny:",
+    "Mostly cloudy w/ t-storms": ":thunder_cloud_rain:",
     "Rain": ":cloud_rain:",
     "Sunny": ":sun:",
     "Mostly sunny": ":white_sun_small_cloud:",
     "Partly sunny": ":white_sun_small_cloud:",
     "Clear": ":sun:",
-    "Done": ":white_check_mark:"
+    "Done": ":white_check_mark:",
 }
 
 SPORTSDB = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
@@ -71,7 +73,7 @@ def get_weekly_games():
         except KeyError:
           weather = "Done"
         
-        embed.add_field(name=f"{matchName} ({time})", value=f"Weather: {weather}", inline=False)
+        embed.add_field(name=f"{time}", value=f"{weather_dictionary[weather]} {matchName}", inline=False)
         print(f"Match: {matchName} ({time})")
         print(f"Weather: {weather}")
       return embed
