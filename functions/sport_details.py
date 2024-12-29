@@ -19,6 +19,15 @@ weather_dictionary = {
     "Done": ":white_check_mark:",
 }
 
+
+def retrieve_nfl_week():
+  """
+  Helper function to retrieve current NFL week
+  """
+  # Retrieve current NFL week
+  api_url = 'https://api.sleeper.app/v1/state/nfl'
+  return requests.get(api_url).json()["week"]
+
 SPORTSDB = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
 
 def get_live_scores_sportsdb():
@@ -56,13 +65,16 @@ def get_weekly_games():
   None
     Sends a Discord embed message of the current week's game details.
   """
+  # Retrieve current week
+  week = retrieve_nfl_week()
+
   url = ESPN
   response = requests.get(url)
   if response.status_code == 200:
     data = response.json()
     if data.get("events"):
       embed = discord.Embed(
-        title=f":football: Week X Matchups",
+        title=f":football: Week {week} Matchups",
         color=discord.Color.blurple()
       )
       for event in data["events"]:
@@ -126,8 +138,7 @@ def fetch_matchup():
   discord.Embed: with matchup information
   """
   # Retrieve current NFL week
-  api_url = 'https://api.sleeper.app/v1/state/nfl'
-  week = requests.get(api_url).json()["week"]
+  week = retrieve_nfl_week()
 
   # Setup embed
   embed = discord.Embed(title=f"PSFF (2024)", description=f'Matchups for week {week}', color=discord.Color.red())
