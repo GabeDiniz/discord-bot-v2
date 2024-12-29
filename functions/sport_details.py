@@ -70,10 +70,15 @@ def get_weekly_games():
         matchName = event["name"]
         try:
           weather = event["weather"]["displayValue"]
+          # Convert to emoji
+          if weather.isdigit():
+            weather = ":hourglass:"
+          else:
+            weather = weather_dictionary.get(weather, ":question:")  # Default if key not found
         except KeyError:
           weather = "Done"
         
-        embed.add_field(name=f"{time}", value=f"{weather_dictionary[weather]} {matchName}", inline=False)
+        embed.add_field(name=f"{time}", value=f"{weather} {matchName}", inline=False)
         print(f"Match: {matchName} ({time})")
         print(f"Weather: {weather}")
       return embed
