@@ -22,7 +22,12 @@ weather_dictionary = {
 
 def retrieve_nfl_week():
   """
-  Helper function to retrieve current NFL week
+  Helper function to retrieve current NFL week.
+
+  Returns
+  -------
+  String
+    A string of the current NFL week (i.e., "15")  
   """
   # Retrieve current NFL week
   api_url = 'https://api.sleeper.app/v1/state/nfl'
