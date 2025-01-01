@@ -15,6 +15,7 @@ weather_dictionary = {
     "Sunny": ":sun:",
     "Mostly sunny": ":white_sun_small_cloud:",
     "Partly sunny": ":white_sun_small_cloud:",
+    "Hazy sunshine": ":white_sun_small_cloud:",
     "Clear": ":sun:",
     "Done": ":white_check_mark:",
 }
