@@ -1,23 +1,24 @@
 import requests
 import discord
+from collections import defaultdict
 
 API_KEY = "3"  # Free public API key
 LEAGUE_NAME = "NFL"
 
 # Text to Discord Emoji Dictionary
 weather_dictionary = {
-    "Cloudy": ":cloud:",
-    "Partly cloudy": ":partly_sunny:",
-    "Mostly cloudy": ":white_sun_cloud:",
-    "Intermittent clouds": ":partly_sunny:",
-    "Mostly cloudy w/ t-storms": ":thunder_cloud_rain:",
-    "Rain": ":cloud_rain:",
-    "Sunny": ":sun:",
-    "Mostly sunny": ":white_sun_small_cloud:",
-    "Partly sunny": ":white_sun_small_cloud:",
-    "Hazy sunshine": ":white_sun_small_cloud:",
-    "Clear": ":sun:",
-    "Done": ":white_check_mark:",
+  "Cloudy": ":cloud:",
+  "Partly cloudy": ":partly_sunny:",
+  "Mostly cloudy": ":white_sun_cloud:",
+  "Intermittent clouds": ":partly_sunny:",
+  "Mostly cloudy w/ t-storms": ":thunder_cloud_rain:",
+  "Rain": ":cloud_rain:",
+  "Sunny": ":sun:",
+  "Mostly sunny": ":white_sun_small_cloud:",
+  "Partly sunny": ":white_sun_small_cloud:",
+  "Hazy sunshine": ":white_sun_small_cloud:",
+  "Clear": ":sun:",
+  "Done": ":white_check_mark:",
 }
 
 
@@ -83,9 +84,13 @@ def get_weekly_games():
         title=f":football: Week {week} Matchups",
         color=discord.Color.blurple()
       )
+
+      # Group games by day
+      games_by_day = defaultdict(list)
       for event in data["events"]:
         time = event["status"]["type"]["detail"]
         matchName = event["name"]
+        day, time = time.split(' at ')[0], time.split(' at ')[1]
         try:
           weather = event["weather"]["displayValue"]
           # Convert to emoji
@@ -95,10 +100,17 @@ def get_weekly_games():
             weather = weather_dictionary.get(weather, ":question:")  # Default if key not found
         except KeyError:
           weather = "Done"
-        
-        embed.add_field(name=f"{time}", value=f"{weather} {matchName}", inline=False)
+        # Append game to games_by_day  
+        games_by_day[day].append(f"{weather} {matchName} @ {time}")
+
+      for day, games in games_by_day.items():
+        embed.add_field(name=f"{day}", value="", inline=False)
+        for game in games:
+          embed.add_field(name="", value=f"{game}", inline=False)
+
         print(f"Match: {matchName} ({time})")
         print(f"Weather: {weather}")
+
       return embed
     else:
       print("No live games currently.")
