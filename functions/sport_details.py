@@ -13,6 +13,7 @@ weather_dictionary = {
   "Intermittent clouds": ":partly_sunny:",
   "Mostly cloudy w/ t-storms": ":thunder_cloud_rain:",
   "Rain": ":cloud_rain:",
+  "Flurries": ":cloud_snow:",
   "Sunny": ":sun:",
   "Mostly sunny": ":white_sun_small_cloud:",
   "Partly sunny": ":white_sun_small_cloud:",
@@ -104,7 +105,7 @@ def get_weekly_games():
         games_by_day[day].append(f"{weather} {matchName} @ {time}")
 
       for day, games in games_by_day.items():
-        embed.add_field(name=f"{day}", value="", inline=False)
+        embed.add_field(name=f"`{day}`", value="", inline=False)
         for game in games:
           embed.add_field(name="", value=f"{game}", inline=False)
 
