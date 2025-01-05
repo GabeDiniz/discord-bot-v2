@@ -47,40 +47,48 @@ async def on_ready():
 # ========================================
 def save_wishlist():
   global server_wishlists
-  with open('wishlist.json', 'w') as f:
+  # Relative path to the file
+  file_path = os.path.join('resources', 'wishlist.json')
+  with open(file_path, 'w') as f:
     json.dump(server_wishlists, f)
   print("[ SAVED ] Wishlist saved successfully")
 
 def save_default_channel():
-  global default_wishlist_channel
-  with open('default_channel.json', 'w') as f:
-    json.dump(default_wishlist_channel, f)
+  global default_channel
+  # Relative path to the file
+  file_path = os.path.join('resources', 'default_channel.json')
+  with open(file_path, 'w') as f:
+    json.dump(default_channel, f)
     print("[ SAVED ] Default wishlist channel saved successfully")
 
 def load_wishlist():
   '''Load wishlist if existing, create a new one if none available'''
   global server_wishlists
-  global default_wishlist_channel
+  global default_channel
   try:
     print("[ LOG ] Loading Server Wishlist...")
-    with open('wishlist.json', 'r') as f:
+    # Relative path to the file
+    file_path = os.path.join('resources', 'wishlist.json')
+    with open(file_path, 'r') as f:
       server_wishlists = json.load(f)
     print("[ LOG ] LOADED existing Wishlist")
 
     print("[ LOG ] Loading Default Wishlist channel data...")
-    with open('default_channel.json', 'r') as f:
-      default_wishlist_channel = json.load(f)
+    # Relative path to the file
+    file_path = os.path.join('resources', 'default_channel.json')
+    with open(file_path, 'r') as f:
+      default_channel = json.load(f)
     print("[ LOG ] LOADED Default Wishlist channel")
   except FileNotFoundError:
     print("[ LOG ] wishlist.json or default_channel.json not found, starting with an empty wishlist.")
     server_wishlists = {}
-    default_wishlist_channel = {}
+    default_channel = {}
 
 
 @tasks.loop(hours=12)
 async def steam_sale():
   print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-  await steam.check_sale(bot, server_wishlists, default_wishlist_channel)
+  await steam.check_sale(bot, server_wishlists, default_channel)
 
 @steam_sale.before_loop
 async def before_check_sales():
@@ -194,9 +202,9 @@ async def steamgame(ctx, *, game_name: str):
 # #####################
 @bot.command(name="addwishlist", description="Add a Steam game to the server wishlist and set default wishlist channel")
 async def add_wishlist(ctx, *, game_name: str):
-  await steam.add_to_wishlist(ctx, game_name, server_wishlists, default_wishlist_channel)
+  await steam.add_to_wishlist(ctx, game_name, server_wishlists, default_channel)
   save_wishlist()
-  print(default_wishlist_channel)
+  print(default_channel)
   save_default_channel()
   
 @bot.command(name="removewishlist", description="Remove a Steam game from the servers wishlist.")
