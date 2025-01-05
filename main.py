@@ -91,7 +91,7 @@ async def before_check_sales():
 # ! COMMANDS
 # ========================================
 # Simple example command
-@bot.command(name='hello')
+@bot.command(name='hello', description='Example command for easy copying and pasting.')
 async def hello_command(ctx):
   await ctx.send(f'Hello, {ctx.author.name}!')
 
