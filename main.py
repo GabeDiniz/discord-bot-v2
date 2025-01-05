@@ -134,7 +134,7 @@ async def help_command(ctx):
   await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name='cs2')
+@bot.command(name='cs2', description='Display Counter-strike 2 stats (only setup for some players).')
 async def steam_command(ctx, *, message: str):
   embed = steam.get_user_stats(ctx, message)
   await ctx.channel.send(embed=embed)
