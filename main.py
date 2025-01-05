@@ -25,7 +25,7 @@ import functions.currency_conversion as currency
 # Constants
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
-knowledge: dict = responses.load_knowledge('./knowledge/knowledge.json')
+knowledge: dict = responses.load_knowledge('./resources/knowledge.json')
 
 # Bot Constants
 intents = Intents.default()
