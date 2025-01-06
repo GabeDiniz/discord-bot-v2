@@ -54,6 +54,7 @@ def save_wishlist():
   print("[ SAVED ] Wishlist saved successfully")
 
 def save_default_channel():
+  '''Set the server's default text channel based on where the !addwishlist command was run.'''
   global default_channel
   # Relative path to the file
   file_path = os.path.join('resources', 'default_channel.json')
@@ -62,7 +63,7 @@ def save_default_channel():
     print("[ SAVED ] Default wishlist channel saved successfully")
 
 def load_wishlist():
-  '''Load wishlist if existing, create a new one if none available'''
+  '''Load wishlist if existing, create a new one if none available.'''
   global server_wishlists
   global default_channel
   try:
