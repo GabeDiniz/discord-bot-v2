@@ -94,7 +94,7 @@ def get_weekly_games():
 
         # Try Except for checking if the game is finished or scheduled
         try: 
-          day, time = time.split(' at ')[0], time.split(' at ')[1]
+          day, time = time.split(' at ')[0], "@ " + time.split(' at ')[1]
         except IndexError:
           day, time = "FINAL", ""
 
@@ -108,7 +108,7 @@ def get_weekly_games():
         except KeyError:
           weather = ":white_check_mark:"
         # Append game to games_by_day  
-        games_by_day[day].append(f"{weather} {matchName} @ {time}")
+        games_by_day[day].append(f"{weather} {matchName} {time}")
 
       for day, games in games_by_day.items():
         embed.add_field(name=f"`{day}`", value="", inline=False)
