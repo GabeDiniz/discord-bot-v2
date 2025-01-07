@@ -106,7 +106,7 @@ def get_weekly_games():
           else:
             weather = weather_dictionary.get(weather, ":question:")  # Default if key not found
         except KeyError:
-          weather = "Done"
+          weather = ":white_check_mark:"
         # Append game to games_by_day  
         games_by_day[day].append(f"{weather} {matchName} @ {time}")
 
