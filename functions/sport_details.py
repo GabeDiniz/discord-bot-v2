@@ -91,7 +91,13 @@ def get_weekly_games():
       for event in data["events"]:
         time = event["status"]["type"]["detail"]
         matchName = event["name"]
-        day, time = time.split(' at ')[0], time.split(' at ')[1]
+
+        # Try Except for checking if the game is finished or scheduled
+        try: 
+          day, time = time.split(' at ')[0], time.split(' at ')[1]
+        except IndexError:
+          day, time = "FINAL", ""
+
         try:
           weather = event["weather"]["displayValue"]
           # Convert to emoji
