@@ -36,22 +36,6 @@ def retrieve_nfl_week():
   api_url = 'https://api.sleeper.app/v1/state/nfl'
   return requests.get(api_url).json()["week"]
 
-SPORTSDB = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/livescore.php?l={LEAGUE_NAME}"
-
-def get_live_scores_sportsdb():
-    url = SPORTSDB
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        if data.get("events"):
-            for event in data["events"]:
-                print(f"Match: {event['strEvent']}")
-                print(f"Score: {event['intHomeScore']} - {event['intAwayScore']}")
-        else:
-            print("No live games currently.")
-    else:
-        print("Error fetching live scores.")
-
 # ========================================
 # NFL Weekly Match Info
 # COMMAND: !nfl_weekly
