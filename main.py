@@ -19,9 +19,9 @@ import functions.events as events
 import functions.qr_generator as qr
 import functions.get_gif as gifs
 import functions.sport_details as sport_details
-import functions.currency_conversion as currency 
+import functions.currency_conversion as currency
 
-# Fetch Credentials from local .env variables 
+# Fetch Credentials from local .env variables
 # Constants
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
@@ -123,7 +123,7 @@ async def help_command(ctx):
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
   embed.add_field(name='Currency Converter', value='`!convert <amount> <from-currency> <to-currency>`', inline=False)
   embed.add_field(name='Create events!', value='`/event`', inline=True)
-        
+
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
 
@@ -147,7 +147,7 @@ async def help_command(ctx):
 async def steam_command(ctx, *, message: str):
   embed = steam.get_user_stats(ctx, message)
   await ctx.channel.send(embed=embed)
-  
+
 # #####################
 @bot.command(name='fn-shop')
 async def play_command(ctx):
@@ -190,8 +190,8 @@ async def steamgame(ctx, *, game_name: str):
     game_url = f"https://store.steampowered.com/app/{game_details['steam_appid']}/{formatted_game_id}/"
     discount = game_details.get('price_overview', {}).get('discount_percent', 0)
     embed = discord.Embed(
-      title=game_details['name'] + f' (ON SALE - {discount}% OFF)' if discount != 0 else game_details['name'], 
-      description=game_details.get('description', 'No description available.'), 
+      title=game_details['name'] + f' (ON SALE - {discount}% OFF)' if discount != 0 else game_details['name'],
+      description=game_details.get('description', 'No description available.'),
       color=discord.Color.red() if discount != 0 else discord.Color.purple())
     embed.add_field(name="Price", value=f"{game_details['price_overview']['final_formatted']}" if 'price_overview' in game_details else "Free or Price Not Available")
     embed.add_field(name="Genres", value=', '.join([genre['description'] for genre in game_details['genres']]))
@@ -207,7 +207,7 @@ async def add_wishlist(ctx, *, game_name: str):
   save_wishlist()
   print(default_channel)
   save_default_channel()
-  
+
 @bot.command(name="removewishlist", description="Remove a Steam game from the servers wishlist.")
 async def remove_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
@@ -216,7 +216,7 @@ async def remove_wishlist(ctx, *, game_name: str):
 @bot.command(name="wishlist", description="Display the servers communal wishlist, if it exists.")
 async def show_wishlist(ctx):
   await steam.show_wishlist(ctx, server_wishlists)
-  
+
 # #####################
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")
 async def nfl_league_info(ctx):
@@ -300,7 +300,7 @@ async def leave_command(ctx):
 
 @bot.command(name='skip')
 async def skip_command(ctx):
-  await playmusic.skip_song(ctx, bot) 
+  await playmusic.skip_song(ctx, bot)
 
 
 # ========================================
