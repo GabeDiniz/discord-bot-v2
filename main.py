@@ -4,6 +4,7 @@ from discord.ext import commands, tasks    # pip install discord-ext-bot
 import discord   # pip install discord
 import openai  # pip install openai
 import os
+import requests
 
 # Used for retrieving BOT_KEY from .env
 from decouple import config
@@ -25,6 +26,8 @@ import functions.currency_conversion as currency
 # Constants
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
+HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/gpt2"
+HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}  # optional if you have one
 knowledge: dict = responses.load_knowledge('./resources/knowledge.json')
 
 # Bot Constants
@@ -89,7 +92,7 @@ def load_wishlist():
 @tasks.loop(hours=12)
 async def steam_sale():
   print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-  await steam.check_sale(bot, server_wishlists, default_channel)
+  await steam.check_sale(bot, server_wishlists, default_channel) # Comment this out when testing
 
 @steam_sale.before_loop
 async def before_check_sales():
@@ -253,6 +256,16 @@ async def current_converter(ctx, *, args: str):
 
   except Exception as e:
     await ctx.send(f"An unexpected error occurred: {e}")
+
+# #####################
+@bot.command(name='gpt', description='Chat with the bot using OpenAI\'s GPT model.')
+async def ask_ai_command(ctx, *, query: str):
+  response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json={"inputs": query, "parameters": {"max_length": 30, "num_return_sequences": 1}})
+
+  print(response)
+  print(response.status_code)
+  # Send response
+  await ctx.channel.send(response[0]["generated_text"])
 
 # #####################
 # WIP: NOT FUNCTIONING AS IT COSTS MONEY
