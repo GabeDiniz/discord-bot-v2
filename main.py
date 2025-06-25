@@ -5,6 +5,7 @@ import discord   # pip install discord
 import openai  # pip install openai
 import os
 import requests
+from transformers import pipeline  # pip install transformers
 
 # Used for retrieving BOT_KEY from .env
 from decouple import config
@@ -26,8 +27,8 @@ import functions.currency_conversion as currency
 # Constants
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
-HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/gpt2"
-HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}  # optional if you have one
+HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
+HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}
 knowledge: dict = responses.load_knowledge('./resources/knowledge.json')
 
 # Bot Constants
@@ -92,7 +93,7 @@ def load_wishlist():
 @tasks.loop(hours=12)
 async def steam_sale():
   print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-  await steam.check_sale(bot, server_wishlists, default_channel) # Comment this out when testing
+  # await steam.check_sale(bot, server_wishlists, default_channel) # Comment this out when testing
 
 @steam_sale.before_loop
 async def before_check_sales():
@@ -258,14 +259,35 @@ async def current_converter(ctx, *, args: str):
     await ctx.send(f"An unexpected error occurred: {e}")
 
 # #####################
-@bot.command(name='gpt', description='Chat with the bot using OpenAI\'s GPT model.')
+@bot.command(name='p', description='Chat with the bot using HuggingFace models (trained up to 2022).')
 async def ask_ai_command(ctx, *, query: str):
-  response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json={"inputs": query, "parameters": {"max_length": 30, "num_return_sequences": 1}})
+  payload = {
+    "inputs": f"### Question:\n{query}\n### Answer:",
+    "parameters": {
+      "max_new_tokens": 200,
+      "do_sample": True,
+      "temperature": 0.7,
+      "stop": ["###"]  # Stops on next section
+    }
+  }
 
-  print(response)
-  print(response.status_code)
-  # Send response
-  await ctx.channel.send(response[0]["generated_text"])
+  response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json=payload)
+
+  if response.status_code != 200:
+    await ctx.channel.send(f"⚠️ API Error {response.status_code}: {response.text}")
+    return
+
+  response_json = response.json()
+
+  try:
+    output = response_json[0]["generated_text"]
+  except (KeyError, IndexError, TypeError) as e:
+    await ctx.channel.send("⚠️ Error parsing response from Hugging Face.")
+    print(f"Response parsing error: {e}")
+    print(response_json)
+    return
+
+  await ctx.channel.send(output)
 
 # #####################
 # WIP: NOT FUNCTIONING AS IT COSTS MONEY
