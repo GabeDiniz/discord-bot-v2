@@ -44,6 +44,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--testing', action='store_true', help='Enable testing mode')
 args = parser.parse_args()
 TESTING_MODE = args.testing
+print("[ LOG ] Testing Mode is", "ON" if TESTING_MODE else "OFF")
 
 # Start bot
 @bot.event
@@ -99,8 +100,11 @@ def load_wishlist():
 
 @tasks.loop(hours=12)
 async def steam_sale():
-  print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-  # await steam.check_sale(bot, server_wishlists, default_channel) # Comment this out when testing
+  if not TESTING_MODE:
+    print("[ LOG ] Loop-task: checking for server steam wishlist sale")
+    await steam.check_sale(bot, server_wishlists, default_channel)
+  else:
+    print("[ LOG ] Loop-task: TESTING MODE - Skipping steam sale check")
 
 @steam_sale.before_loop
 async def before_check_sales():
