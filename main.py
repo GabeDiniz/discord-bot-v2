@@ -6,6 +6,7 @@ import openai  # pip install openai
 import os
 import requests
 from transformers import pipeline  # pip install transformers
+import argparse
 
 # Used for retrieving BOT_KEY from .env
 from decouple import config
@@ -37,6 +38,12 @@ intents.message_content = True
 intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Initialize bot
 # gptClient = openai.OpenAI(api_key=OPENAI_API_KEY)
+
+# Argument Parser for CLI flags
+parser = argparse.ArgumentParser()
+parser.add_argument('--testing', action='store_true', help='Enable testing mode')
+args = parser.parse_args()
+TESTING_MODE = args.testing
 
 # Start bot
 @bot.event
