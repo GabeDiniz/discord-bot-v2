@@ -115,12 +115,12 @@ async def before_check_sales():
 # ! COMMANDS
 # ========================================
 # Simple example command
-@bot.command(name='hello', description='Example command for easy copying and pasting.')
+@bot.command(name="hello", description="Example command for easy copying and pasting.")
 async def hello_command(ctx):
   await ctx.send(f'Hello, {ctx.author.name}!')
 
 # #####################
-@bot.command(name='help')
+@bot.command(name="help", description="Displays the bot's available commands.")
 async def help_command(ctx):
   embed = discord.Embed(
     # title='Cpt. Bot Commands',
