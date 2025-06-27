@@ -334,18 +334,18 @@ async def create_event(interaction: discord.Interaction, date: str, time: str, d
 # ========================================
 # PLAY MUSIC
 # ========================================
-@bot.command(name='play')
+@bot.command(name="play", description="Allows user to play music using text or a YouTube link.")
 async def play_command(ctx, *, message: str):
   print(ctx)
   embed = await playmusic.play_music(ctx, message, bot)
   await ctx.channel.send(embed=embed)
 
-@bot.command(name='leave')
+@bot.command(name="leave", description="Makes the bot leave the voice channel.")
 async def leave_command(ctx):
   embed = await playmusic.leave_channel(ctx)
   await ctx.channel.send(embed=embed)
 
-@bot.command(name='skip')
+@bot.command(name="skip", description="Skips the current song that is playing and plays the next one in the queue.")
 async def skip_command(ctx):
   await playmusic.skip_song(ctx, bot)
 
