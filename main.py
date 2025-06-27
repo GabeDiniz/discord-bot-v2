@@ -144,21 +144,6 @@ async def help_command(ctx):
   await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name='help-music')
-async def help_command(ctx):
-  embed = discord.Embed(
-    color=discord.Color.red()
-  )
-  embed.set_author(name="Music Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
-  embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
-  embed.add_field(name='Play or queue a song', value='`!play <song-query>`', inline=False)
-  embed.add_field(name='Skip current song', value='`!skip`', inline=False)
-  embed.add_field(name='Kick bot from VC', value='`!leave`', inline=False)
-
-  # Send the embed message to the same channel where the command was issued
-  await ctx.channel.send(embed=embed)
-
-# #####################
 @bot.command(name='cs2', description='Display Counter-strike 2 stats (only setup for some players).')
 async def steam_command(ctx, *, message: str):
   embed = steam.get_user_stats(ctx, message)
@@ -334,6 +319,21 @@ async def create_event(interaction: discord.Interaction, date: str, time: str, d
 # ========================================
 # PLAY MUSIC
 # ========================================
+# #####################
+@bot.command(name="help-music", description="Displays the commands available related to music playing/queuing/skipping/etc.")
+async def help_command(ctx):
+  embed = discord.Embed(
+    color=discord.Color.red()
+  )
+  embed.set_author(name="Music Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
+  embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
+  embed.add_field(name='Play or queue a song', value='`!play <song-query>`', inline=False)
+  embed.add_field(name='Skip current song', value='`!skip`', inline=False)
+  embed.add_field(name='Kick bot from VC', value='`!leave`', inline=False)
+
+  # Send the embed message to the same channel where the command was issued
+  await ctx.channel.send(embed=embed)
+
 @bot.command(name="play", description="Allows user to play music using text or a YouTube link.")
 async def play_command(ctx, *, message: str):
   print(ctx)
