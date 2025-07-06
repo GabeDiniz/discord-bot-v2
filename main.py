@@ -120,12 +120,12 @@ async def before_check_sales():
 # ! COMMANDS
 # ========================================
 # Simple example command
-@bot.command(name='hello', description='Example command for easy copying and pasting.')
+@bot.command(name="hello", description="Example command for easy copying and pasting.")
 async def hello_command(ctx):
   await ctx.send(f'Hello, {ctx.author.name}!')
 
 # #####################
-@bot.command(name='help')
+@bot.command(name="help", description="Displays the bot's available commands.")
 async def help_command(ctx):
   embed = discord.Embed(
     # title='Cpt. Bot Commands',
@@ -144,21 +144,6 @@ async def help_command(ctx):
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
   embed.add_field(name='Currency Converter', value='`!convert <amount> <from-currency> <to-currency>`', inline=False)
   embed.add_field(name='Create events!', value='`/event`', inline=True)
-
-  # Send the embed message to the same channel where the command was issued
-  await ctx.channel.send(embed=embed)
-
-# #####################
-@bot.command(name='help-music')
-async def help_command(ctx):
-  embed = discord.Embed(
-    color=discord.Color.red()
-  )
-  embed.set_author(name="Music Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
-  embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
-  embed.add_field(name='Play or queue a song', value='`!play <song-query>`', inline=False)
-  embed.add_field(name='Skip current song', value='`!skip`', inline=False)
-  embed.add_field(name='Kick bot from VC', value='`!leave`', inline=False)
 
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
@@ -339,18 +324,33 @@ async def create_event(interaction: discord.Interaction, date: str, time: str, d
 # ========================================
 # PLAY MUSIC
 # ========================================
-@bot.command(name='play')
+# #####################
+@bot.command(name="help-music", description="Displays the commands available related to music playing/queuing/skipping/etc.")
+async def help_command(ctx):
+  embed = discord.Embed(
+    color=discord.Color.red()
+  )
+  embed.set_author(name="Music Commands", url="https://github.com/GabeDiniz", icon_url="https://imgur.com/nH32raP.png")
+  embed.set_thumbnail(url="https://i.imgur.com/nH32raP.png")
+  embed.add_field(name='Play or queue a song', value='`!play <song-query>`', inline=False)
+  embed.add_field(name='Skip current song', value='`!skip`', inline=False)
+  embed.add_field(name='Kick bot from VC', value='`!leave`', inline=False)
+
+  # Send the embed message to the same channel where the command was issued
+  await ctx.channel.send(embed=embed)
+
+@bot.command(name="play", description="Allows user to play music using text or a YouTube link.")
 async def play_command(ctx, *, message: str):
   print(ctx)
   embed = await playmusic.play_music(ctx, message, bot)
   await ctx.channel.send(embed=embed)
 
-@bot.command(name='leave')
+@bot.command(name="leave", description="Makes the bot leave the voice channel.")
 async def leave_command(ctx):
   embed = await playmusic.leave_channel(ctx)
   await ctx.channel.send(embed=embed)
 
-@bot.command(name='skip')
+@bot.command(name="skip", description="Skips the current song that is playing and plays the next one in the queue.")
 async def skip_command(ctx):
   await playmusic.skip_song(ctx, bot)
 
