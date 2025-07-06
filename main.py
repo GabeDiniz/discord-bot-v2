@@ -30,7 +30,12 @@ BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
 HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
 HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}
-knowledge: dict = responses.load_knowledge('./resources/knowledge.json')
+
+try:
+  knowledge: dict = responses.load_knowledge('./resources/knowledge2.json')
+except FileNotFoundError:
+  knowledge: dict = responses.load_knowledge('./resources/knowledge.json')
+  print("[ WARN ] Knowledge 2 file not found, using base knowledge.")
 
 # Bot Constants
 intents = Intents.default()
