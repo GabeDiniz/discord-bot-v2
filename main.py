@@ -263,6 +263,8 @@ async def current_converter(ctx, *, args: str):
 # #####################
 @bot.command(name='p', description='Chat with the bot using HuggingFace models (trained up to 2022).')
 async def ask_ai_command(ctx, *, query: str):
+  await ctx.typing()  # Show typing while processing
+
   payload = {
     "inputs": f"### Question:\n{query}\n### Answer:",
     "parameters": {
