@@ -29,6 +29,7 @@ import functions.currency_conversion as currency
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
 HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
+HUGGING_FACE_API_URL = "https://router.huggingface.co/together/v1/chat/completions"
 HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}
 
 try:
@@ -264,32 +265,44 @@ async def current_converter(ctx, *, args: str):
 @bot.command(name='p', description='Chat with the bot using HuggingFace models (trained up to 2022).')
 async def ask_ai_command(ctx, *, query: str):
   await ctx.typing()  # Show typing while processing
-
   payload = {
-    "inputs": f"### Question:\n{query}\n### Answer:",
-    "parameters": {
-      "max_new_tokens": 200,
-      "do_sample": True,
-      "temperature": 0.7,
-      "stop": ["###"]  # Stops on next section
-    }
+    "messages": [
+      {
+        "role": "user",
+        "content": query
+      }
+    ],
+    "model": "mistralai/Mixtral-8x7B-Instruct-v0.1"
   }
 
   response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json=payload)
+  output = response.json()["choices"][0]["message"]["content"]
 
-  if response.status_code != 200:
-    await ctx.channel.send(f"⚠️ API Error {response.status_code}: {response.text}")
-    return
+  # payload = {
+  #   "inputs": f"### Question:\n{query}\n### Answer:",
+  #   "parameters": {
+  #     "max_new_tokens": 200,
+  #     "do_sample": True,
+  #     "temperature": 0.7,
+  #     "stop": ["###"]  # Stops on next section
+  #   }
+  # }
 
-  response_json = response.json()
+  # response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json=payload)
 
-  try:
-    output = response_json[0]["generated_text"]
-  except (KeyError, IndexError, TypeError) as e:
-    await ctx.channel.send("⚠️ Error parsing response from Hugging Face.")
-    print(f"Response parsing error: {e}")
-    print(response_json)
-    return
+  # if response.status_code != 200:
+  #   await ctx.channel.send(f"⚠️ API Error {response.status_code}: {response.text}")
+  #   return
+
+  # response_json = response.json()
+
+  # try:
+  #   output = response_json[0]["generated_text"]
+  # except (KeyError, IndexError, TypeError) as e:
+  #   await ctx.channel.send("⚠️ Error parsing response from Hugging Face.")
+  #   print(f"Response parsing error: {e}")
+  #   print(response_json)
+  #   return
 
   await ctx.channel.send(output)
 
