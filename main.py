@@ -290,26 +290,6 @@ async def ask_ai_command(ctx, *, query: str):
 
   await ctx.channel.send(output)
 
-# #####################
-# WIP: NOT FUNCTIONING AS IT COSTS MONEY
-# @bot.command(name='gpt')
-# async def chatgpt(ctx, *, query: str):
-#   await ctx.typing()  # Show typing indicator while processing
-
-#   try:
-#     response = gptClient.chat.completions.create(
-#       model="gpt-3.5-turbo",
-#       messages=[
-#         {"role": "user", "content": query}
-#       ]
-#     )
-#     print(response)
-#     answer = response.choices[0].message
-#     await ctx.send(answer)
-#   except Exception as e:
-#     await ctx.send(f"An error occurred: {e}")
-
-
 # ========================================
 # SLASH COMMANDS
 # ========================================
