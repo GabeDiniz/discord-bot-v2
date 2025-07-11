@@ -28,7 +28,6 @@ import functions.currency_conversion as currency
 # Constants
 BOT_KEY = config('BOT_KEY')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
-HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
 HUGGING_FACE_API_URL = "https://router.huggingface.co/together/v1/chat/completions"
 HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}
 
@@ -277,18 +276,6 @@ async def ask_ai_command(ctx, *, query: str):
 
   response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json=payload)
   output = response.json()["choices"][0]["message"]["content"]
-
-  # payload = {
-  #   "inputs": f"### Question:\n{query}\n### Answer:",
-  #   "parameters": {
-  #     "max_new_tokens": 200,
-  #     "do_sample": True,
-  #     "temperature": 0.7,
-  #     "stop": ["###"]  # Stops on next section
-  #   }
-  # }
-
-  # response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json=payload)
 
   # if response.status_code != 200:
   #   await ctx.channel.send(f"⚠️ API Error {response.status_code}: {response.text}")
