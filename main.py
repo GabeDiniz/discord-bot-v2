@@ -275,21 +275,18 @@ async def ask_ai_command(ctx, *, query: str):
   }
 
   response = requests.post(HUGGING_FACE_API_URL, headers=HF_HEADER, json=payload)
-  output = response.json()["choices"][0]["message"]["content"]
 
-  # if response.status_code != 200:
-  #   await ctx.channel.send(f"⚠️ API Error {response.status_code}: {response.text}")
-  #   return
+  if response.status_code != 200:
+    await ctx.channel.send(f"⚠️ API Error {response.status_code}: {response.text}")
+    return
 
-  # response_json = response.json()
-
-  # try:
-  #   output = response_json[0]["generated_text"]
-  # except (KeyError, IndexError, TypeError) as e:
-  #   await ctx.channel.send("⚠️ Error parsing response from Hugging Face.")
-  #   print(f"Response parsing error: {e}")
-  #   print(response_json)
-  #   return
+  try:
+    output = response.json()["choices"][0]["message"]["content"]
+  except (KeyError, IndexError, TypeError) as e:
+    await ctx.channel.send("⚠️ Error parsing response from Hugging Face.")
+    print(f"Response parsing error: {e}")
+    print(response.json())
+    return
 
   await ctx.channel.send(output)
 
