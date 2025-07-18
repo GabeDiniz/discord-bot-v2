@@ -288,6 +288,11 @@ async def ask_ai_command(ctx, *, query: str):
     print(response.json())
     return
 
+  # Handle discord character limit gracefully
+  MAX_LENGTH = 1900  # Leave space for truncation note
+  if len(output) > MAX_LENGTH:
+    output = output[:MAX_LENGTH] + "\n...\n⚠️ Response truncated."
+
   await ctx.channel.send(output)
 
 # ========================================
