@@ -31,6 +31,7 @@ BOT_KEY = config('BOT_KEY')
 HUGGING_FACE_API_URL = "https://router.huggingface.co/together/v1/chat/completions"
 HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}
 
+# Load Knowledge Base
 try:
   knowledge: dict = responses.load_knowledge('./resources/knowledge2.json')
 except FileNotFoundError:
@@ -91,12 +92,12 @@ def load_wishlist():
       server_wishlists = json.load(f)
     print("[ LOG ] LOADED existing Wishlist")
 
-    print("[ LOG ] Loading Default Wishlist channel data...")
+    print("[ LOG ] Loading channel data...")
     # Relative path to the file
     file_path = os.path.join('resources', 'default_channel.json')
     with open(file_path, 'r') as f:
       default_channel = json.load(f)
-    print("[ LOG ] LOADED Default Wishlist channel")
+    print("[ LOG ] LOADED channel data")
   except FileNotFoundError:
     print("[ LOG ] wishlist.json or default_channel.json not found, starting with an empty wishlist.")
     server_wishlists = {}
