@@ -30,7 +30,7 @@ def retrieve_nfl_week():
   Returns
   -------
   String
-    A string of the current NFL week (i.e., "15")  
+    A string of the current NFL week (i.e., "15")
   """
   # Retrieve current NFL week
   api_url = 'https://api.sleeper.app/v1/state/nfl'
@@ -77,7 +77,7 @@ def get_weekly_games():
         matchName = event["name"]
 
         # Try Except for checking if the game is finished or scheduled
-        try: 
+        try:
           day, time = time.split(' at ')[0], "@ " + time.split(' at ')[1]
         except IndexError:
           day, time = "FINAL", ""
@@ -91,7 +91,7 @@ def get_weekly_games():
             weather = weather_dictionary.get(weather, ":question:")  # Default if key not found
         except KeyError:
           weather = ":white_check_mark:"
-        # Append game to games_by_day  
+        # Append game to games_by_day
         games_by_day[day].append(f"{weather} {matchName} {time}")
 
       for day, games in games_by_day.items():
@@ -190,11 +190,11 @@ def fetch_matchup():
     if matchup_id not in matchup_info:
       # Create new Matchup
       matchup_info[matchup_id] = {'user1': user_info[user_id]['display_name'], 'team1': user_info[user_id]['metadata']['team_name']}
-    else: 
+    else:
       # Add user2 and team2 to existing Matchup
       matchup_info[matchup_id]['user2'] = user_info[user_id]['display_name']
       matchup_info[matchup_id]['team2'] = user_info[user_id]['metadata']['team_name']
-  
+
   # Add a field for each matchup
   for i in range(1, len(matchup_info) + 1):
     current_matchup = matchup_info[i]
