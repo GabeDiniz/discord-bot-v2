@@ -22,7 +22,7 @@ ffmpeg_options = {
 }
 
 # Global Dictionary -> Holds queue for each server
-queue = {}  # Example: {"server-id": [{song1 info}, {song2 info}, {song3 info}]}  
+queue = {}  # Example: {"server-id": [{song1 info}, {song2 info}, {song3 info}]}
 
 def check_queue(bot, ctx, guild_id):
   if queue[guild_id]:
@@ -46,7 +46,7 @@ def check_queue(bot, ctx, guild_id):
 
     # Schedule the send_now_playing coroutine
     bot.loop.create_task(send_now_playing())
-    
+
     # Play the next song and set the callback to check_queue with updated parameters
     ctx.guild.voice_client.play(
       discord.FFmpegPCMAudio(url, **ffmpeg_options),
@@ -73,14 +73,14 @@ async def play_music(message, ctx, client):
         )
         return embed
       # Otherwise -> the BOT is in the same voice channel
-      else: 
+      else:
         # The BOT is in the same voice channel
         vc = message.guild.voice_client
     # Otherwise -> the BOT is NOT in a voice channel
     else:
-      vc = await voice_state.channel.connect()
+      vc = await voice_state.channel.connect(timeout=30, reconnect=True)
   # Otherwise, the user is not in a voice channel
-  else: 
+  else:
     embed = discord.Embed(
       title=":bangbang: E R R O R",
       description="You are not in a voice channel.",
@@ -138,11 +138,11 @@ async def play_music(message, ctx, client):
         embed.add_field(name='', value=f'Duration: `{minutes}:{seconds}`', inline=False)
         embed.set_image(url=thumbnail)
         return embed
-    
+
     except youtube_dl.utils.DownloadError as e:
       print(f"{'*' * 30}\n[ERROR]:\n{e}")
       return await message.channel.send("Error: Unable to find or play the requested video.")
-    
+
 async def leave_channel(ctx):
   # Check if the bot is connected to a voice channel in the guild
   if ctx.guild.voice_client is not None:
@@ -159,12 +159,12 @@ async def leave_channel(ctx):
 
 async def skip_song(ctx, bot):
   guild_id = ctx.guild.id   # Retrieve guild.id
-  
+
   # Check if the bot is playing music
   if ctx.guild.voice_client is not None and ctx.guild.voice_client.is_playing():
     # Stop the current song
     ctx.guild.voice_client.stop()
-    
+
     # Check if there are songs in the queue and play the next one
     if guild_id in queue and len(queue[guild_id]) > 0:
       embed = discord.Embed(

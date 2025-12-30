@@ -41,6 +41,7 @@ except FileNotFoundError:
 # Bot Constants
 intents = Intents.default()
 intents.message_content = True
+intents.voice_states = True
 intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Initialize bot
 # gptClient = openai.OpenAI(api_key=OPENAI_API_KEY)
