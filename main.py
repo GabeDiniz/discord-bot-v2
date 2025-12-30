@@ -52,6 +52,7 @@ parser.add_argument('--testing', action='store_true', help='Enable testing mode'
 args = parser.parse_args()
 TESTING_MODE = args.testing
 print("[ LOG ] Testing Mode is", "ON" if TESTING_MODE else "OFF")
+ON_START = True # Used to prevent certain actions on bot restart
 
 # Start bot
 @bot.event
@@ -105,13 +106,18 @@ def load_wishlist():
     default_channel = {}
 
 
-@tasks.loop(hours=12)
+@tasks.loop(hours=24)
 async def steam_sale():
-  if not TESTING_MODE:
+  if ON_START:
+    print("[ ON START ] Don't check for sales on bot start")
+    global ON_START
+    ON_START = False
+    return
+  if TESTING_MODE:
+    print("[ LOG ] Loop-task: TESTING MODE - Skipping steam sale check")
+  else:
     print("[ LOG ] Loop-task: checking for server steam wishlist sale")
     await steam.check_sale(bot, server_wishlists, default_channel)
-  else:
-    print("[ LOG ] Loop-task: TESTING MODE - Skipping steam sale check")
 
 @steam_sale.before_loop
 async def before_check_sales():
