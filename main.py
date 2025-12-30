@@ -108,6 +108,7 @@ def load_wishlist():
 
 @tasks.loop(hours=24)
 async def steam_sale():
+  global ON_START
   if ON_START:
     print("[ ON START ] Don't check for sales on bot start")
     ON_START = False
