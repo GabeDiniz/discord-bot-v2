@@ -110,7 +110,6 @@ def load_wishlist():
 async def steam_sale():
   if ON_START:
     print("[ ON START ] Don't check for sales on bot start")
-    global ON_START
     ON_START = False
     return
   if TESTING_MODE:
