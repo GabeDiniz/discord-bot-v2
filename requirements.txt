@@ -2,7 +2,7 @@ discord.py==2.3.2
 discord-ext-bot==1.0.1
 requests==2.32.3
 python-decouple==3.8
-yt-dlp==2023.12.30
+yt-dlp==2025.12.08
 qrcode==7.4.2
 openai==1.40.2
 Pillow>=9.4.0

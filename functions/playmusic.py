@@ -8,6 +8,7 @@ import yt_dlp as youtube_dl
 # Define youtube_dl options
 ydl_opts = {
   'format': 'bestaudio/best',
+  'noplaylist': True,
   'postprocessors': [{
     'key': 'FFmpegExtractAudio',
     'preferredcodec': 'mp3',
