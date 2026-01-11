@@ -3,7 +3,7 @@ import json
 import discord   # pip install discord
 import re
 
-# Fetch Credentials from local .env variables 
+# Fetch Credentials from local .env variables
 from decouple import config
 
 # Constants
@@ -14,7 +14,7 @@ STEAM_API_KEY = config('STEAM_API_KEY')
 # ========================================
 async def check_sale(ctx, server_wishlists, default_channel_id):
   """
-  This asynchronous function continuously checks if any games in the server wishlists are on sale and announces the sale 
+  This asynchronous function continuously checks if any games in the server wishlists are on sale and announces the sale
   in the respective server's default channel.
 
   Parameters
@@ -47,16 +47,16 @@ async def check_sale(ctx, server_wishlists, default_channel_id):
       # Check if the game has a discount
       game_id = str(game['steam_appid'])
       response = requests.get(url + game_id).json()[game_id]['data']
-      
+
       # Retrieve current discount and price
       if 'price_overview' in response:
-        current_price = f"{response['price_overview']['final_formatted']}" 
+        current_price = f"{response['price_overview']['final_formatted']}"
         discount = int(response['price_overview']['discount_percent'])
       else:
         current_price = "Free or Unavailable"
         discount = 0
       print(f"[ LOG ] Game: {game['name']} | Price: {current_price} | Discount: {discount}")
-      
+
       if discount > 0:
         print(f"[ SUCCESS ] Discounted game found! GAME: {game['name']}")
         embed = discord.Embed(
@@ -65,7 +65,7 @@ async def check_sale(ctx, server_wishlists, default_channel_id):
           color=discord.Color.red()
         )
         embed.add_field(
-          name="Discounted Price", 
+          name="Discounted Price",
           value=current_price
         )
         embed.add_field(name="Steam Store", value=f"https://store.steampowered.com/app/{game['steam_appid']}/", inline=False)
@@ -79,7 +79,7 @@ async def check_sale(ctx, server_wishlists, default_channel_id):
 # ========================================
 async def add_to_wishlist(ctx, game_name, server_wishlists, default_channel_data):
   """
-  Search for a game on Steam, checks if it's already in the server's wishlist, 
+  Search for a game on Steam, checks if it's already in the server's wishlist,
   and adds it if not present.
 
   Parameters
@@ -94,7 +94,7 @@ async def add_to_wishlist(ctx, game_name, server_wishlists, default_channel_data
   Returns
   -------
   None
-    Sends a message to the context based on the outcome: whether the game is added, already exists, 
+    Sends a message to the context based on the outcome: whether the game is added, already exists,
     or cannot be found on Steam.
   """
   game_details = search_steam_game(game_name)
@@ -153,22 +153,15 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
     await ctx.send("The wishlist is currently empty. 😢 Use !addwishlist <game-name> to add games to your Server's wishlist")
     return
 
-  # Search for the game in the wishlist
-  game_details = search_steam_game(game_name)
-  # Check if returned is str -> Unable to find game
-  if isinstance(game_details, str):
-    await ctx.send(game_details)
-    return
-
   # Try to remove the game from the wishlist
   wishlist = server_wishlists[guild_id]
   for game in wishlist:
-    if int(game['steam_appid']) == int(game_details['steam_appid']):
+    if (game['name'].lower().strip()) == game_name.lower().strip():
       wishlist.remove(game)
       await ctx.send(f"{game['name']} has been removed from the wishlist!")
       return
 
-  await ctx.send(f"{game_name} is not in the wishlist.")
+  await ctx.send(f"Unable to find {game_name} in the wishlist.")
 
 # ========================================
 # COMMAND: !wishlist
@@ -176,7 +169,7 @@ async def remove_from_wishlist(ctx, game_name, server_wishlists):
 async def show_wishlist(ctx, server_wishlists):
   """
   Displays the server's wishlist by sending a formatted embeded message to the server.
-  
+
   Parameters
   ----------
   ctx: context
@@ -187,7 +180,7 @@ async def show_wishlist(ctx, server_wishlists):
   Returns
   -------
   None
-    Sends a Discord embed message containing the wishlist, or a message stating that the wishlist is empty 
+    Sends a Discord embed message containing the wishlist, or a message stating that the wishlist is empty
     if no games are found.
   """
   guild_id = str(ctx.guild.id)
@@ -199,10 +192,10 @@ async def show_wishlist(ctx, server_wishlists):
 
   wishlist = server_wishlists[guild_id]
   embed = discord.Embed(
-    title=f"🎁 {ctx.guild.name}'s Wishlist", 
+    title=f"🎁 {ctx.guild.name}'s Wishlist",
     color=discord.Color.blue()
   )
-  
+
   url = f"http://store.steampowered.com/api/appdetails?appids="
   # Add each game in the wishlist to the embed
   for game in wishlist:
@@ -212,7 +205,7 @@ async def show_wishlist(ctx, server_wishlists):
 
     # Retrieve current discount and price
     if 'price_overview' in response:
-      current_price = f"{response['price_overview']['final_formatted']}" 
+      current_price = f"{response['price_overview']['final_formatted']}"
       discount = int(response['price_overview']['discount_percent'])
     else:
       current_price = "Free or Unavailable"
@@ -224,7 +217,6 @@ async def show_wishlist(ctx, server_wishlists):
     embed.add_field(name="", value=f"Price: {current_price}", inline=False)
 
   await ctx.send(embed=embed)
-
 
 # ========================================
 # COMMAND: !steamgame
@@ -273,8 +265,8 @@ def search_steam_game(game_name):
     else:
       return "Game not found."
   else:
-    return "Failed to fetch game list."
-  
+    return "[API Failure] Failed to fetch game list from Steam API."
+
 
 def reformat_game_id(input_string: str):
   """
@@ -295,7 +287,7 @@ def reformat_game_id(input_string: str):
 
   # Replace spaces with underscores
   result_string = re.sub(r'\s+', '_', cleaned_string)
-  
+
   return result_string.lower()
 
 
@@ -358,7 +350,7 @@ def get_user_stats(ctx, message: str):
   url = f'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={app_id}&key={STEAM_API_KEY}&steamid={steam_id}'
   response = requests.get(url)
   data = response.json()
-  
+
   if 'playerstats' in data and 'stats' in data['playerstats']:
     user_stats = data['playerstats']['stats']
   # API Fetch Failure!!!
@@ -369,7 +361,7 @@ def get_user_stats(ctx, message: str):
       color=discord.Color.red()
     )
     return embed
-  
+
   if user_stats:
     embed = discord.Embed(
       title=":military_helmet: CS2 STATS: " + user.capitalize(),
