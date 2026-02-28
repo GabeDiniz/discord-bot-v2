@@ -253,7 +253,8 @@ def search_steam_game(game_id: str):
     }
     return useful_info
   else:
-    return "[API Failure] Failed to fetch game list from Steam API."
+    print(f"[ LOG ] Failed to fetch game {response.status_code}")
+    return "I was unable to find that game on Steam. Please check the game ID and try again."
 
 def deprecated_search_steam_game(game_name: str):
   """

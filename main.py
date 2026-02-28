@@ -143,8 +143,8 @@ async def help_command(ctx):
   embed.set_author(name="King Bob's Commands", url="https://github.com/GabeDiniz", icon_url="https://i.imgur.com/WcdJrv4.png")
   embed.set_thumbnail(url="https://i.imgur.com/WcdJrv4.png")
   embed.add_field(name='See Music Commands', value='`!help-music`', inline=False)
-  embed.add_field(name='Search for a Game', value='`!steamgame <name>`', inline=True)
-  embed.add_field(name='Steam Server Wishlist', value='`!wishlist` `!addwishlist <game-name>` `!removewishlist <game-name>`', inline=False)
+  embed.add_field(name='Search for a Game', value='`!steamgame <game-id>`', inline=True)
+  embed.add_field(name='Steam Server Wishlist', value='`!wishlist` `!addwishlist <game-id>` `!removewishlist <game-name>`', inline=False)
   embed.add_field(name='AI Prompt!', value='`!p <prompt>`', inline=True)
   embed.add_field(name='CS2 Stats', value='`!cs2 <name>`', inline=True)
   embed.add_field(name='Today\'s Fortnite Shop', value='`!fn-shop`', inline=True)
@@ -193,9 +193,9 @@ async def play_command(ctx):
 
 # #####################
 @bot.command(name="steamgame", description="Search for a Steam game and return game details")
-async def steamgame(ctx, *, game_name: str):
+async def steamgame(ctx, *, game_id: str):
   await ctx.send("Searching for game on Steam...")
-  game_details = steam.search_steam_game(game_name)
+  game_details = steam.search_steam_game(game_id)
   if isinstance(game_details, str):
     await ctx.send(game_details)
   else:
