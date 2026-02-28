@@ -237,8 +237,12 @@ def search_steam_game(game_id: str):
   str:
     A message indicating the error if the game is not found, or if there is a failure in fetching the game list or details.
   """
-  url = f"store.steampowered.com/api/appdetails?appids={game_id}" # No API key required for this endpoint
-  response = requests.get(url)
+  url = f"https://store.steampowered.com/api/appdetails?appids={game_id}" # No API key required for this endpoint
+  try:
+    response = requests.get(url)
+  except requests.exceptions.RequestException as error:
+    print(f"[ ERROR ] Request failed: {error}")
+    return "I was unable to find that game on Steam. Please check the game ID and try again."
   if response.status_code == 200:
     game_details = response.json()[str(game_id)]['data']
     print(f"[ LOG ] Found game from search_steam_game(): {game_details}")
@@ -252,9 +256,6 @@ def search_steam_game(game_id: str):
       'header_image': game_details.get('header_image'),
     }
     return useful_info
-  else:
-    print(f"[ LOG ] Failed to fetch game {response.status_code}")
-    return "I was unable to find that game on Steam. Please check the game ID and try again."
 
 def deprecated_search_steam_game(game_name: str):
   """
@@ -273,7 +274,7 @@ def deprecated_search_steam_game(game_name: str):
     A message indicating the error if the game is not found, or if there is a failure in fetching the game list or details.
   """
   url = f"https://api.steampowered.com/ISteamApps/GetAppList/v2/" # Deprecated
-  url = f"store.steampowered.com/api/appdetails?appids=<APP_ID>"
+  url = f"https://store.steampowered.com/api/appdetails?appids=<APP_ID>"
   response = requests.get(url)
   if response.status_code == 200:
     apps = response.json()['applist']['apps']
