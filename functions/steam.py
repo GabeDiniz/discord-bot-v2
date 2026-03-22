@@ -8,6 +8,29 @@ from decouple import config
 
 # Constants
 STEAM_API_KEY = config('STEAM_API_KEY')
+STEAM_APPDETAILS_URL = "https://store.steampowered.com/api/appdetails?appids="
+
+
+def fetch_game_price(game_id: str) -> dict:
+  """Fetches the current price and discount for a Steam game."""
+  response = requests.get(STEAM_APPDETAILS_URL + str(game_id)).json()[str(game_id)]['data']
+  if 'price_overview' in response:
+    return {
+      "current_price": response['price_overview']['final_formatted'],
+      "discount": int(response['price_overview']['discount_percent'])
+    }
+  return {"current_price": "Free or Unavailable", "discount": 0}
+
+
+def add_game_fields(embed, game, price_info):
+  """Adds a game's info fields to an existing embed."""
+  title = game['name']
+  if price_info['discount'] > 0:
+    title += f' (ON SALE - {price_info["discount"]}% OFF) 🔥'
+  formatted_game_id = reformat_game_id(game['name'])
+  game_url = f"https://store.steampowered.com/app/{game['steam_appid']}/{formatted_game_id}/"
+  embed.add_field(name="", value=f"🎮 **[{title}]({game_url})**", inline=False)
+  embed.add_field(name="", value=f"Price: {price_info['current_price']}", inline=False)
 
 # ========================================
 # LOOP (24h): Steam Sale
@@ -32,47 +55,31 @@ async def check_sale(ctx, server_wishlists, default_channel_id):
     Sends an embedded message to the default channel of each server announcing any discounts found on the wishlist games.
     Logs if a channel is not found or if no discounts are available.
   """
-  url = f"http://store.steampowered.com/api/appdetails?appids="
-
   for guild_id, wishlist in server_wishlists.items():
     channel_id = default_channel_id[guild_id]  # Get the channel where to post the announcement
-    # print(f"[ LOG ] Channel ID: {channel_id}") # Debug
     channel = ctx.get_channel(int(channel_id))
     print(f"[ LOG ] Found channel: {channel}")
     if not channel_id:
       print(f"Channel with ID {guild_id} not found.")
       continue
 
+    embed = discord.Embed(
+      title="🔥 Wishlist Games on Sale!",
+      color=discord.Color.red()
+    )
+
     for game in wishlist:
-      # Check if the game has a discount
       game_id = str(game['steam_appid'])
-      response = requests.get(url + game_id).json()[game_id]['data']
+      price_info = fetch_game_price(game_id)
+      print(f"[ LOG ] Game: {game['name']} | Price: {price_info['current_price']} | Discount: {price_info['discount']}")
 
-      # Retrieve current discount and price
-      if 'price_overview' in response:
-        current_price = f"{response['price_overview']['final_formatted']}"
-        discount = int(response['price_overview']['discount_percent'])
-      else:
-        current_price = "Free or Unavailable"
-        discount = 0
-      print(f"[ LOG ] Game: {game['name']} | Price: {current_price} | Discount: {discount}")
-
-      if discount > 0:
+      if price_info['discount'] > 0:
         print(f"[ SUCCESS ] Discounted game found! GAME: {game['name']}")
-        embed = discord.Embed(
-          title=f"🔥 {game['name']} is on sale! ({discount}% OFF)",
-          description=game.get('description', 'No description available.'),
-          color=discord.Color.red()
-        )
-        embed.add_field(
-          name="Discounted Price",
-          value=current_price
-        )
-        embed.add_field(name="Steam Store", value=f"https://store.steampowered.com/app/{game['steam_appid']}/", inline=False)
-        embed.set_thumbnail(url=game['header_image'])
+        add_game_fields(embed, game, price_info)
 
-        # Send the announcement to the channel
-        await channel.send(embed=embed)
+    # Only send if at least one game is on sale
+    if embed.fields:
+      await channel.send(embed=embed)
 
 # ========================================
 # COMMAND: !addwishlist
@@ -196,25 +203,11 @@ async def show_wishlist(ctx, server_wishlists):
     color=discord.Color.blue()
   )
 
-  url = f"http://store.steampowered.com/api/appdetails?appids="
   # Add each game in the wishlist to the embed
   for game in wishlist:
-    # Check if the game has a discount
     game_id = str(game['steam_appid'])
-    response = requests.get(url + game_id).json()[game_id]['data']
-
-    # Retrieve current discount and price
-    if 'price_overview' in response:
-      current_price = f"{response['price_overview']['final_formatted']}"
-      discount = int(response['price_overview']['discount_percent'])
-    else:
-      current_price = "Free or Unavailable"
-      discount = 0
-    title = game['name'] + f' (ON SALE - {discount}% OFF) 🔥' if discount != 0 else game['name']
-    formatted_game_id = reformat_game_id(game['name'])
-    game_url = f"https://store.steampowered.com/app/{game['steam_appid']}/{formatted_game_id}/"
-    embed.add_field(name="", value=f"🎮 **[{title}]({game_url})**", inline=False)
-    embed.add_field(name="", value=f"Price: {current_price}", inline=False)
+    price_info = fetch_game_price(game_id)
+    add_game_fields(embed, game, price_info)
 
   await ctx.send(embed=embed)
 
