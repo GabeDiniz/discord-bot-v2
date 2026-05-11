@@ -23,6 +23,7 @@ import functions.qr_generator as qr
 import functions.get_gif as gifs
 import functions.sport_details as sport_details
 import functions.currency_conversion as currency
+import functions.ipo as ipo
 
 # Fetch Credentials from local .env variables
 # Constants
@@ -151,6 +152,7 @@ async def help_command(ctx):
   embed.add_field(name='Create a QR', value='Color-code should be in Hex format (#FFFFFF)\n`!qr <link> <optional: fg-color> <optional: bg-color>`', inline=False)
   embed.add_field(name='Random GIF', value='`!gif`', inline=True)
   embed.add_field(name='Currency Converter', value='`!convert <amount> <from-currency> <to-currency>`', inline=False)
+  embed.add_field(name='Upcoming IPOs', value='`!ipos <optional: days>` `!ipo <ticker>`', inline=False)
   embed.add_field(name='Create events!', value='`/event`', inline=True)
 
   # Send the embed message to the same channel where the command was issued
@@ -267,6 +269,15 @@ async def current_converter(ctx, *, args: str):
 
   except Exception as e:
     await ctx.send(f"An unexpected error occurred: {e}")
+
+# #####################
+@bot.command(name="ipos", description="List upcoming stock IPOs in the next N days (default 7).")
+async def ipos_command(ctx, days: int = 7):
+  await ipo.show_upcoming_ipos(ctx, days)
+
+@bot.command(name="ipo", description="Show details for a specific upcoming IPO by ticker.")
+async def ipo_command(ctx, ticker: str):
+  await ipo.show_ipo_by_ticker(ctx, ticker)
 
 # #####################
 @bot.command(name='p', description='Chat with the bot using HuggingFace models (trained up to 2022).')
