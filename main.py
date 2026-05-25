@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, time as dtime, timezone
 from discord import Intents, Client, app_commands
 from discord.ext import commands, tasks    # pip install discord-ext-bot
 import discord   # pip install discord
@@ -60,6 +61,7 @@ ON_START = True # Used to prevent certain actions on bot restart
 async def on_ready():
   load_wishlist()
   await steam_sale.start()  # Enable/disable Steam sale notification
+  await weekly_ipos.start()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
@@ -106,7 +108,9 @@ def load_wishlist():
     server_wishlists = {}
     default_channel = {}
 
-
+# ========================================
+# SCHEDULED TASKS
+# ========================================
 @tasks.loop(hours=24)
 async def steam_sale():
   global ON_START
@@ -123,6 +127,24 @@ async def steam_sale():
 @steam_sale.before_loop
 async def before_check_sales():
   '''Ensure the bot is ready before starting the steam_sale loop'''
+  await bot.wait_until_ready()
+
+@tasks.loop(time=dtime(hour=15, minute=0, tzinfo=timezone.utc))  # 15:00 UTC daily; only acts on Sunday
+async def weekly_ipos():
+  if datetime.now(timezone.utc).weekday() != 6:  # Monday=0 ... Sunday=6
+    return
+  if TESTING_MODE:
+    print("[ LOG ] Loop-task: TESTING MODE - Skipping weekly IPO post")
+    return
+  print("[ LOG ] Loop-task: posting weekly IPOs to default channels")
+  for guild_id, channel_id in default_channel.items():
+    channel = bot.get_channel(int(channel_id))
+    if channel:
+      await ipo.show_upcoming_ipos(channel, days_ahead=7)
+
+@weekly_ipos.before_loop
+async def before_weekly_ipos():
+  '''Ensure the bot is ready before starting the weekly_ipos loop'''
   await bot.wait_until_ready()
 
 # ========================================
