@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, time as dtime, timezone
 from discord import Intents, Client, app_commands
 from discord.ext import commands, tasks    # pip install discord-ext-bot
@@ -25,6 +24,7 @@ import functions.get_gif as gifs
 import functions.sport_details as sport_details
 import functions.currency_conversion as currency
 import functions.ipo as ipo
+import functions.db as db
 
 # Fetch Credentials from local .env variables
 # Constants
@@ -59,54 +59,16 @@ ON_START = True # Used to prevent certain actions on bot restart
 # Start bot
 @bot.event
 async def on_ready():
-  load_wishlist()
+  db.init_db()
+  # Backfill server_name for any known guilds whose row is missing or out-of-date.
+  for guild in bot.guilds:
+    existing = db.get_server(str(guild.id))
+    if existing and existing.get("server_name") != guild.name:
+      db.update_server_name(str(guild.id), guild.name)
   await steam_sale.start()  # Enable/disable Steam sale notification
   await weekly_ipos.start()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
-
-# ========================================
-# FUNCTIONS
-# ========================================
-def save_wishlist():
-  global server_wishlists
-  # Relative path to the file
-  file_path = os.path.join('resources', 'wishlist.json')
-  with open(file_path, 'w') as f:
-    json.dump(server_wishlists, f)
-  print("[ SAVED ] Wishlist saved successfully")
-
-def save_default_channel():
-  '''Set the server's default text channel based on where the !addwishlist command was run.'''
-  global default_channel
-  # Relative path to the file
-  file_path = os.path.join('resources', 'default_channel.json')
-  with open(file_path, 'w') as f:
-    json.dump(default_channel, f)
-    print("[ SAVED ] Default wishlist channel saved successfully")
-
-def load_wishlist():
-  '''Load wishlist if existing, create a new one if none available.'''
-  global server_wishlists
-  global default_channel
-  try:
-    print("[ LOG ] Loading Server Wishlist...")
-    # Relative path to the file
-    file_path = os.path.join('resources', 'wishlist.json')
-    with open(file_path, 'r') as f:
-      server_wishlists = json.load(f)
-    print("[ LOG ] LOADED existing Wishlist")
-
-    print("[ LOG ] Loading channel data...")
-    # Relative path to the file
-    file_path = os.path.join('resources', 'default_channel.json')
-    with open(file_path, 'r') as f:
-      default_channel = json.load(f)
-    print("[ LOG ] LOADED channel data")
-  except FileNotFoundError:
-    print("[ LOG ] wishlist.json or default_channel.json not found, starting with an empty wishlist.")
-    server_wishlists = {}
-    default_channel = {}
 
 # ========================================
 # SCHEDULED TASKS
@@ -122,7 +84,7 @@ async def steam_sale():
     print("[ LOG ] Loop-task: TESTING MODE - Skipping steam sale check")
   else:
     print("[ LOG ] Loop-task: checking for server steam wishlist sale")
-    await steam.check_sale(bot, server_wishlists, default_channel)
+    await steam.check_sale(bot)
 
 @steam_sale.before_loop
 async def before_check_sales():
@@ -137,7 +99,7 @@ async def weekly_ipos():
     print("[ LOG ] Loop-task: TESTING MODE - Skipping weekly IPO post")
     return
   print("[ LOG ] Loop-task: posting weekly IPOs to default channels")
-  for guild_id, channel_id in default_channel.items():
+  for guild_id, channel_id in db.get_all_default_channels().items():
     channel = bot.get_channel(int(channel_id))
     if channel:
       await ipo.show_upcoming_ipos(channel, days_ahead=7)
@@ -241,19 +203,15 @@ async def steamgame(ctx, *, game_id: str):
 # #####################
 @bot.command(name="addwishlist", description="Add a Steam game to the server wishlist and set default wishlist channel")
 async def add_wishlist(ctx, *, game_id: str):
-  await steam.add_to_wishlist(ctx, game_id, server_wishlists, default_channel)
-  save_wishlist()
-  print(default_channel)
-  save_default_channel()
+  await steam.add_to_wishlist(ctx, game_id)
 
 @bot.command(name="removewishlist", description="Remove a Steam game from the servers wishlist.")
 async def remove_wishlist(ctx, *, game_name: str):
-  await steam.remove_from_wishlist(ctx, game_name, server_wishlists)
-  save_wishlist()
+  await steam.remove_from_wishlist(ctx, game_name)
 
 @bot.command(name="wishlist", description="Display the servers communal wishlist, if it exists.")
 async def show_wishlist(ctx):
-  await steam.show_wishlist(ctx, server_wishlists)
+  await steam.show_wishlist(ctx)
 
 # #####################
 @bot.command(name="nfl_matchups", description="Displays information about an NFL league from Sleeper.")

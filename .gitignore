@@ -7,3 +7,7 @@ knowledge2.json
 development
 __pycache__
 qr.png
+
+# SQLite database
+resources/bot.db
+resources/bot.db-journal
