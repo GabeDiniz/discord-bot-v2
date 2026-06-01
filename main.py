@@ -65,8 +65,8 @@ async def on_ready():
     existing = db.get_server(str(guild.id))
     if existing and existing.get("server_name") != guild.name:
       db.update_server_name(str(guild.id), guild.name)
-  await steam_sale.start()  # Enable/disable Steam sale notification
-  await weekly_ipos.start()
+  steam_sale.start()  # Enable/disable Steam sale notification (start() returns the Task; don't await it)
+  weekly_ipos.start()
   await bot.tree.sync()
   print(f"{bot.user} is now running!")
 
