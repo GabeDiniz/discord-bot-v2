@@ -1,193 +1,204 @@
-import discord   # pip install discord
-from discord.ext import commands
-# Requires:
-# pip install yt_dlp
-# pip install pynacl
-import yt_dlp as youtube_dl
+from __future__ import annotations
 
-# Define youtube_dl options
+import asyncio
+
+import discord   # pip install "discord.py[voice]"  (includes PyNaCl + davey for voice)
+import yt_dlp    # pip install yt_dlp
+
+# yt-dlp options: we only need the stream URL, nothing is downloaded
 ydl_opts = {
   'format': 'bestaudio/best',
   'noplaylist': True,
-  'postprocessors': [{
-    'key': 'FFmpegExtractAudio',
-    'preferredcodec': 'mp3',
-    'preferredquality': '192',
-  }],
+  'quiet': True,
+  'no_warnings': True,
 }
 
-# Additional FFmpeg options
+# Additional FFmpeg options (reconnect keeps long streams from dying mid-song)
 ffmpeg_options = {
   'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
   'options': '-vn'
 }
 
 # Global Dictionary -> Holds queue for each server
-queue = {}  # Example: {"server-id": [{song1 info}, {song2 info}, {song3 info}]}
-
-def check_queue(bot, ctx, guild_id):
-  if queue[guild_id]:
-    # Get next song
-    song_info = queue[guild_id].pop(0)  # Pop next song at position 0
-    title = song_info['title']
-    url = song_info['url']
-    thumbnail = song_info['thumbnail']
-    duration = song_info['duration']
-
-    # Send embed once song starts playing
-    async def send_now_playing():
-      embed = discord.Embed(
-        title=f":musical_note: Now playing:",
-        description=title,
-        color=discord.Color.fuchsia()
-      )
-      embed.add_field(name='', value=f'Duration: `{duration}`', inline=False)
-      embed.set_image(url=thumbnail)
-      await ctx.channel.send(embed=embed)
-
-    # Schedule the send_now_playing coroutine
-    bot.loop.create_task(send_now_playing())
-
-    # Play the next song and set the callback to check_queue with updated parameters
-    ctx.guild.voice_client.play(
-      discord.FFmpegPCMAudio(url, **ffmpeg_options),
-      after=lambda e: check_queue(bot, ctx, guild_id)
-    )
+queue = {}  # Example: {guild_id: [{song1 info}, {song2 info}, {song3 info}]}
 
 
-async def play_music(message, ctx, client):
-  query = ctx
-  # Debugging
-  # print(f"Query: {query}")
-  voice_state  = message.author.voice
+# ========================================
+# Helpers
+# ========================================
+def _format_duration(seconds) -> str:
+  '''Turns 185 -> "3:05", 3725 -> "1:02:05". Live streams have no duration.'''
+  if not seconds:
+    return "Live"
+  seconds = int(seconds)
+  hours, remainder = divmod(seconds, 3600)
+  minutes, secs = divmod(remainder, 60)
+  if hours:
+    return f"{hours}:{minutes:02d}:{secs:02d}"
+  return f"{minutes}:{secs:02d}"
+
+
+def _error_embed(description: str) -> discord.Embed:
+  return discord.Embed(
+    title=":bangbang: E R R O R",
+    description=description,
+    color=discord.Color.red()
+  )
+
+
+def _now_playing_embed(song: dict) -> discord.Embed:
+  embed = discord.Embed(
+    title=":musical_note: Now playing:",
+    description=song['title'],
+    color=discord.Color.fuchsia()
+  )
+  embed.add_field(name='', value=f"Duration: `{song['duration']}`", inline=False)
+  if song['thumbnail']:
+    embed.set_image(url=song['thumbnail'])
+  return embed
+
+
+def _search(query: str) -> dict | None:
+  '''
+  Blocking yt-dlp lookup. Always call through asyncio.to_thread so the bot
+  keeps responding (and current audio keeps playing) while it searches.
+  '''
+  search = query if query.startswith(("https://", "http://")) else f"ytsearch:{query}"
+  with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    info = ydl.extract_info(search, download=False)
+
+  # Searches come back as a list of entries -> take the first result
+  if 'entries' in info:
+    entries = list(info['entries'])
+    if not entries:
+      return None
+    info = entries[0]
+
+  thumbnails = info.get('thumbnails') or []
+  return {
+    "title": info.get('title', 'Unknown title'),
+    "url": info['url'],
+    "thumbnail": thumbnails[-1]['url'] if thumbnails else None,
+    "duration": _format_duration(info.get('duration')),
+  }
+
+
+def _start_playback(bot, guild, channel, song: dict):
+  '''Plays a song and, when it ends (finished, skipped or stopped), moves on to the next one.'''
+  def after_song(error):
+    # discord.py calls this from its audio thread, not the bot's event loop,
+    # so hand the work back to the loop in a thread-safe way.
+    if error:
+      print(f"[ ERROR ] Music player error in {guild.name}: {error}")
+    asyncio.run_coroutine_threadsafe(_play_next(bot, guild, channel), bot.loop)
+
+  guild.voice_client.play(discord.FFmpegPCMAudio(song['url'], **ffmpeg_options), after=after_song)
+
+
+async def _play_next(bot, guild, channel):
+  '''Plays the next queued song, if there is one.'''
+  vc = guild.voice_client
+  if vc is None or not vc.is_connected():
+    queue.pop(guild.id, None)
+    return
+  if vc.is_playing() or vc.is_paused():
+    return
+  if not queue.get(guild.id):
+    queue.pop(guild.id, None)
+    return
+
+  song = queue[guild.id].pop(0)
+  try:
+    _start_playback(bot, guild, channel, song)
+  except discord.ClientException as e:
+    print(f"[ ERROR ] Could not start next song in {guild.name}: {e}")
+    return
+  await channel.send(embed=_now_playing_embed(song))
+
+
+# ========================================
+# Commands
+# ========================================
+async def play_music(ctx, query: str, bot) -> discord.Embed:
+  '''!play <query or url> -> plays immediately, or adds to the queue if something is already playing.'''
+  voice_state = ctx.author.voice
 
   # Check if the USER is in a voice channel
-  if voice_state:
-    # Check if the BOT is in a voice channel
-    if message.guild.voice_client:
-      # Check if the BOT is in a different voice channel
-      if message.guild.voice_client.channel != voice_state.channel:
-        embed = discord.Embed(
-          title=":bangbang: E R R O R",
-          description="You are not in the **correct** voice channel.",
-          color=discord.Color.red()
-        )
-        return embed
-      # Otherwise -> the BOT is in the same voice channel
-      else:
-        # The BOT is in the same voice channel
-        vc = message.guild.voice_client
-    # Otherwise -> the BOT is NOT in a voice channel
-    else:
-      vc = await voice_state.channel.connect(timeout=30, reconnect=True)
-  # Otherwise, the user is not in a voice channel
-  else:
-    embed = discord.Embed(
-      title=":bangbang: E R R O R",
-      description="You are not in a voice channel.",
-      color=discord.Color.red()
-    )
-    return embed
+  if not voice_state or not voice_state.channel:
+    return _error_embed("You are not in a voice channel.")
 
-  # Search for and play the requested video
-  with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+  # Check if the BOT is in a different voice channel
+  vc = ctx.guild.voice_client
+  if vc and vc.channel != voice_state.channel:
+    return _error_embed("You are not in the **correct** voice channel.")
+
+  # Search for the requested video (off the event loop)
+  async with ctx.typing():
     try:
-      # Search for the video using YT dlp
-      info = ydl.extract_info(query if query.startswith("https://") else f"ytsearch:{query}", download=False)
+      song = await asyncio.to_thread(_search, query)
+    except Exception as e:
+      print(f"{'*' * 30}\n[ ERROR ] yt-dlp failed for '{query}':\n{e}")
+      return _error_embed("Unable to find or play the requested video.")
 
-      # Retrives the first video that shows up from info
-      #   If multiple entries come back -> retrieve the first entry
-      #   Otherwise, only 1 entry exists -> retrieve its url
-      video_info = info['entries'][0] if 'entries' in info else info
+  if song is None:
+    return _error_embed(f"No results found for **{query}**.")
 
-      title = video_info['title']
-      url = video_info['url']
-      thumbnail = video_info['thumbnails'][-1]['url']
-      duration = video_info['duration']   # returns duration in seconds
-      minutes = duration // 60
-      seconds = duration % 60
+  # Join the user's voice channel if the bot isn't connected yet
+  vc = ctx.guild.voice_client
+  if vc is None:
+    vc = await voice_state.channel.connect(timeout=30, reconnect=True)
 
-      song_info = {
-        "title": title,
-        "url": url,
-        "thumbnail": thumbnail,
-        "duration": f"{minutes}:{seconds}"
-      }
-
-      # If BOT is already playing music
-      if vc.is_playing():
-        # If a queue already exists for that server
-        if message.guild.id in queue:
-          queue[message.guild.id].append(song_info)
-        # Otherwise -> create new queue
-        else:
-          queue[message.guild.id] = [song_info]
-        # Return QUEUE embed
-        embed = discord.Embed(
-          title=f":musical_note: Song added to queue...",
-          color=discord.Color.fuchsia()
-        )
-        return embed
-      else:
-        vc.play(discord.FFmpegPCMAudio(url, **ffmpeg_options), after = lambda e: check_queue(client, message, message.guild.id))
-
-        embed = discord.Embed(
-          title=f":musical_note: Now playing:",
-          description=title,
-          color=discord.Color.fuchsia()
-        )
-        embed.add_field(name='', value=f'Duration: `{minutes}:{seconds}`', inline=False)
-        embed.set_image(url=thumbnail)
-        return embed
-
-    except youtube_dl.utils.DownloadError as e:
-      print(f"{'*' * 30}\n[ERROR]:\n{e}")
-      return await message.channel.send("Error: Unable to find or play the requested video.")
-
-async def leave_channel(ctx):
-  # Check if the bot is connected to a voice channel in the guild
-  if ctx.guild.voice_client is not None:
-    # Disconnect the bot from the voice channel
-    await ctx.guild.voice_client.disconnect()
-
-    # Create and send an embed message to indicate successful disconnection
+  # Something is already playing (or waiting to play) -> add to queue
+  if vc.is_playing() or vc.is_paused() or queue.get(ctx.guild.id):
+    queue.setdefault(ctx.guild.id, []).append(song)
     embed = discord.Embed(
-      title=":mute: Disconnected",
-      description="I've left the voice channel.",
+      title=":musical_note: Song added to queue...",
+      description=f"{song['title']} (`{song['duration']}`)",
       color=discord.Color.fuchsia()
     )
+    embed.set_footer(text=f"Position in queue: {len(queue[ctx.guild.id])}")
     return embed
 
-async def skip_song(ctx, bot):
-  guild_id = ctx.guild.id   # Retrieve guild.id
+  _start_playback(bot, ctx.guild, ctx.channel, song)
+  return _now_playing_embed(song)
 
-  # Check if the bot is playing music
-  if ctx.guild.voice_client is not None and ctx.guild.voice_client.is_playing():
-    # Stop the current song
-    ctx.guild.voice_client.stop()
 
-    # Check if there are songs in the queue and play the next one
-    if guild_id in queue and len(queue[guild_id]) > 0:
-      embed = discord.Embed(
-        title=":track_next: Skipping song",
-        color=discord.Color.fuchsia()
-      )
-      await ctx.channel.send(embed=embed)
-      # Check queue to play the next song
-      check_queue(bot, ctx, guild_id)
-    else:
-      # Otherwise, the queue is empty
-      embed = discord.Embed(
-        title=":musical_note: Queue is empty",
-        description="Use `!play <query or url>` to play another song.",
-        color=discord.Color.fuchsia()
-      )
-      await ctx.channel.send(embed=embed)
-  else:
-    # Create and send an embed message to indicate the bot is not playing music
+async def leave_channel(ctx) -> discord.Embed:
+  '''!leave -> clears the queue and disconnects.'''
+  vc = ctx.guild.voice_client
+  if vc is None:
+    return _error_embed("I am not currently in a voice channel.")
+
+  # Clear the queue first so the song-ended callback doesn't start the next song
+  queue.pop(ctx.guild.id, None)
+  await vc.disconnect()
+
+  return discord.Embed(
+    title=":mute: Disconnected",
+    description="I've left the voice channel.",
+    color=discord.Color.fuchsia()
+  )
+
+
+async def skip_song(ctx):
+  '''!skip -> stops the current song; the song-ended callback starts the next one.'''
+  vc = ctx.guild.voice_client
+  if vc is None or not (vc.is_playing() or vc.is_paused()):
+    await ctx.channel.send(embed=_error_embed("Nothing is playing right now."))
+    return
+
+  has_next = bool(queue.get(ctx.guild.id))
+  vc.stop()   # Triggers after_song -> _play_next, which plays + announces the next song
+
+  if has_next:
     embed = discord.Embed(
-      title=":bangbang: E R R O R",
-      description="I am not currently in a voice channel",
-      color=discord.Color.red()
+      title=":track_next: Skipping song",
+      color=discord.Color.fuchsia()
     )
-    await ctx.channel.send(embed=embed)
+  else:
+    embed = discord.Embed(
+      title=":track_next: Skipped - queue is empty",
+      description="Use `!play <query or url>` to play another song.",
+      color=discord.Color.fuchsia()
+    )
+  await ctx.channel.send(embed=embed)

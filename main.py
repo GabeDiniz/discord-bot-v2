@@ -93,7 +93,9 @@ async def before_check_sales():
 
 @tasks.loop(time=dtime(hour=15, minute=0, tzinfo=timezone.utc))  # 15:00 UTC daily; only acts on Sunday
 async def weekly_ipos():
-  if datetime.now(timezone.utc).weekday() != 6:  # Monday=0 ... Sunday=6
+  now = datetime.now(timezone.utc)
+  print(f"[ LOG ] weekly_ipos tick at {now.isoformat()} (weekday={now.weekday()}, posts on Sunday=6)")
+  if now.weekday() != 6:  # Monday=0 ... Sunday=6
     return
   if TESTING_MODE:
     print("[ LOG ] Loop-task: TESTING MODE - Skipping weekly IPO post")
@@ -309,7 +311,7 @@ async def create_event(interaction: discord.Interaction, date: str, time: str, d
 # ========================================
 # #####################
 @bot.command(name="help-music", description="Displays the commands available related to music playing/queuing/skipping/etc.")
-async def help_command(ctx):
+async def help_music_command(ctx):
   embed = discord.Embed(
     color=discord.Color.red()
   )
@@ -323,9 +325,8 @@ async def help_command(ctx):
   await ctx.channel.send(embed=embed)
 
 @bot.command(name="play", description="Allows user to play music using text or a YouTube link.")
-async def play_command(ctx, *, message: str):
-  print(ctx)
-  embed = await playmusic.play_music(ctx, message, bot)
+async def play_music_command(ctx, *, query: str):
+  embed = await playmusic.play_music(ctx, query, bot)
   await ctx.channel.send(embed=embed)
 
 @bot.command(name="leave", description="Makes the bot leave the voice channel.")
@@ -335,7 +336,7 @@ async def leave_command(ctx):
 
 @bot.command(name="skip", description="Skips the current song that is playing and plays the next one in the queue.")
 async def skip_command(ctx):
-  await playmusic.skip_song(ctx, bot)
+  await playmusic.skip_song(ctx)
 
 
 # ========================================
