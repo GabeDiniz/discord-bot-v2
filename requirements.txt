@@ -1,4 +1,4 @@
-discord.py==2.3.2
+discord.py[voice]==2.7.1
 discord-ext-bot==1.0.1
 requests==2.32.3
 python-decouple==3.8
