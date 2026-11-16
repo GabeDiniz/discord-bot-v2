@@ -48,7 +48,7 @@ Production runs on the owner's N100 home server, **not** Docker or Heroku:
 - **`main.py`**: entry point. It does the following:
   - initializes the bot and registers all `!` prefix commands and the `/event` slash command;
   - handles `on_message` for auto-responses;
-  - runs two scheduled tasks: `steam_sale` (every 24h, skips the run at startup) and `weekly_ipos` (15:00 UTC daily, posts only on Sundays);
+  - runs two scheduled tasks: `steam_sale` (7 PM America/New_York daily) and `weekly_ipos` (15:00 UTC daily, posts only on Sundays);
   - in `on_ready`, calls `db.init_db()` and backfills `servers.server_name`.
 - **`functions/`**: one feature module per file, imported by `main.py`:
   - `db.py`: SQLite access (`resources/bot.db`). Tables: `servers` (guild → default channel + name), `wishlist` (guild + app_id → game JSON), `steam_users` (username → steam_id for `!cs2`). `init_db()` uses `CREATE TABLE IF NOT EXISTS` and never wipes data.
@@ -72,6 +72,8 @@ Production runs on the owner's N100 home server, **not** Docker or Heroku:
 - Bot uses `commands.Bot` with the `!` prefix and `help_command=None` (custom `!help` embed; update it when adding commands). Slash commands use `bot.tree.command`.
 - Guild, channel and app IDs are stored as **strings** in the DB. Always `str()` them in queries.
 - `on_message` calls `bot.process_commands(ctx)` at the end so auto-responses and `!` commands both work.
+- Scheduled task bodies catch all exceptions. An uncaught one stops a `tasks.loop` until the next restart.
+- `!` command errors go through `on_command_error`: bad arguments get a reply with the command's `usage=` string (give new commands one), and other errors are logged with a traceback and get a generic reply. `/` commands use `@bot.tree.error`.
 - Most feature modules still use blocking `requests` calls inside async commands, which freezes the bot while they wait. New network code should use `asyncio.to_thread` (or aiohttp).
 - yt-dlp has to stay fairly recent, because YouTube breaks old versions. Its 2026 releases need Python 3.11 or newer.
 

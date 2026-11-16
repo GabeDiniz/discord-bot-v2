@@ -28,7 +28,7 @@ This is my multi-purpose Discord bot! This is the second Discord bot I created (
 
 ### Automatic posts
 
-- **Wishlist sales:** once a day the bot checks every server's wishlist and posts any games on sale. They go to the channel where `!addwishlist` was first used in that server.
+- **Wishlist sales:** every day at 7 PM Eastern the bot checks every server's wishlist and posts any games on sale. They go to the channel where `!addwishlist` was first used in that server.
 - **Weekly IPOs:** every Sunday at 15:00 UTC the bot posts the next week's IPOs to that same channel.
 - **Auto-responses:** messages that closely match a question in `resources/knowledge.json` get the matching reply.
 

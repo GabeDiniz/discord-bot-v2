@@ -1,11 +1,11 @@
 from datetime import datetime, time as dtime, timezone
+from zoneinfo import ZoneInfo
+import traceback
 from discord import Intents, Client, app_commands
-from discord.ext import commands, tasks    # pip install discord-ext-bot
-import discord   # pip install discord
-import openai  # pip install openai
+from discord.ext import commands, tasks    # ships with discord.py
+import discord   # pip install "discord.py[voice]"
 import os
 import requests
-from transformers import pipeline  # pip install transformers
 import argparse
 
 # Used for retrieving BOT_KEY from .env
@@ -29,7 +29,6 @@ import functions.db as db
 # Fetch Credentials from local .env variables
 # Constants
 BOT_KEY = config('BOT_KEY')
-# OPENAI_API_KEY = config('OPENAI_API_KEY')
 HUGGING_FACE_API_URL = "https://router.huggingface.co/together/v1/chat/completions"
 HF_HEADER = {"Authorization": f"Bearer {config('HUGGING_FACE_API_KEY')}"}
 
@@ -46,7 +45,6 @@ intents.message_content = True
 intents.voice_states = True
 intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None) # Initialize bot
-# gptClient = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 # Argument Parser for CLI flags
 parser = argparse.ArgumentParser()
@@ -54,7 +52,7 @@ parser.add_argument('--testing', action='store_true', help='Enable testing mode'
 args = parser.parse_args()
 TESTING_MODE = args.testing
 print("[ LOG ] Testing Mode is", "ON" if TESTING_MODE else "OFF")
-ON_START = True # Used to prevent certain actions on bot restart
+EASTERN = ZoneInfo("America/New_York")  # follows EST/EDT automatically
 
 # Start bot
 @bot.event
@@ -73,18 +71,18 @@ async def on_ready():
 # ========================================
 # SCHEDULED TASKS
 # ========================================
-@tasks.loop(hours=24)
+@tasks.loop(time=dtime(hour=19, minute=0, tzinfo=EASTERN))  # 7 PM Eastern daily
 async def steam_sale():
-  global ON_START
-  if ON_START:
-    print("[ ON START ] Don't check for sales on bot start")
-    ON_START = False
-    return
   if TESTING_MODE:
     print("[ LOG ] Loop-task: TESTING MODE - Skipping steam sale check")
-  else:
-    print("[ LOG ] Loop-task: checking for server steam wishlist sale")
+    return
+  print("[ LOG ] Loop-task: checking for server steam wishlist sale")
+  # Catch everything: an uncaught error would stop this loop until the next restart
+  try:
     await steam.check_sale(bot)
+  except Exception:
+    print("[ ERROR ] Steam sale check failed:")
+    traceback.print_exc()
 
 @steam_sale.before_loop
 async def before_check_sales():
@@ -104,7 +102,12 @@ async def weekly_ipos():
   for guild_id, channel_id in db.get_all_default_channels().items():
     channel = bot.get_channel(int(channel_id))
     if channel:
-      await ipo.show_upcoming_ipos(channel, days_ahead=7)
+      # One server failing shouldn't skip the others or stop the loop
+      try:
+        await ipo.show_upcoming_ipos(channel, days_ahead=7)
+      except Exception:
+        print(f"[ ERROR ] Weekly IPO post failed for guild {guild_id}:")
+        traceback.print_exc()
 
 @weekly_ipos.before_loop
 async def before_weekly_ipos():
@@ -145,7 +148,7 @@ async def help_command(ctx):
   await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name='cs2', description='Display Counter-strike 2 stats (only setup for some players).')
+@bot.command(name='cs2', usage="<name>", description='Display Counter-strike 2 stats (only setup for some players).')
 async def steam_command(ctx, *, message: str):
   embed = steam.get_user_stats(ctx, message)
   await ctx.channel.send(embed=embed)
@@ -157,7 +160,7 @@ async def play_command(ctx):
   await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name='qr', description="Generate QR image based on given prompt")
+@bot.command(name='qr', usage="<link> [fg-hex] [bg-hex]", description="Generate QR image based on given prompt")
 async def play_command(ctx, *, message: str):
   qr_code_file = qr.generate(message)   # Returns QR file
   if qr_code_file:
@@ -180,7 +183,7 @@ async def play_command(ctx):
   await ctx.channel.send(gif)
 
 # #####################
-@bot.command(name="steamgame", description="Search for a Steam game and return game details")
+@bot.command(name="steamgame", usage="<app-id>", description="Search for a Steam game and return game details")
 async def steamgame(ctx, *, game_id: str):
   await ctx.send("Searching for game on Steam...")
   game_details = steam.search_steam_game(game_id)
@@ -203,11 +206,11 @@ async def steamgame(ctx, *, game_id: str):
     await ctx.send(embed=embed)
 
 # #####################
-@bot.command(name="addwishlist", description="Add a Steam game to the server wishlist and set default wishlist channel")
+@bot.command(name="addwishlist", usage="<app-id>", description="Add a Steam game to the server wishlist and set default wishlist channel")
 async def add_wishlist(ctx, *, game_id: str):
   await steam.add_to_wishlist(ctx, game_id)
 
-@bot.command(name="removewishlist", description="Remove a Steam game from the servers wishlist.")
+@bot.command(name="removewishlist", usage="<game-name>", description="Remove a Steam game from the servers wishlist.")
 async def remove_wishlist(ctx, *, game_name: str):
   await steam.remove_from_wishlist(ctx, game_name)
 
@@ -228,7 +231,7 @@ async def nfl_weekly_matchup(ctx):
  await ctx.channel.send(embed=embed)
 
 # #####################
-@bot.command(name="convert", description="Converts the amount entered from currency A to currency B.")
+@bot.command(name="convert", usage="<amount> <from-currency> <to-currency>", description="Converts the amount entered from currency A to currency B.")
 async def current_converter(ctx, *, args: str):
   try:
     # Split the input into components
@@ -253,16 +256,16 @@ async def current_converter(ctx, *, args: str):
     await ctx.send(f"An unexpected error occurred: {e}")
 
 # #####################
-@bot.command(name="ipos", description="List upcoming stock IPOs in the next N days (default 7).")
+@bot.command(name="ipos", usage="[days]", description="List upcoming stock IPOs in the next N days (default 7).")
 async def ipos_command(ctx, days: int = 7):
   await ipo.show_upcoming_ipos(ctx, days)
 
-@bot.command(name="ipo", description="Show details for a specific upcoming IPO by ticker.")
+@bot.command(name="ipo", usage="<ticker>", description="Show details for a specific upcoming IPO by ticker.")
 async def ipo_command(ctx, ticker: str):
   await ipo.show_ipo_by_ticker(ctx, ticker)
 
 # #####################
-@bot.command(name='p', description='Chat with the bot using HuggingFace models (trained up to 2022).')
+@bot.command(name='p', usage="<prompt>", description='Chat with the bot using HuggingFace models (trained up to 2022).')
 async def ask_ai_command(ctx, *, query: str):
   await ctx.typing()  # Show typing while processing
   payload = {
@@ -324,7 +327,7 @@ async def help_music_command(ctx):
   # Send the embed message to the same channel where the command was issued
   await ctx.channel.send(embed=embed)
 
-@bot.command(name="play", description="Allows user to play music using text or a YouTube link.")
+@bot.command(name="play", usage="<song or YouTube link>", description="Allows user to play music using text or a YouTube link.")
 async def play_music_command(ctx, *, query: str):
   embed = await playmusic.play_music(ctx, query, bot)
   await ctx.channel.send(embed=embed)
@@ -337,6 +340,49 @@ async def leave_command(ctx):
 @bot.command(name="skip", description="Skips the current song that is playing and plays the next one in the queue.")
 async def skip_command(ctx):
   await playmusic.skip_song(ctx)
+
+
+# ========================================
+# ERROR HANDLING
+# ========================================
+@bot.event
+async def on_command_error(ctx, error):
+  '''Friendly replies when a ! command fails; full tracebacks go to the logs.'''
+  if isinstance(error, commands.CommandNotFound):
+    return  # "!something" that isn't a command - probably just chat, ignore it
+
+  name = ctx.command.qualified_name if ctx.command else "?"
+  if isinstance(error, commands.UserInputError):
+    # Missing/extra/wrongly-typed arguments, e.g. "!cs2" with no name or "!ipos abc"
+    usage = f"!{name} {ctx.command.usage or ctx.command.signature}".strip()
+    print(f"[ WARN ] Bad usage of !{name} by {ctx.author}: {error}")
+    await ctx.send(f"⚠️ That's not quite right. Usage: `{usage}`")
+    return
+
+  original = getattr(error, "original", error)
+  print(f"[ ERROR ] !{name} failed for {ctx.author}:")
+  traceback.print_exception(type(original), original, original.__traceback__)
+  await ctx.send(f"⚠️ Something went wrong running `!{name}`. Try again in a bit.")
+
+
+@bot.tree.error
+async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+  '''Same as above, for slash commands (otherwise Discord just says "The application did not respond").'''
+  original = getattr(error, "original", error)
+  name = interaction.command.name if interaction.command else "?"
+  if name == "event" and isinstance(original, ValueError):
+    message = "⚠️ Couldn't read that date/time. Use `YYYY-MM-DD` and 24-hour `HH:MM`, e.g. `2026-12-31` `19:30`."
+  elif isinstance(original, discord.Forbidden):
+    message = "⚠️ I don't have permission to do that in this server."
+  else:
+    message = f"⚠️ Something went wrong running `/{name}`. Try again in a bit."
+  print(f"[ ERROR ] /{name} failed for {interaction.user}:")
+  traceback.print_exception(type(original), original, original.__traceback__)
+
+  if interaction.response.is_done():
+    await interaction.followup.send(message, ephemeral=True)
+  else:
+    await interaction.response.send_message(message, ephemeral=True)
 
 
 # ========================================
