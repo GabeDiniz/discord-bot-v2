@@ -1,7 +1,7 @@
 discord.py[voice]==2.7.1
 requests==2.32.3
 python-decouple==3.8
-yt-dlp==2025.12.08
+yt-dlp==2026.10.26
 qrcode==7.4.2
 Pillow>=9.4.0
 tzdata>=2024.1

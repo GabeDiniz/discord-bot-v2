@@ -83,16 +83,44 @@ def _search(query: str) -> dict | None:
   }
 
 
+class _TrackedFFmpegAudio(discord.FFmpegPCMAudio):
+  '''
+  FFmpeg audio that remembers whether it produced any sound. If YouTube refuses
+  the stream (e.g. 403 Forbidden), FFmpeg exits right away and discord.py treats
+  that as the song "finishing" normally - this lets us tell the user instead.
+  '''
+  got_audio = False
+
+  def read(self) -> bytes:
+    data = super().read()
+    if data:
+      self.got_audio = True
+    return data
+
+
 def _start_playback(bot, guild, channel, song: dict):
   '''Plays a song and, when it ends (finished, skipped or stopped), moves on to the next one.'''
+  source = _TrackedFFmpegAudio(song['url'], **ffmpeg_options)
+
   def after_song(error):
     # discord.py calls this from its audio thread, not the bot's event loop,
     # so hand the work back to the loop in a thread-safe way.
     if error:
       print(f"[ ERROR ] Music player error in {guild.name}: {error}")
-    asyncio.run_coroutine_threadsafe(_play_next(bot, guild, channel), bot.loop)
+    failed = error is not None or not source.got_audio
+    asyncio.run_coroutine_threadsafe(_song_ended(bot, guild, channel, song, failed), bot.loop)
 
-  guild.voice_client.play(discord.FFmpegPCMAudio(song['url'], **ffmpeg_options), after=after_song)
+  guild.voice_client.play(source, after=after_song)
+
+
+async def _song_ended(bot, guild, channel, song: dict, failed: bool):
+  vc = guild.voice_client
+  if failed and vc is not None and vc.is_connected():
+    print(f"[ ERROR ] No audio for '{song['title']}' in {guild.name} - stream failed (see FFmpeg output above)")
+    await channel.send(embed=_error_embed(
+      f"Couldn't play **{song['title']}** - YouTube refused the stream. Try again, or try a different song."
+    ))
+  await _play_next(bot, guild, channel)
 
 
 async def _play_next(bot, guild, channel):

@@ -75,7 +75,7 @@ Production runs on the owner's N100 home server, **not** Docker or Heroku:
 - Scheduled task bodies catch all exceptions. An uncaught one stops a `tasks.loop` until the next restart.
 - `!` command errors go through `on_command_error`: bad arguments get a reply with the command's `usage=` string (give new commands one), and other errors are logged with a traceback and get a generic reply. `/` commands use `@bot.tree.error`.
 - Most feature modules still use blocking `requests` calls inside async commands, which freezes the bot while they wait. New network code should use `asyncio.to_thread` (or aiohttp).
-- yt-dlp has to stay fairly recent, because YouTube breaks old versions. Its 2026 releases need Python 3.11 or newer.
+- yt-dlp has to stay recent, because YouTube breaks old versions. Its 2026 releases need Python 3.11 or newer. The symptom of an outdated one: the bot joins voice but plays nothing, and FFmpeg logs `403 Forbidden` in the journal. Fix it by bumping the pin in `requirements.txt`. As of 2026-11, don't give yt-dlp a JS runtime (Deno/Node): with yt-dlp 2026.10.26, enabling Node switched YouTube to a client whose streams return 403, while no runtime plays fine. Re-check this when bumping.
 
 ## Commit Message Convention
 
